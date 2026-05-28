@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
 export default function GearLab() {
   const [shoePrice, setShoePrice] = useState('150');
@@ -67,20 +68,13 @@ export default function GearLab() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Gear Lab
-        </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
-          Shoe life, gear cost, and fueling expense tracking estimates.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <LabPageHeader title="GEAR LAB" subtitle="Shoe life, gear cost, and fueling expense tracking estimates." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Calculate Expenses & Wear</CardTitle>
+            <CardTitle>CALCULATE EXPENSES & WEAR</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -132,12 +126,12 @@ export default function GearLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate Costs & Mileage</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE COSTS & MILEAGE</Button>
             </form>
           </CardContent>
         </Card>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard result={result} />
           )}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
 export default function RecoveryCheckLab() {
   const [sleepStart, setSleepStart] = useState('22:00');
@@ -84,20 +85,13 @@ export default function RecoveryCheckLab() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Recovery Check Lab
-        </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
-          Evaluate basic readiness metric deltas (RHR, HRV, mass, sleep).
-        </p>
-      </div>
+    <div className="space-y-6">
+      <LabPageHeader title="RECOVERY CHECK LAB" subtitle="Evaluate basic readiness metric deltas (RHR, HRV, mass, sleep)." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Calculate Deltas</CardTitle>
+            <CardTitle>CALCULATE DELTAS</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -156,12 +150,12 @@ export default function RecoveryCheckLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">Calculate Recovery Deltas</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE RECOVERY DELTAS</Button>
             </form>
           </CardContent>
         </Card>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard result={result} />
           )}

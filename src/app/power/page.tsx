@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
 export default function PowerLab() {
   const [power, setPower] = useState('300');
@@ -54,20 +55,13 @@ export default function PowerLab() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Power Lab
-        </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
-          Running power metrics, efficiency, and W/kg.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <LabPageHeader title="POWER LAB" subtitle="Running power metrics, efficiency, and W/kg." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Calculate Power Metrics</CardTitle>
+            <CardTitle>CALCULATE POWER METRICS</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -118,12 +112,12 @@ export default function PowerLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">Calculate Metrics</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE METRICS</Button>
             </form>
           </CardContent>
         </Card>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard result={result} />
           )}

@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { workoutTemplates, raceDistances, workoutSafetyRules } from '@/data';
 import { parseTimeStringToSeconds, formatSecondsToTimeString, formatPace } from '@/lib/formatters/time';
 import { AlertCircle } from 'lucide-react';
@@ -157,13 +158,15 @@ export default function WorkoutLibraryPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Workout Library</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">View and calculate static structured interval templates.</p>
-      </div>
+      <LabPageHeader title="SESSION ARCHIVE" subtitle="View and calculate static structured interval templates." />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl">
-        <div className="space-y-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-zinc-950/80 border border-zinc-800 rounded-none relative">
+        <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
+           <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0H20ZM100 0H80ZM50 0V20ZM0 100H20ZM100 100H80ZM50 100V80ZM0 50H20ZM100 50H80Z" stroke="currentColor" strokeWidth="2" />
+           </svg>
+        </div>
+        <div className="space-y-2 z-10">
           <Label>Goal Distance</Label>
           <Select value={goalFilter} onChange={e => setGoalFilter(e.target.value)}>
             <option value="all">All Distances</option>
@@ -192,22 +195,22 @@ export default function WorkoutLibraryPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>{selectedTemplate.name}</CardTitle>
-                <CardDescription className="capitalize">
+                <CardTitle className="uppercase font-mono">{selectedTemplate.name}</CardTitle>
+                <CardDescription className="capitalize font-mono text-[10px] tracking-widest opacity-80 text-cyan-400">
                   {('scenario' in selectedTemplate ? selectedTemplate.scenario.replace('_', ' ') : '')} • {('difficulty' in selectedTemplate ? selectedTemplate.difficulty.replace('_', ' ') : '')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-lg text-sm font-mono space-y-2">
-                  <div className="font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider text-xs">Structure</div>
-                  {('warmup' in selectedTemplate) && selectedTemplate.warmup && <div>Warmup included.</div>}
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-none text-xs font-mono space-y-2 text-zinc-400">
+                  <div className="tracking-widest uppercase text-[10px] mb-2 text-zinc-600">Structure Trace</div>
+                  {('warmup' in selectedTemplate) && selectedTemplate.warmup && <div>WARMUP STAGE = TRUE</div>}
                   {('mainSet' in selectedTemplate) && selectedTemplate.mainSet && (
-                    <div>Main: {('reps' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.reps}x ` : ''} {('distanceMeters' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.distanceMeters}m` : (('durationMinutes' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.durationMinutes}m` : '')} @ {('intensity' in selectedTemplate.mainSet) ? (selectedTemplate.mainSet as any).intensity : ''}</div>
+                    <div className="text-cyan-400">MAIN_STAGE: {('reps' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.reps}x ` : ''} {('distanceMeters' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.distanceMeters}m` : (('durationMinutes' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.durationMinutes}m` : '')} @ {('intensity' in selectedTemplate.mainSet) ? (selectedTemplate.mainSet as any).intensity : ''}</div>
                   )}
-                  {('cooldown' in selectedTemplate) && selectedTemplate.cooldown && <div>Cooldown included.</div>}
+                  {('cooldown' in selectedTemplate) && selectedTemplate.cooldown && <div>COOLDOWN STAGE = TRUE</div>}
                 </div>
                 
-                <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <div className="space-y-4 pt-4 border-t border-zinc-800">
                   <div className="space-y-2">
                     <Label htmlFor="pace">Target Rep Pace (mm:ss/km)</Label>
                     <Input id="pace" placeholder="e.g. 05:00" value={paceInput} onChange={e => setPaceInput(e.target.value)} />
@@ -233,63 +236,62 @@ export default function WorkoutLibraryPage() {
             </Card>
 
             {calcResult ? (
-              <Card className="border-green-200 dark:border-green-900 bg-green-50/50 dark:bg-green-900/10 h-max">
+              <Card className="border-cyan-900/50 bg-cyan-950/10 h-max">
                 <CardHeader>
-                  <CardTitle className="text-green-900 dark:text-green-100">Workout Projection</CardTitle>
+                  <CardTitle className="text-cyan-400">PROJECTION OUTPUT</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800">
-                      <div className="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-1">Total Time</div>
-                      <div className="font-mono text-xl text-zinc-900 dark:text-zinc-100">{formatSecondsToTimeString(calcResult.totalTime)}</div>
+                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
+                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Total Time</div>
+                      <div className="font-mono text-xl text-zinc-200 shadow-cyan-400/10 drop-shadow-sm">{formatSecondsToTimeString(calcResult.totalTime)}</div>
                     </div>
-                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800">
-                      <div className="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-1">Rep Time</div>
-                      <div className="font-mono text-xl text-zinc-900 dark:text-zinc-100">{calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}</div>
+                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
+                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Rep Time</div>
+                      <div className="font-mono text-xl text-zinc-200">{calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}</div>
                     </div>
-                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800">
-                      <div className="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-1">Work Distance</div>
-                      <div className="font-mono text-xl text-zinc-900 dark:text-zinc-100">{calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}</div>
+                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
+                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Work Distance</div>
+                      <div className="font-mono text-xl text-zinc-200">{calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}</div>
                     </div>
-                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800">
-                      <div className="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-1">Work:Rest Time</div>
-                      <div className="font-mono text-sm text-zinc-900 dark:text-zinc-100">
+                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
+                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Work:Rest Time</div>
+                      <div className="font-mono text-sm text-zinc-400">
                         {formatSecondsToTimeString(Math.round(calcResult.workTime))} / {formatSecondsToTimeString(Math.round(calcResult.restTime))}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="text-xs text-zinc-500 mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 space-y-3">
-                    <div className="space-y-2 mb-4 bg-zinc-100 dark:bg-zinc-800/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800/60">
-                       <p><strong className="text-zinc-700 dark:text-zinc-300">Input Used:</strong> Target {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
-                       <p><strong className="text-zinc-700 dark:text-zinc-300">Source:</strong> {selectedTemplate.name} Structure</p>
-                       <p><strong className="text-zinc-700 dark:text-zinc-300">Formula (Time):</strong> Work Time + Rest Time + Warmup + Cooldown</p>
-                       <p><strong className="text-zinc-700 dark:text-zinc-300">Limitation:</strong> Mathematical projection only. Does not factor in fatigue profiles, weather, or terrain.</p>
-                       <p><strong className="text-zinc-700 dark:text-zinc-300">Confidence Label:</strong> Estimate</p>
-                       <p><strong className="text-zinc-700 dark:text-zinc-300">Architecture Note:</strong> No AI. No database. No runtime calculation engine used.</p>
+                  <div className="text-[10px] text-zinc-500 mt-4 pt-4 border-t border-zinc-800 space-y-3 font-mono">
+                    <div className="space-y-2 mb-4 bg-zinc-950 p-3 border border-zinc-800/80">
+                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Input Used:</strong> Target {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
+                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Source:</strong> {selectedTemplate.name} Structure</p>
+                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Formula (Time):</strong> Work Time + Rest Time + Warmup + Cooldown</p>
+                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Limitation:</strong> Mathematical projection only. Does not factor in fatigue profiles, weather, or terrain.</p>
+                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Confidence Label:</strong> Estimate</p>
                     </div>
 
                     {activeSafetyFlags.length > 0 && (
-                      <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 p-3 rounded-lg flex gap-3">
-                        <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                      <div className="bg-orange-950/10 border border-orange-900/30 text-orange-500/80 p-3 flex gap-3">
+                        <AlertCircle className="w-4 h-4 mt-0.5 shrink-0 text-orange-600" />
                         <div className="space-y-1 w-full">
-                          <p className="font-semibold uppercase tracking-wider text-[10px] mb-1 opacity-80">Safety & Planning Flags</p>
+                          <p className="font-bold uppercase tracking-widest text-[10px] mb-1 text-orange-600">SYS_WARN: Volume Exceeded</p>
                           {activeSafetyFlags.map(rule => (
-                            <div key={rule.id} className="flex flex-col">
-                              <strong className="text-xs font-semibold">{rule.name}</strong>
-                              <span className="text-xs opacity-90">{rule.message}</span>
+                            <div key={rule.id} className="flex flex-col mb-1">
+                              <strong className="text-[10px]">{rule.name}</strong>
+                              <span className="text-[10px] opacity-80">{rule.message}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
                     {activeSafetyFlags.length === 0 && !weeklyMileageInput && ('safetyRuleIds' in selectedTemplate) && (selectedTemplate.safetyRuleIds as unknown as string[])?.some(id => id.includes('volume') || id.includes('ratio')) && (
-                      <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-200 p-3 rounded-lg">
-                        <p className="text-xs">Provide weekly mileage to verify safe volume ratios for this template.</p>
+                      <div className="bg-cyan-950/20 border border-cyan-900/30 text-cyan-400/80 p-3">
+                        <p className="text-[10px] uppercase tracking-widest">Provide weekly mileage to verify safe volume ratios for this template.</p>
                       </div>
                     )}
                   </div>
-                  <Button variant="secondary" className="w-full" onClick={() => {
+                  <Button variant="ghost" className="w-full text-zinc-500 hover:text-cyan-400" onClick={() => {
                     navigator.clipboard.writeText(`Workout: ${selectedTemplate.name}\nTotal Time: ${formatSecondsToTimeString(calcResult.totalTime)}\nTarget Rep Time: ${formatSecondsToTimeString(Math.round(calcResult.targetRepTime))}`);
                     alert('Copied to clipboard');
                   }}>Copy Summary</Button>
@@ -334,8 +336,8 @@ export default function WorkoutLibraryPage() {
                 </div>
               </CardContent>
               <div className="p-6 pt-0 mt-auto">
-                <Button variant="secondary" className="w-full" onClick={() => setSelectedTemplateId(template.id)}>
-                  Select Template
+                <Button variant="ghost" className="w-full text-cyan-400 border border-cyan-900/50 hover:bg-cyan-950/30" onClick={() => setSelectedTemplateId(template.id)}>
+                  [ SELECT MATRIX ]
                 </Button>
               </div>
             </Card>

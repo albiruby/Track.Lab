@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculateIntervalWorkout } from '@/lib/calculators';
 import { formatSecondsToTimeString, parseTimeStringToSeconds } from '@/lib/formatters/time';
 
@@ -28,16 +29,13 @@ export default function WorkoutLabPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Workout Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate session volume and duration for structured interval workouts.</p>
-      </div>
+      <LabPageHeader title="SESSION KINEMATICS" subtitle="Calculate session volume and duration for structured interval workouts." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Interval Session Math</CardTitle>
+              <CardTitle>INTERVAL SESSION MATH</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -90,38 +88,38 @@ export default function WorkoutLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Calculate Workout</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
               </form>
             </CardContent>
           </Card>
         </div>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard 
               result={{
                 ...result,
                 result: (
-                  <div className="w-full space-y-3 text-base">
-                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
-                      <span className="text-zinc-500">Rep Time</span>
-                      <span className="font-mono text-zinc-900 dark:text-zinc-100">{formatSecondsToTimeString(result.result.repTimeSeconds)}</span>
+                  <div className="w-full space-y-3 text-xs font-mono uppercase tracking-widest text-zinc-500">
+                    <div className="flex justify-between border-b border-zinc-800 pb-2">
+                      <span>Rep Time</span>
+                      <span className="text-cyan-400">{formatSecondsToTimeString(result.result.repTimeSeconds)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
-                      <span className="text-zinc-500">Total Work Time</span>
-                      <span className="font-mono text-zinc-900 dark:text-zinc-100">{formatSecondsToTimeString(result.result.totalWorkSeconds)}</span>
+                    <div className="flex justify-between border-b border-zinc-800 pb-2">
+                      <span>Total Work Time</span>
+                      <span className="text-cyan-400">{formatSecondsToTimeString(result.result.totalWorkSeconds)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
-                      <span className="text-zinc-500">Total Rest Time</span>
-                      <span className="font-mono text-zinc-900 dark:text-zinc-100">{formatSecondsToTimeString(result.result.totalRestSeconds)}</span>
+                    <div className="flex justify-between border-b border-zinc-800 pb-2">
+                      <span>Total Rest Time</span>
+                      <span className="text-cyan-400">{formatSecondsToTimeString(result.result.totalRestSeconds)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
-                      <span className="text-zinc-500">Rep Volume (km)</span>
-                      <span className="font-mono text-zinc-900 dark:text-zinc-100">{result.result.sessionDistanceKm.toFixed(2)} km</span>
+                    <div className="flex justify-between border-b border-zinc-800 pb-2">
+                      <span>Rep Volume (km)</span>
+                      <span className="text-cyan-400">{result.result.sessionDistanceKm.toFixed(2)} km</span>
                     </div>
                     <div className="flex justify-between pt-2">
-                      <span className="font-medium text-zinc-900 dark:text-zinc-100">Total Time</span>
-                      <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100 text-lg">{formatSecondsToTimeString(result.result.totalSessionSeconds)}</span>
+                      <span className="text-zinc-300">Total Time</span>
+                      <span className="font-bold text-cyan-400 text-lg shadow-cyan-400/20 drop-shadow-md">{formatSecondsToTimeString(result.result.totalSessionSeconds)}</span>
                     </div>
                   </div>
                 )

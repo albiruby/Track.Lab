@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculateHrMax, calculateKarvonenZones } from '@/lib/calculators';
 import { HR_MAX_METHODS, METHOD_KARVONEN } from '@/data';
 
@@ -37,16 +38,13 @@ export default function HeartRateLabPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Heart Rate Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate Maximum Heart Rate estimates & Training Zones based on physiology.</p>
-      </div>
+      <LabPageHeader title="CARDIO MODEL" subtitle="Calculate Maximum Heart Rate estimates & Training Zones based on physiology." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Maximum Heart Rate (HRmax)</CardTitle>
+              <CardTitle>MAXIMUM HEART RATE (HRmax)</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleMaxCalc} className="space-y-4">
@@ -72,20 +70,22 @@ export default function HeartRateLabPage() {
                     </Select>
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Estimate HRmax</Button>
+                <Button type="submit" className="w-full mt-4">ESTIMATE HRmax</Button>
               </form>
             </CardContent>
           </Card>
           
           {hrMaxResult && (
-            <ResultCard result={{...hrMaxResult, result: `${hrMaxResult.result} bpm`}} />
+            <div className="h-full">
+              <ResultCard result={{...hrMaxResult, result: `${hrMaxResult.result} bpm`}} />
+            </div>
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Karvonen Target Zones (HRR)</CardTitle>
+              <CardTitle>KARVONEN TARGET ZONES (HRR)</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleZonesCalc} className="space-y-4">
@@ -115,25 +115,27 @@ export default function HeartRateLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Calculate Zones</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
               </form>
             </CardContent>
           </Card>
 
           {zonesResult && (
-            <ResultCard result={{
-              ...zonesResult,
-              result: (
-                <div className="w-full space-y-2 text-sm">
-                  {zonesResult.result.map((z, i) => (
-                    <div key={i} className="flex justify-between items-center py-2 px-3 bg-zinc-100 dark:bg-zinc-800/50 rounded-md">
-                      <span className="font-medium">{z.name} ({z.intensity})</span>
-                      <span className="font-mono text-zinc-900 dark:text-zinc-100">~{z.bpm} bpm</span>
-                    </div>
-                  ))}
-                </div>
-              )
-            }} />
+            <div className="h-full">
+              <ResultCard result={{
+                ...zonesResult,
+                result: (
+                  <div className="w-full space-y-2 text-sm">
+                    {zonesResult.result.map((z, i) => (
+                      <div key={i} className="flex justify-between items-center py-2 px-3 bg-zinc-950/80 border border-zinc-800 rounded-none">
+                        <span className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase">{z.name} ({z.intensity})</span>
+                        <span className="font-mono text-cyan-400">~{z.bpm} bpm</span>
+                      </div>
+                    ))}
+                  </div>
+                )
+              }} />
+            </div>
           )}
         </div>
       </div>

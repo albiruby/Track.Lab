@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { gradePercent, elevationPerKm, verticalSpeedMetersPerHour } from '@/lib/calculators';
 import { methodRegistry } from '@/data';
 import { CalculatorResult } from '@/types';
@@ -80,16 +81,13 @@ export default function EnvironmentPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Environment & Elevation Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate gradients, elevation metrics, and review environmental adjustments.</p>
-      </div>
+      <LabPageHeader title="ENVIRONMENTAL ANALYSIS" subtitle="Calculate gradients, elevation metrics, and review environmental adjustments." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Average Grade Calculator</CardTitle>
+              <CardTitle>AVERAGE GRADE CALCULATOR</CardTitle>
               <CardDescription>Calculate average slope percentage and elevation per km.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -104,18 +102,29 @@ export default function EnvironmentPage() {
                     <Input id="distance" type="number" step="any" value={distance} onChange={e => setDistance(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Calculate Grade Analysis</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE GRADE</Button>
               </form>
             </CardContent>
           </Card>
 
-          {gradeResult && <ResultCard result={gradeResult} />}
+          {gradeResult && <div className="h-full"><ResultCard result={{...gradeResult, result: (
+            <div className="space-y-4 w-full">
+              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Average Grade</span>
+                <span className="text-xl font-bold font-mono text-cyan-400">{gradePercent(parseFloat(elevationGain), parseFloat(distance)).toFixed(1)}%</span>
+              </div>
+              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Elevation Per Km</span>
+                <span className="text-xl font-bold font-mono text-cyan-400">{elevationPerKm(parseFloat(elevationGain), parseFloat(distance)/1000).toFixed(0)} m/km</span>
+              </div>
+            </div>
+          )}} /></div>}
         </div>
         
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Vertical Speed Calculator</CardTitle>
+              <CardTitle>VERTICAL SPEED CALCULATOR</CardTitle>
               <CardDescription>Calculate your ascending rate (VAM) in meters per hour.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -130,28 +139,31 @@ export default function EnvironmentPage() {
                     <Input id="vDuration" type="number" step="any" value={vDuration} onChange={e => setVDuration(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Calculate Vertical Speed</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE V-SPEED</Button>
               </form>
             </CardContent>
           </Card>
 
-          {vSpeedResult && <ResultCard result={vSpeedResult} />}
+          {vSpeedResult && <div className="h-full"><ResultCard result={vSpeedResult} /></div>}
 
           <Card>
             <CardHeader>
-              <CardTitle>Environmental Condition Factors</CardTitle>
-              <CardDescription>Estimate only. Modifiers for extreme conditions.</CardDescription>
+              <CardTitle>ENVIRONMENTAL CONDITIONS</CardTitle>
+              <CardDescription>Modifiers for extreme conditions.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <WarningNote>
-                <strong>Heat & Humidity:</strong> Significant adjustments to pace and perceived effort are required when temperature exceeds 15°C (60°F) or dew point is high. Standard pace calculators do not account for heat stress.
-              </WarningNote>
-              <WarningNote>
-                <strong>Altitude:</strong> Aerobic capacity decreases linearly above ~600m (2000ft). Expect slower times and higher heart rates for the same effort.
-              </WarningNote>
-              <WarningNote className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-200">
-                <strong>Important:</strong> These are mathematical estimates only. Actual performance depends on individual response, acclimatization, terrain, wind, hydration, and conditions.
-              </WarningNote>
+              <div className="p-3 border border-orange-900/30 bg-orange-950/10 text-orange-500/80 text-xs font-mono">
+                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-orange-600">HEAT/HUMIDITY:</span>
+                Significant adjustments to pace and perceived effort are required when temperature exceeds 15°C (60°F) or dew point is high. Standard calculators do not account for heat stress.
+              </div>
+              <div className="p-3 border border-orange-900/30 bg-orange-950/10 text-orange-500/80 text-xs font-mono">
+                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-orange-600">ALTITUDE:</span>
+                Aerobic capacity decreases linearly above ~600m (2000ft). Expect slower times and higher heart rates for the same effort.
+              </div>
+              <div className="p-3 border border-red-900/50 bg-red-950/30 text-red-500/80 text-xs font-mono">
+                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-red-600">LIMITATION:</span>
+                These are mathematical estimates only. Actual performance depends on individual response, acclimatization, terrain, wind, hydration, and conditions.
+              </div>
             </CardContent>
           </Card>
         </div>

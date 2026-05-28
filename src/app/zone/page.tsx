@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { hrZoneModels } from '@/data_pack/hrZoneModels';
 import { zoneFromHrmax, zoneFromKarvonen, zoneFromLthr } from '@/lib/calculators_pack/heartRate';
 
@@ -75,20 +76,13 @@ export default function ZoneLab() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Zone Lab
-        </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
-          Training zones calculator based on HR.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <LabPageHeader title="ZONE ARCHITECTURE" subtitle="Configure physiological training zones based on deterministic models." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Calculate Zones</CardTitle>
+            <CardTitle>MODEL PARAMETERS</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -101,42 +95,44 @@ export default function ZoneLab() {
                 </Select>
               </div>
 
-              {(selectedModel as any).requiredInputs?.includes('maxHeartRate') && (
-                <div>
-                  <Label htmlFor="maxHr">Max HR (bpm)</Label>
-                  <Input 
-                    id="maxHr" type="number" required
-                    value={maxHr} onChange={e => setMaxHr(e.target.value)} 
-                  />
-                </div>
-              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(selectedModel as any).requiredInputs?.includes('maxHeartRate') && (
+                  <div>
+                    <Label htmlFor="maxHr">Max HR (bpm)</Label>
+                    <Input 
+                      id="maxHr" type="number" required
+                      value={maxHr} onChange={e => setMaxHr(e.target.value)} 
+                    />
+                  </div>
+                )}
 
-              {(selectedModel as any).requiredInputs?.includes('restingHeartRate') && (
-                <div>
-                  <Label htmlFor="restHr">Resting HR (bpm)</Label>
-                  <Input 
-                    id="restHr" type="number" required
-                    value={restHr} onChange={e => setRestHr(e.target.value)} 
-                  />
-                </div>
-              )}
+                {(selectedModel as any).requiredInputs?.includes('restingHeartRate') && (
+                  <div>
+                    <Label htmlFor="restHr">Resting HR (bpm)</Label>
+                    <Input 
+                      id="restHr" type="number" required
+                      value={restHr} onChange={e => setRestHr(e.target.value)} 
+                    />
+                  </div>
+                )}
 
-              {(selectedModel as any).requiredInputs?.includes('lactateThresholdHeartRate') && (
-                <div>
-                  <Label htmlFor="lthr">Lactate Threshold HR (bpm)</Label>
-                  <Input 
-                    id="lthr" type="number" required
-                    value={lthr} onChange={e => setLthr(e.target.value)} 
-                  />
-                </div>
-              )}
+                {(selectedModel as any).requiredInputs?.includes('lactateThresholdHeartRate') && (
+                  <div>
+                    <Label htmlFor="lthr">Lactate Threshold HR (bpm)</Label>
+                    <Input 
+                      id="lthr" type="number" required
+                      value={lthr} onChange={e => setLthr(e.target.value)} 
+                    />
+                  </div>
+                )}
+              </div>
 
-              <Button type="submit" className="w-full">Calculate Zones</Button>
+              <Button type="submit" className="w-full mt-2">COMPUTE MATRIX</Button>
             </form>
           </CardContent>
         </Card>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard result={result} />
           )}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculateFuel } from '@/lib/calculators';
 import { parseTimeStringToSeconds } from '@/lib/formatters/time';
 
@@ -24,16 +25,13 @@ export default function FuelLabPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Fuel & Hydration Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate endogenous carbohydrate requirements for long efforts.</p>
-      </div>
+      <LabPageHeader title="FUEL & HYDRATION" subtitle="Calculate endogenous carbohydrate requirements for long efforts." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Carb Requirement</CardTitle>
+              <CardTitle>CARB REQUIREMENT</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -63,35 +61,35 @@ export default function FuelLabPage() {
                     />
                   </div>
                 </div>
-                <div className="text-xs text-zinc-500 mb-2">Note: Scientific consensus recommends 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
-                <Button type="submit" className="w-full">Calculate Fuel</Button>
+                <div className="text-[10px] font-mono tracking-widest text-zinc-500 mb-2 mt-4 border border-zinc-800/80 bg-zinc-950/50 p-2 uppercase">SYS_NOTE: Scientific consensus recommends 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
+                <Button type="submit" className="w-full mt-4">COMPUTE ENDURANCE METRICS</Button>
               </form>
             </CardContent>
           </Card>
         </div>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard 
               result={{
                 ...result,
                 result: (
                   <div className="w-full space-y-4">
-                    <div className="flex flex-col items-center p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-lg">
-                      <span className="text-zinc-500 text-sm mb-1 uppercase tracking-wider font-semibold">Total Session Carbs</span>
-                      <span className="font-mono text-3xl font-bold text-zinc-900 dark:text-zinc-100">{result.result.totalCarbs}g</span>
+                    <div className="flex flex-col items-center p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
+                      <span className="text-zinc-500 text-[10px] font-mono tracking-widest mb-1 uppercase">Total Session Carbs</span>
+                      <span className="font-mono text-4xl font-bold text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]">{result.result.totalCarbs}g</span>
                     </div>
                     
-                    <div className="space-y-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
-                      <div className="text-sm font-medium">Equivalents (approximate)</div>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div className="p-3 border border-zinc-200 dark:border-zinc-800 rounded-md">
-                          <div className="font-mono text-xl mb-1 text-zinc-900 dark:text-zinc-100">{result.result.gelsAt20g}</div>
-                          <div className="text-zinc-500 text-xs">Standard Gels (20g ea)</div>
+                    <div className="space-y-2 pt-2 border-t border-zinc-800">
+                      <div className="text-[10px] text-zinc-600 font-mono tracking-widest uppercase">Equivalents (approximate)</div>
+                      <div className="grid grid-cols-2 gap-2 text-sm font-mono">
+                        <div className="p-3 border border-zinc-800 bg-zinc-950/50 rounded-none text-center">
+                          <div className="font-mono text-xl mb-1 text-cyan-500/80">{result.result.gelsAt20g}</div>
+                          <div className="text-zinc-500 tracking-widest text-[9px] uppercase">Gels (20g eq)</div>
                         </div>
-                        <div className="p-3 border border-zinc-200 dark:border-zinc-800 rounded-md">
-                          <div className="font-mono text-xl mb-1 text-zinc-900 dark:text-zinc-100">{result.result.gelsAt30g}</div>
-                          <div className="text-zinc-500 text-xs">Premium Gels (30g ea)</div>
+                        <div className="p-3 border border-zinc-800 bg-zinc-950/50 rounded-none text-center">
+                          <div className="font-mono text-xl mb-1 text-cyan-500/80">{result.result.gelsAt30g}</div>
+                          <div className="text-zinc-500 tracking-widest text-[9px] uppercase">Gels (30g eq)</div>
                         </div>
                       </div>
                     </div>

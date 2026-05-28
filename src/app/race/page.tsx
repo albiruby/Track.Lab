@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculateRiegelPrediction } from '@/lib/calculators';
 import { formatSecondsToTimeString, parseTimeStringToSeconds } from '@/lib/formatters/time';
 
@@ -28,16 +29,13 @@ export default function RaceLabPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Race Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Predict race finish times using Peter Riegel&apos;s formula.</p>
-      </div>
+      <LabPageHeader title="RACE PROJECTION" subtitle="Predict race finish times using Peter Riegel's formula." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Riegel Predictor</CardTitle>
+              <CardTitle>RIEGEL PREDICTOR</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -101,13 +99,13 @@ export default function RaceLabPage() {
                     Default 1.06. Use 1.05 for elites, 1.07+ for novices or trails.
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Predict Target Time</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
               </form>
             </CardContent>
           </Card>
         </div>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard 
               result={{

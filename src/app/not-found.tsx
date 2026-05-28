@@ -2,25 +2,25 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-6 text-center">
-      <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-        404 - Page Not Found
+    <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-6 text-center font-mono uppercase tracking-widest">
+      <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+        ERR_404 // MODULE NOT FOUND
       </h1>
-      <p className="text-zinc-600 dark:text-zinc-400 max-w-md">
-        The calculator lab you are looking for does not exist or has been moved.
+      <p className="text-zinc-500 max-w-md text-xs leading-relaxed">
+        [ The requested calculator lab does not exist in the current index. Re-route required. ]
       </p>
       <div className="flex gap-4">
         <Link 
           href="/" 
-          className="px-4 py-2 bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900 rounded-md font-medium text-sm hover:opacity-90 transition-opacity"
+          className="px-6 py-2 border border-cyan-500/50 bg-cyan-950/20 text-cyan-400 text-[10px] uppercase font-bold tracking-widest hover:bg-cyan-900/30 hover:border-cyan-400 transition-colors shadow-[0_0_10px_rgba(34,211,238,0.1)]"
         >
-          Return Home
+          INIT RETURN TO SOURCE
         </Link>
         <Link 
           href="/formulas" 
-          className="px-4 py-2 bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50 rounded-md font-medium text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+          className="px-6 py-2 border border-zinc-800 bg-zinc-950 text-zinc-400 text-[10px] uppercase font-bold tracking-widest hover:border-zinc-600 hover:text-zinc-300 transition-colors"
         >
-          View All Formulas
+          VIEW SYSTEM REGISTRY
         </Link>
       </div>
     </div>

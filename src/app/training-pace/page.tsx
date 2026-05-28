@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { paceSecondsPerKm } from '@/lib/calculators_pack/pace';
 import { formatPace, parseTimeStringToSeconds } from '@/lib/formatters/time';
 import { riegelPredictTime } from '@/lib/calculators_pack/racePrediction';
@@ -51,20 +52,13 @@ export default function TrainingPaceLab() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Training Pace Lab
-        </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
-          Determine optimal paces for different types of training runs based on current fitness.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <LabPageHeader title="TRAINING TARGETS" subtitle="Determine optimal paces for different types of training runs based on current fitness." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Calculate Training Paces</CardTitle>
+            <CardTitle>RECENT RACE</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -86,12 +80,12 @@ export default function TrainingPaceLab() {
                 />
               </div>
 
-              <Button type="submit" className="w-full">Calculate Paces</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
             </form>
           </CardContent>
         </Card>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard result={result} />
           )}

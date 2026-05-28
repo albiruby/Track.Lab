@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculatePace } from '@/lib/calculators';
 import { formatPace, parseTimeStringToSeconds } from '@/lib/formatters/time';
 
@@ -23,16 +24,13 @@ export default function PaceLabPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Pace Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate running pace strictly from distance and time.</p>
-      </div>
+      <LabPageHeader title="PACE MATRIX" subtitle="Calculate running pace strictly from distance and time." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Distance & Time to Pace</CardTitle>
+              <CardTitle>DISTANCE & TIME TO PACE</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -63,13 +61,13 @@ export default function PaceLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Calculate Pace</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
               </form>
             </CardContent>
           </Card>
         </div>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard 
               result={{

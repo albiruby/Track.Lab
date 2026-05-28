@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { cadence, strideLengthMeters, stepCount } from '@/lib/calculators';
 import { methodRegistry } from '@/data';
 import { CalculatorResult } from '@/types';
@@ -106,15 +107,12 @@ export default function BiomechanicsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Biomechanics Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate cadence and stride length relationships.</p>
-      </div>
+      <LabPageHeader title="BIOMECHANICS" subtitle="Calculate cadence and stride length relationships." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Stride Length Calculator</CardTitle>
+            <CardTitle>STRIDE LENGTH CALCULATOR</CardTitle>
             <CardDescription>Calculate stride length from running speed and cadence.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -130,18 +128,18 @@ export default function BiomechanicsPage() {
                   <Input id="cadenceVal" type="number" step="any" value={cadenceVal} onChange={e => setCadenceVal(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full">Calculate Stride Length</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE STRIDE LENGTH</Button>
             </form>
           </CardContent>
         </Card>
 
         {strideResult && (
-          <ResultCard result={strideResult} />
+          <div className="h-full"><ResultCard result={strideResult} /></div>
         )}
 
         <Card>
           <CardHeader>
-            <CardTitle>Cadence Calculator</CardTitle>
+            <CardTitle>CADENCE CALCULATOR</CardTitle>
             <CardDescription>Calculate cadence (steps per minute) from total steps taken.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -156,18 +154,18 @@ export default function BiomechanicsPage() {
                   <Input id="cadenceDuration" type="number" step="any" value={cadenceDuration} onChange={e => setCadenceDuration(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full">Calculate Cadence</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE CADENCE</Button>
             </form>
           </CardContent>
         </Card>
 
         {cadenceResult && (
-          <ResultCard result={cadenceResult} />
+          <div className="h-full"><ResultCard result={cadenceResult} /></div>
         )}
 
         <Card>
           <CardHeader>
-            <CardTitle>Step Count Calculator</CardTitle>
+            <CardTitle>STEP COUNT CALCULATOR</CardTitle>
             <CardDescription>Calculate total steps taken from cadence and duration.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -182,13 +180,13 @@ export default function BiomechanicsPage() {
                   <Input id="stepDuration" type="number" step="any" value={stepDuration} onChange={e => setStepDuration(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full">Calculate Steps</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE STEPS</Button>
             </form>
           </CardContent>
         </Card>
 
         {stepCountResult && (
-          <ResultCard result={stepCountResult} />
+          <div className="h-full"><ResultCard result={stepCountResult} /></div>
         )}
       </div>
     </div>

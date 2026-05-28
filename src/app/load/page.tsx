@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { acwr as calcAcwr, monotony as calcMonotony, strain as calcStrain } from '@/lib/calculators';
 import { methodRegistry } from '@/data';
 import { CalculatorResult } from '@/types';
@@ -135,16 +136,13 @@ export default function LoadLabPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Load Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate Training Load metrics such as ACWR, Monotony, and Strain.</p>
-      </div>
+      <LabPageHeader title="LOAD DYNAMICS" subtitle="Calculate Training Load metrics such as ACWR, Monotony, and Strain." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Session RPE (sRPE)</CardTitle>
+              <CardTitle>SESSION RPE (sRPE)</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSRpe} className="space-y-4">
@@ -158,7 +156,7 @@ export default function LoadLabPage() {
                     <Input id="sRpeVal" type="number" step="0.1" value={sRpeVal} onChange={e => setSRpeVal(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Calculate sRPE Load</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE sRPE LOAD</Button>
               </form>
             </CardContent>
           </Card>
@@ -166,7 +164,7 @@ export default function LoadLabPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>ACWR (Acute:Chronic Workload)</CardTitle>
+              <CardTitle>ACWR (ACUTE:CHRONIC WORKLOAD)</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleAcwr} className="space-y-4">
@@ -180,20 +178,22 @@ export default function LoadLabPage() {
                     <Input id="chronic" type="number" step="0.1" value={chronic} onChange={e => setChronic(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full">Calculate ACWR</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE ACWR</Button>
               </form>
             </CardContent>
           </Card>
           
           {acwrResult && (
-            <ResultCard result={acwrResult} />
+            <div className="h-full">
+              <ResultCard result={acwrResult} />
+            </div>
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Weekly Distance & Long Run Ratio</CardTitle>
+              <CardTitle>WEEKLY METRICS</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleWeeklyDist} className="space-y-4">
@@ -205,15 +205,22 @@ export default function LoadLabPage() {
                   <Label htmlFor="longRunDist">Long Run Distance</Label>
                   <Input id="longRunDist" type="number" step="0.1" value={longRunDist} onChange={e => setLongRunDist(e.target.value)} required />
                 </div>
-                <Button type="submit" className="w-full">Calculate Distance Metrics</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE DISTANCE METRICS</Button>
               </form>
             </CardContent>
           </Card>
-          {weeklyDistResult && <ResultCard result={weeklyDistResult} />}
+          {weeklyDistResult && <ResultCard result={{...weeklyDistResult, result: (
+            <div className="w-full space-y-4 text-xs font-mono">
+              <div className="flex justify-between items-center bg-zinc-950/80 p-4 border border-zinc-800 rounded-none">
+                <span className="text-[10px] uppercase text-zinc-500 tracking-widest">Weekly Total</span>
+                <span className="text-xl font-bold text-cyan-400">{weeklyDistances.split(',').reduce((a,b)=>a+parseFloat(b),0)} units</span>
+              </div>
+            </div>
+          )}} />}
 
           <Card>
             <CardHeader>
-              <CardTitle>Monotony & Strain</CardTitle>
+              <CardTitle>MONOTONY & STRAIN</CardTitle>
               <CardDescription>Monotony = mean / standard deviation of daily load</CardDescription>
             </CardHeader>
             <CardContent>
@@ -223,13 +230,30 @@ export default function LoadLabPage() {
                   <Input id="dailyLoads" value={dailyLoads} onChange={e => setDailyLoads(e.target.value)} required />
                   <div className="text-xs text-zinc-500 mt-1">Example: 7 days of sRPE (duration × RPE)</div>
                 </div>
-                <Button type="submit" className="w-full">Calculate Monotony & Strain</Button>
+                <Button type="submit" className="w-full mt-4">COMPUTE STRAIN</Button>
               </form>
             </CardContent>
           </Card>
 
           {monotonyResult && (
-            <ResultCard result={monotonyResult} />
+            <div className="h-full">
+              <ResultCard result={{...monotonyResult, result: (
+                <div className="w-full space-y-4">
+                  <div className="flex flex-col items-center p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
+                    <span className="text-zinc-500 text-[10px] mb-1 tracking-widest block uppercase font-mono">Training Monotony</span>
+                    <span className="font-mono text-3xl font-bold text-cyan-400">
+                      {calcMonotony(dailyLoads.split(',').map(s=>parseFloat(s)).filter(n=>!isNaN(n))).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
+                    <span className="text-zinc-500 text-[10px] mb-1 tracking-widest block uppercase font-mono">Training Strain</span>
+                    <span className="font-mono text-xl font-bold text-cyan-400">
+                      {Math.round(calcStrain(dailyLoads.split(',').map(s=>parseFloat(s)).filter(n=>!isNaN(n)).reduce((a,b)=>a+b,0), calcMonotony(dailyLoads.split(',').map(s=>parseFloat(s)).filter(n=>!isNaN(n)))))}
+                    </span>
+                  </div>
+                </div>
+              )}} />
+            </div>
           )}
         </div>
       </div>

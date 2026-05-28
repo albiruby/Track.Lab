@@ -6,6 +6,7 @@ import { Input, Select, Label } from '@/components/ui/Forms';
 import { methodRegistry } from '@/data';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
 const implementedIds = new Set([
   'fox_220_age', 'tanaka_208_07_age', 'gellish_2069_067_age', 'gulati_206_088_age',
@@ -81,20 +82,17 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
   }, [search, categoryFilter, confidenceFilter, inputFilter, statusFilter]);
 
   const getStatus = (m: any) => {
-    if (implementedIds.has(m.id)) return { label: 'Implemented', col: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/30 border-green-200' };
-    if (metadataOnlyIds.has(m.id) || m.precision === 'qualitative' || m.formulaDisplay.includes('Qualitative')) return { label: 'Metadata Only', col: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 border-blue-200' };
-    return { label: 'Unavailable: Function missing', col: 'text-zinc-500 bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700' };
+    if (implementedIds.has(m.id)) return { label: 'Implemented', col: 'text-cyan-400 bg-cyan-950/30 border-cyan-500/50' };
+    if (metadataOnlyIds.has(m.id) || m.precision === 'qualitative' || m.formulaDisplay.includes('Qualitative')) return { label: 'Metadata Only', col: 'text-amber-500 bg-amber-950/30 border-amber-500/50' };
+    return { label: 'Unavailable: Function missing', col: 'text-zinc-500 bg-zinc-900/50 border-zinc-800' };
   };
 
   return (
     <div className="space-y-6 flex flex-col">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Formula Library</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Reference index of all integrated equations and logic rules.</p>
-        <p className="text-xs text-zinc-500 italic block mt-1">If a formula is &quot;Unavailable&quot;, no stored data or formula is shown in active calculators.</p>
-      </div>
+      <LabPageHeader title="FORMULA LIBRARY" subtitle="Reference index of all integrated equations and logic rules." />
+      <div className="text-[10px] font-mono tracking-widest text-zinc-500 mb-2 border border-zinc-800/80 bg-zinc-950/50 p-2 uppercase">SYS_NOTE: If a formula is &quot;Unavailable&quot;, no stored data or formula is shown in active calculators.</div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
         <div className="space-y-2">
           <Label>Search Method</Label>
           <Input type="text" placeholder="Search name or ID..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -136,33 +134,33 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
           const st = getStatus(method);
           const route = categoryToRoute[method.category || ''];
           return (
-          <Card key={method.id} className="flex flex-col h-full hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">
-            <CardHeader className="pb-3 border-b border-zinc-100 dark:border-zinc-800">
+          <Card key={method.id} className="flex flex-col h-full hover:border-cyan-500/50 transition-colors">
+            <CardHeader className="pb-3 border-b border-zinc-800">
               <div className="flex justify-between items-start gap-2 mb-2">
-                <div className="text-[10px] uppercase font-mono tracking-wider text-zinc-400 truncate bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded">
+                <div className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 truncate bg-zinc-900 px-2 py-0.5 rounded-none border border-zinc-800">
                   {method.category.replace(/_+/g, ' ')}
                 </div>
-                <div className={`text-[10px] items-center px-2 py-0.5 rounded border ${st.col}`}>
+                <div className={`text-[10px] font-mono uppercase tracking-widest items-center px-2 py-0.5 border rounded-none ${st.col}`}>
                   {st.label}
                 </div>
               </div>
-              <CardTitle className="text-lg leading-tight">{method.name}</CardTitle>
+              <CardTitle className="text-lg leading-tight uppercase font-mono">{method.name}</CardTitle>
               {route && (
-                <Link href={route} className="text-xs text-blue-600 hover:underline inline-block mt-1">Go to Calculator →</Link>
+                <Link href={route} className="text-xs text-cyan-500 hover:text-cyan-400 hover:underline inline-block mt-1 uppercase tracking-widest font-mono">INIT CALCULATOR PROCEDURE →</Link>
               )}
             </CardHeader>
             <CardContent className="pt-4 flex-1 flex flex-col gap-4">
-              <div className="text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded font-mono break-words">
+              <div className="text-sm bg-zinc-950/80 border border-zinc-800 p-3 rounded-none font-mono break-words text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.2)]">
                 {method.formulaDisplay}
               </div>
               
               <div className="space-y-3">
                 {method.requiredInputs?.length > 0 && (
                   <div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Required Inputs</span>
+                    <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest block mb-1 font-mono">REQUIRED VARS</span>
                     <div className="flex flex-wrap gap-1">
                       {method.requiredInputs.map((req: string) => (
-                        <span key={req} className="text-[10px] text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-mono">{req}</span>
+                        <span key={req} className="text-[10px] text-zinc-400 border border-zinc-800 bg-zinc-950 px-1.5 py-0.5 rounded-none font-mono uppercase tracking-wider">{req}</span>
                       ))}
                     </div>
                   </div>
@@ -170,8 +168,8 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
                 
                 {method.limitations?.length > 0 && (
                   <div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Limitations / Assumptions</span>
-                    <ul className="text-xs text-zinc-600 dark:text-zinc-400 list-disc list-inside space-y-1">
+                    <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest block mb-1 font-mono">CONSTRAINTS</span>
+                    <ul className="text-[10px] text-zinc-500 list-disc list-inside space-y-1 font-mono uppercase tracking-wide">
                       {(method.limitations as readonly string[]).map((lim: string, idx: number) => (
                         <li key={idx} className="leading-snug">{lim}</li>
                       ))}
@@ -180,16 +178,16 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
                 )}
               </div>
               
-              <div className="pt-2 flex justify-between items-center text-[10px] text-zinc-400 mt-auto border-t border-zinc-50 dark:border-zinc-800/50 pt-3 uppercase tracking-wider">
-                <span className="font-mono lowercase opacity-70">id: {method.id}</span>
-                <span className="font-semibold text-zinc-500">{method.precision?.replace(/_+/g, ' ')}</span>
+              <div className="pt-2 flex justify-between items-center text-[10px] text-zinc-600 mt-auto border-t border-zinc-800 pt-3 uppercase tracking-widest font-mono">
+                <span className="opacity-70 text-zinc-500">SYS_ID: {method.id}</span>
+                <span className="font-semibold text-cyan-700">{method.precision?.replace(/_+/g, ' ')}</span>
               </div>
             </CardContent>
           </Card>
         )})}
         {filteredMethods.length === 0 && (
-          <div className="col-span-full py-12 text-center text-zinc-500 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-xl">
-            No formulas match your search or filters.
+          <div className="col-span-full py-12 text-center text-zinc-500 border border-dashed border-zinc-800 bg-zinc-950/30 font-mono tracking-widest uppercase">
+            ERR: NO MATCHING PROCEDURES FOUND
           </div>
         )}
       </div>

@@ -1,2 +1,72 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+@theme {
+  --font-sans: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@layer base {
+  body {
+    background-color: theme('colors.zinc.950');
+    color: theme('colors.zinc.300');
+    background-image: radial-gradient(theme('colors.zinc.800') 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-attachment: fixed;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 229, 255, 0.35) rgba(0, 0, 0, 0.35);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #050607;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 229, 255, 0.28);
+  border-radius: 999px;
+  border: 2px solid #050607;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 229, 255, 0.55);
+}
+
+.tracklab-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 229, 255, 0.45) rgba(255, 255, 255, 0.03);
+}
+
+.tracklab-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tracklab-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.tracklab-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 229, 255, 0.75),
+    rgba(0, 229, 255, 0.25)
+  );
+  border-radius: 999px;
+  border: 1px solid rgba(0, 229, 255, 0.18);
+}
+
+.tracklab-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 229, 255, 1),
+    rgba(0, 229, 255, 0.45)
+  );
+}

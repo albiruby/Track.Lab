@@ -6,7 +6,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
     <input
       ref={ref}
       className={cn(
-        "flex h-10 w-full rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-50 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 transition-colors font-mono",
+        "flex h-10 w-full rounded-none border border-zinc-800 bg-zinc-950/50 px-3 py-2 text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 disabled:cursor-not-allowed disabled:opacity-50 transition-colors font-mono text-zinc-100",
         className
       )}
       {...props}
@@ -19,7 +19,7 @@ export const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttribute
   return (
     <label
       ref={ref}
-      className={cn("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-900 dark:text-zinc-100 mb-2 block", className)}
+      className={cn("text-xs font-mono font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-400 mb-2 block tracking-widest uppercase", className)}
       {...props}
     />
   );
@@ -31,7 +31,7 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
     <select
       ref={ref}
       className={cn(
-        "flex h-10 w-full items-center justify-between rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-50 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 font-medium",
+        "flex h-10 w-full items-center justify-between rounded-none border border-zinc-800 bg-zinc-950/50 px-3 py-2 text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 disabled:cursor-not-allowed disabled:opacity-50 font-mono text-zinc-100 uppercase tracking-wider",
         className
       )}
       {...props}
@@ -40,14 +40,15 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
 });
 Select.displayName = 'Select';
 
-export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' }>(({ className, variant = 'primary', ...props }, ref) => {
+export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' }>(({ className, variant = 'primary', ...props }, ref) => {
   return (
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-white dark:ring-offset-zinc-950 dark:focus-visible:ring-zinc-50 h-10 py-2 px-4",
-        variant === 'primary' && "bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90",
-        variant === 'secondary' && "bg-zinc-100 text-zinc-900 hover:bg-zinc-100/80 dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-800/80",
+        "inline-flex items-center justify-center rounded-none text-xs font-mono tracking-widest uppercase font-bold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500 disabled:opacity-50 disabled:pointer-events-none h-10 py-2 px-6",
+        variant === 'primary' && "bg-cyan-500/10 text-cyan-400 border border-cyan-500/50 hover:bg-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.1)]",
+        variant === 'secondary' && "bg-zinc-900 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100",
+        variant === 'ghost' && "bg-transparent text-zinc-400 hover:text-cyan-400 hover:bg-cyan-950/30",
         className
       )}
       {...props}

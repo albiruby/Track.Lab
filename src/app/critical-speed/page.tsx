@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { twoPointCriticalSpeed, paceSecondsPerKmFromSpeedMetersPerSecond, timeToExhaustionAboveCs } from '@/lib/calculators';
 import { formatPace, formatSecondsToTimeString, parseTimeStringToSeconds } from '@/lib/formatters/time';
 import { methodRegistry } from '@/data';
@@ -40,10 +41,10 @@ export default function CriticalSpeedPage() {
         
         setTteResult({
           result: (
-            <div className="space-y-4 w-full">
-              <div className="flex justify-between items-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
-                <span className="text-sm font-semibold uppercase text-zinc-500">Max Time</span>
-                <span className="text-xl font-bold font-mono">{formatSecondsToTimeString(Math.round(tTteStr))}</span>
+            <div className="space-y-4 w-full text-xs">
+              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Max Time</span>
+                <span className="text-xl font-bold font-mono text-cyan-400">{formatSecondsToTimeString(Math.round(tTteStr))}</span>
               </div>
             </div>
           ),
@@ -75,14 +76,14 @@ export default function CriticalSpeedPage() {
         
         setCsResult({
           result: (
-            <div className="space-y-4 w-full">
-              <div className="flex justify-between items-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
-                <span className="text-sm font-semibold uppercase text-zinc-500">Critical Speed (CS)</span>
-                <span className="text-xl font-bold font-mono">{csPace}</span>
+            <div className="space-y-4 w-full text-xs">
+              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Critical Speed (CS)</span>
+                <span className="text-xl font-bold font-mono text-cyan-400">{csPace}</span>
               </div>
-              <div className="flex justify-between items-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
-                <span className="text-sm font-semibold uppercase text-zinc-500">D-Prime (D&apos;)</span>
-                <span className="text-xl font-bold font-mono">{dPrimeMeters.toFixed(1)} m</span>
+              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">D-Prime (D&apos;)</span>
+                <span className="text-xl font-bold font-mono text-cyan-400">{dPrimeMeters.toFixed(1)} m</span>
               </div>
             </div>
           ),
@@ -100,17 +101,15 @@ export default function CriticalSpeedPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Critical Speed Lab</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">Calculate your anaerobic threshold and D-prime using time trial results.</p>
-      </div>
+      <LabPageHeader title="CRITICAL SPEED" subtitle="Calculate your anaerobic threshold and D-prime using time trial results." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>2-Point CS Calculator</CardTitle>
-            <CardDescription>Enter two maximal efforts of different durations (e.g. 3-4 min vs 10-15 min).</CardDescription>
-          </CardHeader>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 flex flex-col h-full">
+          <Card>
+            <CardHeader>
+              <CardTitle>2-POINT CS CALCULATOR</CardTitle>
+              <CardDescription>Enter two maximal efforts of different durations.</CardDescription>
+            </CardHeader>
           <CardContent>
             <form onSubmit={calculate} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -135,18 +134,22 @@ export default function CriticalSpeedPage() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">Calculate</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE CS</Button>
             </form>
           </CardContent>
         </Card>
 
         {csResult && (
-          <ResultCard result={csResult} />
+          <div className="h-full">
+            <ResultCard result={csResult} />
+          </div>
         )}
+        </div>
 
-        <Card>
+        <div className="space-y-6 flex flex-col h-full">
+          <Card>
           <CardHeader>
-            <CardTitle>Time to Exhaustion (Above CS)</CardTitle>
+            <CardTitle>TIME TO EXHAUSTION (ABOVE CS)</CardTitle>
             <CardDescription>Calculate maximum sustainable time at a specific pace above your Critical Speed.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -167,14 +170,17 @@ export default function CriticalSpeedPage() {
                 <Input id="targetPace" type="text" placeholder="04:00" value={targetPace} onChange={e => setTargetPace(e.target.value)} required />
               </div>
 
-              <Button type="submit" className="w-full">Calculate TTE</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE TTE</Button>
             </form>
           </CardContent>
         </Card>
 
         {tteResult && (
-          <ResultCard result={tteResult} />
+          <div className="h-full">
+            <ResultCard result={tteResult} />
+          </div>
         )}
+        </div>
       </div>
     </div>
   );

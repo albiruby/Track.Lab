@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
+import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
 export default function TrailElevationLab() {
   const [distance, setDistance] = useState('5');
@@ -51,20 +52,13 @@ export default function TrailElevationLab() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Trail & Elevation Lab
-        </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
-          Calculate grade, elevation gain per km, and vertical speed.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <LabPageHeader title="TRAIL ELEVATION METRICS" subtitle="Calculate grade, elevation gain per km, and vertical speed." />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Calculate Terrain Stats</CardTitle>
+            <CardTitle>CALCULATE TERRAIN STATS</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -106,12 +100,12 @@ export default function TrailElevationLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">Calculate Stats</Button>
+              <Button type="submit" className="w-full mt-4">COMPUTE METRICS</Button>
             </form>
           </CardContent>
         </Card>
 
-        <div>
+        <div className="h-full">
           {result && (
             <ResultCard result={result} />
           )}
