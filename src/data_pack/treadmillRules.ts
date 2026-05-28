@@ -1,0 +1,33 @@
+// Auto-generated static datasource for Track.Lab.
+// No database. No AI. No runtime formula evaluation.
+
+export const treadmillRules = [
+  {
+    "id": "pace_to_kmh",
+    "name": "Pace to Treadmill Speed",
+    "formulaDisplay": "km/h = 60 / pace minutes per km",
+    "requiredInputs": [
+      "paceMinPerKm"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "kmh_to_pace",
+    "name": "Treadmill Speed to Pace",
+    "formulaDisplay": "pace min/km = 60 / km/h",
+    "requiredInputs": [
+      "speedKmh"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "acsm_treadmill_vo2",
+    "name": "Treadmill VO2 Estimate",
+    "formulaDisplay": "VO2 = 0.2 × speed + 0.9 × speed × grade + 3.5",
+    "requiredInputs": [
+      "speedMetersPerMinute",
+      "gradeDecimal"
+    ],
+    "precision": "estimate"
+  }
+] as const;

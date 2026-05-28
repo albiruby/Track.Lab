@@ -1,0 +1,45 @@
+// Auto-generated static datasource for Track.Lab.
+// No database. No AI. No runtime formula evaluation.
+
+export const trailElevationRules = [
+  {
+    "id": "grade_pct",
+    "name": "Grade Percentage",
+    "formulaDisplay": "Grade % = elevation gain / horizontal distance × 100",
+    "requiredInputs": [
+      "elevationGainMeters",
+      "horizontalDistanceMeters"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "elevation_per_km",
+    "name": "Elevation per KM",
+    "formulaDisplay": "Elevation per km = total elevation gain / distance km",
+    "requiredInputs": [
+      "elevationGainMeters",
+      "distanceKm"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "vertical_speed",
+    "name": "Vertical Speed",
+    "formulaDisplay": "Vertical speed = elevation gain / time",
+    "requiredInputs": [
+      "elevationGainMeters",
+      "durationHours"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "hill_repeat_volume",
+    "name": "Hill Repeat Climb Volume",
+    "formulaDisplay": "Total climb = reps × climb per rep",
+    "requiredInputs": [
+      "reps",
+      "climbMetersPerRep"
+    ],
+    "precision": "mathematical"
+  }
+] as const;
