@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
-import { calculateRiegelPrediction } from '@/lib/calculators/pace';
+import { calculateRiegelPrediction } from '@/lib/calculators';
 import { formatSecondsToTimeString, parseTimeStringToSeconds } from '@/lib/formatters/time';
 
 export default function RaceLabPage() {

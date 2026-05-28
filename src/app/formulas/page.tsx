@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { methodRegistry } from '@/data_pack/methodRegistry';
+import { methodRegistry } from '@/data';
 
 export default function FormulaLibraryPage() {
   return (

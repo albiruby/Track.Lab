@@ -4,15 +4,17 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
-import { acwr as calcAcwr, monotony as calcMonotony, strain as calcStrain } from '@/lib/calculators_pack/load';
+import { acwr as calcAcwr, monotony as calcMonotony, strain as calcStrain } from '@/lib/calculators';
+import { methodRegistry } from '@/data';
+import { CalculatorResult } from '@/types';
 
 export default function LoadLabPage() {
   const [acute, setAcute] = useState('500');
   const [chronic, setChronic] = useState('450');
-  const [acwrResult, setAcwrResult] = useState<{result: string, label: string} | null>(null);
+  const [acwrResult, setAcwrResult] = useState<CalculatorResult<string> | null>(null);
 
   const [dailyLoads, setDailyLoads] = useState('50, 100, 0, 120, 0, 80, 150');
-  const [monotonyResult, setMonotonyResult] = useState<any>(null);
+  const [monotonyResult, setMonotonyResult] = useState<CalculatorResult<any> | null>(null);
 
   const handleAcwr = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,15 @@ export default function LoadLabPage() {
     const c = parseFloat(chronic);
     if (!isNaN(a) && !isNaN(c) && c > 0) {
       const res = calcAcwr(a, c).toFixed(2);
-      setAcwrResult({ result: res, label: 'Acute:Chronic Workload Ratio' });
+      const meta = methodRegistry.find(m => m.id === 'acwr')!;
+      setAcwrResult({
+        result: res,
+        inputUsed: { 'Acute Load': a, 'Chronic Load': c },
+        methodSelected: meta.name,
+        formulaUsed: meta.formulaDisplay,
+        limitations: Array.isArray(meta.limitations) ? meta.limitations.join(' ') : String(meta.limitations || ''),
+        confidenceLabel: meta.precision?.replace('_', ' ') || 'Estimate'
+      });
     }
   };
 
@@ -33,9 +43,28 @@ export default function LoadLabPage() {
         const totalLoad = loads.reduce((acc, curr) => acc + curr, 0);
         const str = calcStrain(totalLoad, mon);
         
+        const meta = methodRegistry.find(m => m.id === 'monotony')!;
+
         setMonotonyResult({
-          monotony: mon.toFixed(2),
-          strain: Math.round(str)
+          result: (
+            <div className="w-full space-y-4">
+              <div className="flex flex-col items-center p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-lg">
+                <span className="text-zinc-500 text-sm mb-1 block uppercase font-semibold">Training Monotony</span>
+                <span className="font-mono text-3xl font-bold text-zinc-900 dark:text-zinc-100">{mon.toFixed(2)}</span>
+                <span className="text-xs text-zinc-400 block mt-1">High (&gt; 2.0) indicates lack of variation (risk).</span>
+              </div>
+              <div className="flex flex-col items-center p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-lg">
+                <span className="text-zinc-500 text-sm mb-1 block uppercase font-semibold">Training Strain</span>
+                <span className="font-mono text-xl font-bold text-zinc-900 dark:text-zinc-100">{Math.round(str)}</span>
+                <span className="text-xs text-zinc-400 block mt-1">Total Load × Monotony</span>
+              </div>
+            </div>
+          ),
+          inputUsed: { 'Daily Loads': loads.join(', ') },
+          methodSelected: meta.name,
+          formulaUsed: meta.formulaDisplay,
+          limitations: Array.isArray(meta.limitations) ? meta.limitations.join(' ') : String(meta.limitations || ''),
+          confidenceLabel: meta.precision?.replace('_', ' ') || 'Estimate'
         });
       } catch (err: any) {
         alert(err.message);
@@ -74,13 +103,7 @@ export default function LoadLabPage() {
           </Card>
           
           {acwrResult && (
-            <Card>
-              <CardContent className="pt-6 flex flex-col items-center">
-                <span className="text-zinc-500 mb-1">{acwrResult.label}</span>
-                <span className="font-mono text-3xl font-bold text-zinc-900 dark:text-zinc-100">{acwrResult.result}</span>
-                <span className="text-xs text-zinc-400 mt-2">Optimal range ~ 0.8 - 1.3</span>
-              </CardContent>
-            </Card>
+            <ResultCard result={acwrResult} />
           )}
         </div>
 
@@ -103,20 +126,7 @@ export default function LoadLabPage() {
           </Card>
 
           {monotonyResult && (
-            <Card>
-              <CardContent className="pt-6 flex flex-col gap-4 items-center">
-                <div className="text-center w-full bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
-                  <span className="text-zinc-500 text-sm mb-1 block">Training Monotony</span>
-                  <span className="font-mono text-2xl font-bold text-zinc-900 dark:text-zinc-100">{monotonyResult.monotony}</span>
-                  <span className="text-xs text-zinc-400 block mt-1">High (&gt; 2.0) indicates lack of variation (risk).</span>
-                </div>
-                <div className="text-center w-full bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
-                  <span className="text-zinc-500 text-sm mb-1 block">Training Strain</span>
-                  <span className="font-mono text-xl font-bold text-zinc-900 dark:text-zinc-100">{monotonyResult.strain}</span>
-                  <span className="text-xs text-zinc-400 block mt-1">Total Load × Monotony</span>
-                </div>
-              </CardContent>
-            </Card>
+            <ResultCard result={monotonyResult} />
           )}
         </div>
       </div>

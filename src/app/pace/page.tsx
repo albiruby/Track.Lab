@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
-import { calculatePace } from '@/lib/calculators/pace';
+import { calculatePace } from '@/lib/calculators';
 import { formatPace, parseTimeStringToSeconds } from '@/lib/formatters/time';
 
 export default function PaceLabPage() {

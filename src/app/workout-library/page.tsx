@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { workoutTemplates } from '@/data_pack/workoutTemplates';
+import { workoutTemplates } from '@/data';
 
 export default function WorkoutLibraryPage() {
   return (

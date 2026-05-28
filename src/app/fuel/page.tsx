@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
-import { calculateFuel } from '@/lib/calculators/fuel';
+import { calculateFuel } from '@/lib/calculators';
 import { parseTimeStringToSeconds } from '@/lib/formatters/time';
 
 export default function FuelLabPage() {

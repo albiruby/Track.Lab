@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input, Label, Button, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
-import { calculateHrMax, calculateKarvonenZones } from '@/lib/calculators/heartRate';
-import { HR_MAX_METHODS, METHOD_KARVONEN } from '@/data/calculators';
+import { calculateHrMax, calculateKarvonenZones } from '@/lib/calculators';
+import { HR_MAX_METHODS, METHOD_KARVONEN } from '@/data';
 
 export default function HeartRateLabPage() {
   const [age, setAge] = useState('30');
