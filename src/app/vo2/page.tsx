@@ -93,7 +93,7 @@ export default function Vo2Page() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>COOPER 12-MINUTE TEST</CardTitle>
+              <CardTitle>Cooper 12-minute Test</CardTitle>
               <CardDescription>Estimate VO2max from the distance covered in 12 minutes.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -102,7 +102,7 @@ export default function Vo2Page() {
                   <Label htmlFor="cooperDist">Distance covered in 12 minutes (meters)</Label>
                   <Input id="cooperDist" type="number" step="any" value={cooperDist} onChange={e => setCooperDist(e.target.value)} required />
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>
@@ -117,7 +117,7 @@ export default function Vo2Page() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>ACSM RUNNING EQUATION & METS</CardTitle>
+              <CardTitle>Acsm Running Equation & Mets</CardTitle>
               <CardDescription>Estimate VO2 and METs required for a given speed and gradient.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -143,7 +143,7 @@ export default function Vo2Page() {
                     <Input id="acsmDuration" type="number" step="any" value={acsmDuration} onChange={e => setAcsmDuration(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE METRICS</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>

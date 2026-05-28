@@ -69,7 +69,7 @@ export default function TreadmillLab() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>CALCULATE TREADMILL STATS</CardTitle>
+            <CardTitle>Calculate Treadmill Stats</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -98,7 +98,7 @@ export default function TreadmillLab() {
                 />
               </div>
 
-              <Button type="submit" className="w-full mt-4">COMPUTE TREADMILL DYNAMICS</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>

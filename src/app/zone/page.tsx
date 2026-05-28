@@ -82,7 +82,7 @@ export default function ZoneLab() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>MODEL PARAMETERS</CardTitle>
+            <CardTitle>Model Parameters</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -127,7 +127,7 @@ export default function ZoneLab() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full mt-2">COMPUTE MATRIX</Button>
+              <Button type="submit" className="w-full mt-2">Calculate</Button>
             </form>
           </CardContent>
         </Card>

@@ -112,7 +112,7 @@ export default function BiomechanicsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>STRIDE LENGTH CALCULATOR</CardTitle>
+            <CardTitle>Stride Length Calculator</CardTitle>
             <CardDescription>Calculate stride length from running speed and cadence.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -128,7 +128,7 @@ export default function BiomechanicsPage() {
                   <Input id="cadenceVal" type="number" step="any" value={cadenceVal} onChange={e => setCadenceVal(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full mt-4">COMPUTE STRIDE LENGTH</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>
@@ -139,7 +139,7 @@ export default function BiomechanicsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>CADENCE CALCULATOR</CardTitle>
+            <CardTitle>Cadence Calculator</CardTitle>
             <CardDescription>Calculate cadence (steps per minute) from total steps taken.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -154,7 +154,7 @@ export default function BiomechanicsPage() {
                   <Input id="cadenceDuration" type="number" step="any" value={cadenceDuration} onChange={e => setCadenceDuration(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full mt-4">COMPUTE CADENCE</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>
@@ -165,7 +165,7 @@ export default function BiomechanicsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>STEP COUNT CALCULATOR</CardTitle>
+            <CardTitle>Step Count Calculator</CardTitle>
             <CardDescription>Calculate total steps taken from cadence and duration.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -180,7 +180,7 @@ export default function BiomechanicsPage() {
                   <Input id="stepDuration" type="number" step="any" value={stepDuration} onChange={e => setStepDuration(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full mt-4">COMPUTE STEPS</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>

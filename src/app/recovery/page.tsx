@@ -91,7 +91,7 @@ export default function RecoveryCheckLab() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>CALCULATE DELTAS</CardTitle>
+            <CardTitle>Calculate Deltas</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -150,7 +150,7 @@ export default function RecoveryCheckLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">COMPUTE RECOVERY DELTAS</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>

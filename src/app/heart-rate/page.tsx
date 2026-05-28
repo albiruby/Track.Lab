@@ -85,7 +85,7 @@ export default function HeartRateLabPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>KARVONEN TARGET ZONES (HRR)</CardTitle>
+              <CardTitle>Karvonen Target Zones (Hrr)</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleZonesCalc} className="space-y-4">
@@ -115,7 +115,7 @@ export default function HeartRateLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>

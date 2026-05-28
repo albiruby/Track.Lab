@@ -35,7 +35,7 @@ export default function WorkoutLabPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>INTERVAL SESSION MATH</CardTitle>
+              <CardTitle>Interval Session Math</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -88,7 +88,7 @@ export default function WorkoutLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>

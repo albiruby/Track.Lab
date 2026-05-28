@@ -107,7 +107,7 @@ export default function CriticalSpeedPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>2-POINT CS CALCULATOR</CardTitle>
+              <CardTitle>2-point Cs Calculator</CardTitle>
               <CardDescription>Enter two maximal efforts of different durations.</CardDescription>
             </CardHeader>
           <CardContent>
@@ -134,7 +134,7 @@ export default function CriticalSpeedPage() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">COMPUTE CS</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>
@@ -149,7 +149,7 @@ export default function CriticalSpeedPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
           <CardHeader>
-            <CardTitle>TIME TO EXHAUSTION (ABOVE CS)</CardTitle>
+            <CardTitle>Time To Exhaustion (Above Cs)</CardTitle>
             <CardDescription>Calculate maximum sustainable time at a specific pace above your Critical Speed.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -170,7 +170,7 @@ export default function CriticalSpeedPage() {
                 <Input id="targetPace" type="text" placeholder="04:00" value={targetPace} onChange={e => setTargetPace(e.target.value)} required />
               </div>
 
-              <Button type="submit" className="w-full mt-4">COMPUTE TTE</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>

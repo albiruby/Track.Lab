@@ -164,7 +164,7 @@ export default function LoadLabPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>ACWR (ACUTE:CHRONIC WORKLOAD)</CardTitle>
+              <CardTitle>Acwr (Acute:chronic Workload)</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleAcwr} className="space-y-4">
@@ -178,7 +178,7 @@ export default function LoadLabPage() {
                     <Input id="chronic" type="number" step="0.1" value={chronic} onChange={e => setChronic(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE ACWR</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>
@@ -193,7 +193,7 @@ export default function LoadLabPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>WEEKLY METRICS</CardTitle>
+              <CardTitle>Weekly Metrics</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleWeeklyDist} className="space-y-4">
@@ -205,7 +205,7 @@ export default function LoadLabPage() {
                   <Label htmlFor="longRunDist">Long Run Distance</Label>
                   <Input id="longRunDist" type="number" step="0.1" value={longRunDist} onChange={e => setLongRunDist(e.target.value)} required />
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE DISTANCE METRICS</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>
@@ -220,7 +220,7 @@ export default function LoadLabPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>MONOTONY & STRAIN</CardTitle>
+              <CardTitle>Monotony & Strain</CardTitle>
               <CardDescription>Monotony = mean / standard deviation of daily load</CardDescription>
             </CardHeader>
             <CardContent>
@@ -230,7 +230,7 @@ export default function LoadLabPage() {
                   <Input id="dailyLoads" value={dailyLoads} onChange={e => setDailyLoads(e.target.value)} required />
                   <div className="text-xs text-zinc-500 mt-1">Example: 7 days of sRPE (duration × RPE)</div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE STRAIN</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>

@@ -58,7 +58,7 @@ export default function TrainingPaceLab() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>RECENT RACE</CardTitle>
+            <CardTitle>Recent Race</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -80,7 +80,7 @@ export default function TrainingPaceLab() {
                 />
               </div>
 
-              <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>

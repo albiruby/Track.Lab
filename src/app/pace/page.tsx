@@ -24,13 +24,13 @@ export default function PaceLabPage() {
 
   return (
     <div className="space-y-6">
-      <LabPageHeader title="PACE MATRIX" subtitle="Calculate running pace strictly from distance and time." />
+      <LabPageHeader title="Pace Lab" subtitle="Calculate running pace strictly from distance and time." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>DISTANCE & TIME TO PACE</CardTitle>
+              <CardTitle>Distance & Time To Pace</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -61,7 +61,7 @@ export default function PaceLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>

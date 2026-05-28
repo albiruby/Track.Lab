@@ -31,7 +31,7 @@ export default function FuelLabPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>CARB REQUIREMENT</CardTitle>
+              <CardTitle>Carb Requirement</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -62,7 +62,7 @@ export default function FuelLabPage() {
                   </div>
                 </div>
                 <div className="text-[10px] font-mono tracking-widest text-zinc-500 mb-2 mt-4 border border-zinc-800/80 bg-zinc-950/50 p-2 uppercase">SYS_NOTE: Scientific consensus recommends 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
-                <Button type="submit" className="w-full mt-4">COMPUTE ENDURANCE METRICS</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>

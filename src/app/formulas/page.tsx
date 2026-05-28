@@ -89,7 +89,7 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
 
   return (
     <div className="space-y-6 flex flex-col">
-      <LabPageHeader title="FORMULA LIBRARY" subtitle="Reference index of all integrated equations and logic rules." />
+      <LabPageHeader title="Formula Library" subtitle="Reference index of all integrated equations and logic rules." />
       <div className="text-[10px] font-mono tracking-widest text-zinc-500 mb-2 border border-zinc-800/80 bg-zinc-950/50 p-2 uppercase">SYS_NOTE: If a formula is &quot;Unavailable&quot;, no stored data or formula is shown in active calculators.</div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">

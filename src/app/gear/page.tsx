@@ -69,12 +69,12 @@ export default function GearLab() {
 
   return (
     <div className="space-y-6">
-      <LabPageHeader title="GEAR LAB" subtitle="Shoe life, gear cost, and fueling expense tracking estimates." />
+      <LabPageHeader title="Gear Lab" subtitle="Shoe life, gear cost, and fueling expense tracking estimates." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>CALCULATE EXPENSES & WEAR</CardTitle>
+            <CardTitle>Calculate Expenses & Wear</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -126,7 +126,7 @@ export default function GearLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">COMPUTE COSTS & MILEAGE</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>

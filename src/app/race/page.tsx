@@ -35,7 +35,7 @@ export default function RaceLabPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>RIEGEL PREDICTOR</CardTitle>
+              <CardTitle>Riegel Predictor</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-4">
@@ -99,7 +99,7 @@ export default function RaceLabPage() {
                     Default 1.06. Use 1.05 for elites, 1.07+ for novices or trails.
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE MATRIX</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>

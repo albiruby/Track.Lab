@@ -87,7 +87,7 @@ export default function EnvironmentPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>AVERAGE GRADE CALCULATOR</CardTitle>
+              <CardTitle>Average Grade Calculator</CardTitle>
               <CardDescription>Calculate average slope percentage and elevation per km.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -102,7 +102,7 @@ export default function EnvironmentPage() {
                     <Input id="distance" type="number" step="any" value={distance} onChange={e => setDistance(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE GRADE</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>
@@ -124,7 +124,7 @@ export default function EnvironmentPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>VERTICAL SPEED CALCULATOR</CardTitle>
+              <CardTitle>Vertical Speed Calculator</CardTitle>
               <CardDescription>Calculate your ascending rate (VAM) in meters per hour.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -139,7 +139,7 @@ export default function EnvironmentPage() {
                     <Input id="vDuration" type="number" step="any" value={vDuration} onChange={e => setVDuration(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE V-SPEED</Button>
+                <Button type="submit" className="w-full mt-4">Calculate</Button>
               </form>
             </CardContent>
           </Card>
@@ -148,7 +148,7 @@ export default function EnvironmentPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>ENVIRONMENTAL CONDITIONS</CardTitle>
+              <CardTitle>Environmental Conditions</CardTitle>
               <CardDescription>Modifiers for extreme conditions.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

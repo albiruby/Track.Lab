@@ -58,7 +58,7 @@ export default function TrailElevationLab() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
-            <CardTitle>CALCULATE TERRAIN STATS</CardTitle>
+            <CardTitle>Calculate Terrain Stats</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -100,7 +100,7 @@ export default function TrailElevationLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">COMPUTE METRICS</Button>
+              <Button type="submit" className="w-full mt-4">Calculate</Button>
             </form>
           </CardContent>
         </Card>
