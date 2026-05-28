@@ -7,16 +7,16 @@ export default function Home() {
     <div className="space-y-8">
       <div className="space-y-4">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Welcome to Track.Lab
+          Track.Lab
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
-          A deterministic running calculator suite. No AI coaching, no stored data, no gimmick metrics. 
-          Just pure sport-science math driven by your direct inputs.
+          Formula-based running calculators. Manual input only. No stored data. 
+          No AI. No database. Transparent formulas.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {LAB_ROUTES.filter(r => r.href !== '/').slice(0, 9).map((route) => {
+        {LAB_ROUTES.filter(r => r.href !== '/').map((route) => {
           const Icon = route.icon;
           return (
             <Link key={route.href} href={route.href} className="group outline-none">
