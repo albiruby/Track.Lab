@@ -26,7 +26,10 @@ function calculateWorkout(template: typeof workoutTemplates[number], paceSec: nu
       workDist = reps * dist;
       targetRepTime = (dist / 1000) * paceSec;
       workTime = targetRepTime * reps;
-      const rSec = mSet.rest?.durationSeconds || (mSet.rest?.durationMinutes ? mSet.rest.durationMinutes * 60 : 0);
+      let rSec = mSet.rest?.durationSeconds || (mSet.rest?.durationMinutes ? mSet.rest.durationMinutes * 60 : 0);
+      if (mSet.rest?.rule === 'equal_work_time') {
+         rSec = targetRepTime;
+      }
       restTime = Math.max(0, reps - 1) * rSec;
     } else if (mSet.type === 'time_reps') {
       const reps = mSet.reps || 1;
@@ -34,7 +37,10 @@ function calculateWorkout(template: typeof workoutTemplates[number], paceSec: nu
       workTime = reps * dur;
       workDist = (workTime / paceSec) * 1000;
       targetRepTime = dur;
-      const rSec = mSet.rest?.durationSeconds || (mSet.rest?.durationMinutes ? mSet.rest.durationMinutes * 60 : 0);
+      let rSec = mSet.rest?.durationSeconds || (mSet.rest?.durationMinutes ? mSet.rest.durationMinutes * 60 : 0);
+      if (mSet.rest?.rule === 'equal_work_time') {
+         rSec = targetRepTime;
+      }
       restTime = Math.max(0, reps - 1) * rSec;
     } else if (mSet.type === 'continuous_distance') {
       workDist = mSet.distanceMeters || 0;
@@ -75,6 +81,8 @@ export default function WorkoutLibraryPage() {
   const [warmupInput, setWarmupInput] = useState('15');
   const [cooldownInput, setCooldownInput] = useState('10');
   
+  const [weeklyMileageInput, setWeeklyMileageInput] = useState('');
+  
   const selectedTemplate = useMemo(() => workoutTemplates.find(t => t.id === selectedTemplateId), [selectedTemplateId]);
 
   const filteredTemplates = useMemo(() => {
@@ -105,17 +113,47 @@ export default function WorkoutLibraryPage() {
   }, []);
 
   let calcResult = null;
-  if (selectedTemplate && paceInput) {
-    const pSec = parseTimeStringToSeconds(paceInput);
-    if (pSec > 0) {
-      calcResult = calculateWorkout(
-        selectedTemplate, 
-        pSec, 
-        parseFloat(warmupInput) || 0, 
-        parseFloat(cooldownInput) || 0
-      );
-    }
+  const pSec = paceInput ? parseTimeStringToSeconds(paceInput) : 0;
+  if (selectedTemplate && pSec > 0) {
+    calcResult = calculateWorkout(
+      selectedTemplate, 
+      pSec, 
+      parseFloat(warmupInput) || 0, 
+      parseFloat(cooldownInput) || 0
+    );
   }
+
+  const activeSafetyFlags = useMemo(() => {
+    if (!selectedTemplate || !('safetyRuleIds' in selectedTemplate)) return [];
+    
+    const flags: any[] = [];
+    const wd = parseFloat(weeklyMileageInput);
+    const ruleIds = selectedTemplate.safetyRuleIds as unknown as string[];
+    
+    ruleIds.forEach(id => {
+      const rule = workoutSafetyRules.find(r => r.id === id);
+      if (!rule) return;
+
+      if (id === 'fast_volume_gt_15_percent') {
+        if (wd > 0 && calcResult && (calcResult.workDist / 1000) / wd > 0.15) {
+          flags.push(rule);
+        }
+      } else if (id === 'long_run_ratio_gt_35') {
+         // rough total dist estimate
+         const totalDistKm = calcResult ? ((calcResult.workDist / 1000) + ((parseFloat(warmupInput) || 0) / 6) + ((parseFloat(cooldownInput) || 0) / 6)) : 0;
+         if (wd > 0 && totalDistKm > 0 && totalDistKm / wd > 0.35) {
+            flags.push(rule);
+         }
+      } else if (id === 'threshold_volume_gt_20_percent') {
+         if (wd > 0 && calcResult && (calcResult.workDist / 1000) / wd > 0.20) {
+            flags.push(rule);
+         }
+      } else {
+        flags.push(rule);
+      }
+    });
+    return flags;
+  }, [selectedTemplate, calcResult, weeklyMileageInput, warmupInput, cooldownInput]);
 
   return (
     <div className="space-y-6">
@@ -185,12 +223,17 @@ export default function WorkoutLibraryPage() {
                       <Input id="cd" type="number" value={cooldownInput} onChange={e => setCooldownInput(e.target.value)} />
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="wd">Weekly Mileage (optional)</Label>
+                    <Input id="wd" type="number" placeholder="e.g. 50" value={weeklyMileageInput} onChange={e => setWeeklyMileageInput(e.target.value)} />
+                    <p className="text-xs text-zinc-500">Used for volume and safety threshold verification.</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {calcResult && (
-              <Card className="border-green-200 dark:border-green-900 bg-green-50/50 dark:bg-green-900/10">
+            {calcResult ? (
+              <Card className="border-green-200 dark:border-green-900 bg-green-50/50 dark:bg-green-900/10 h-max">
                 <CardHeader>
                   <CardTitle className="text-green-900 dark:text-green-100">Workout Projection</CardTitle>
                 </CardHeader>
@@ -217,23 +260,32 @@ export default function WorkoutLibraryPage() {
                   </div>
                   
                   <div className="text-xs text-zinc-500 mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 space-y-3">
-                    <p><strong>Note:</strong> Mathematical projection only. Does not factor in fatigue profiles, weather, or terrain.</p>
-                    
-                    {('safetyRuleIds' in selectedTemplate) && (selectedTemplate.safetyRuleIds as unknown as string[])?.length > 0 && (
+                    <div className="space-y-2 mb-4 bg-zinc-100 dark:bg-zinc-800/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800/60">
+                       <p><strong className="text-zinc-700 dark:text-zinc-300">Input Used:</strong> Target {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
+                       <p><strong className="text-zinc-700 dark:text-zinc-300">Source:</strong> {selectedTemplate.name} Structure</p>
+                       <p><strong className="text-zinc-700 dark:text-zinc-300">Formula (Time):</strong> Work Time + Rest Time + Warmup + Cooldown</p>
+                       <p><strong className="text-zinc-700 dark:text-zinc-300">Limitation:</strong> Mathematical projection only. Does not factor in fatigue profiles, weather, or terrain.</p>
+                       <p><strong className="text-zinc-700 dark:text-zinc-300">Confidence Label:</strong> Estimate</p>
+                       <p><strong className="text-zinc-700 dark:text-zinc-300">Architecture Note:</strong> No AI. No database. No runtime calculation engine used.</p>
+                    </div>
+
+                    {activeSafetyFlags.length > 0 && (
                       <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 p-3 rounded-lg flex gap-3">
                         <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                         <div className="space-y-1 w-full">
                           <p className="font-semibold uppercase tracking-wider text-[10px] mb-1 opacity-80">Safety & Planning Flags</p>
-                          {(selectedTemplate.safetyRuleIds as unknown as string[]).map(ruleId => {
-                            const rule = workoutSafetyRules.find(r => r.id === ruleId);
-                            return rule ? (
-                              <div key={ruleId} className="flex flex-col">
-                                <strong className="text-xs font-semibold">{rule.name}</strong>
-                                <span className="text-xs opacity-90">{rule.message}</span>
-                              </div>
-                            ) : null;
-                          })}
+                          {activeSafetyFlags.map(rule => (
+                            <div key={rule.id} className="flex flex-col">
+                              <strong className="text-xs font-semibold">{rule.name}</strong>
+                              <span className="text-xs opacity-90">{rule.message}</span>
+                            </div>
+                          ))}
                         </div>
+                      </div>
+                    )}
+                    {activeSafetyFlags.length === 0 && !weeklyMileageInput && ('safetyRuleIds' in selectedTemplate) && (selectedTemplate.safetyRuleIds as unknown as string[])?.some(id => id.includes('volume') || id.includes('ratio')) && (
+                      <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-200 p-3 rounded-lg">
+                        <p className="text-xs">Provide weekly mileage to verify safe volume ratios for this template.</p>
                       </div>
                     )}
                   </div>
@@ -241,6 +293,13 @@ export default function WorkoutLibraryPage() {
                     navigator.clipboard.writeText(`Workout: ${selectedTemplate.name}\nTotal Time: ${formatSecondsToTimeString(calcResult.totalTime)}\nTarget Rep Time: ${formatSecondsToTimeString(Math.round(calcResult.targetRepTime))}`);
                     alert('Copied to clipboard');
                   }}>Copy Summary</Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="h-max">
+                <CardContent className="p-6 text-center space-y-2">
+                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Waiting for valid input</p>
+                  <p className="text-xs text-zinc-500">Provide a &quot;Target Rep Pace&quot; to calculate workout duration mathematically. No AI estimation occurs without valid user input.</p>
                 </CardContent>
               </Card>
             )}
