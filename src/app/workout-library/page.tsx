@@ -161,12 +161,7 @@ export default function WorkoutLibraryPage() {
     <div className="space-y-6">
       <LabPageHeader title="SESSION ARCHIVE" subtitle="View and calculate static structured interval templates." />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-zinc-950/80 border border-zinc-800 rounded-none relative">
-        <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
-           <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0H20ZM100 0H80ZM50 0V20ZM0 100H20ZM100 100H80ZM50 100V80ZM0 50H20ZM100 50H80Z" stroke="currentColor" strokeWidth="2" />
-           </svg>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-card border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
         <div className="space-y-2 z-10">
           <Label>Goal Distance</Label>
           <Select value={goalFilter} onChange={e => setGoalFilter(e.target.value)}>
@@ -196,17 +191,17 @@ export default function WorkoutLibraryPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="uppercase font-mono">{selectedTemplate.name}</CardTitle>
-                <CardDescription className="capitalize font-mono text-[10px] tracking-widest opacity-80 text-cyan-400">
+                <CardTitle className="text-2xl font-display font-black uppercase tracking-tight">{selectedTemplate.name}</CardTitle>
+                <CardDescription className="capitalize font-bold text-xs tracking-widest text-primary">
                   {('scenario' in selectedTemplate ? selectedTemplate.scenario.replace('_', ' ') : '')} • {('difficulty' in selectedTemplate ? selectedTemplate.difficulty.replace('_', ' ') : '')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-none text-xs font-mono space-y-2 text-zinc-400">
-                  <div className="tracking-widest uppercase text-[10px] mb-2 text-zinc-600">Structure Trace</div>
+                <div className="p-4 bg-white border-2 border-border-heavy rounded-lg text-xs font-mono font-bold space-y-2 text-foreground shadow-[inset_1px_1px_0px_rgba(0,0,0,0.1)]">
+                  <div className="tracking-widest uppercase text-[10px] mb-2 text-muted-foreground font-sans">Structure Trace</div>
                   {('warmup' in selectedTemplate) && selectedTemplate.warmup && <div>WARMUP STAGE = TRUE</div>}
                   {('mainSet' in selectedTemplate) && selectedTemplate.mainSet && (
-                    <div className="text-cyan-400">MAIN_STAGE: {('reps' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.reps}x ` : ''} {('distanceMeters' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.distanceMeters}m` : (('durationMinutes' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.durationMinutes}m` : '')} @ {('intensity' in selectedTemplate.mainSet) ? (selectedTemplate.mainSet as any).intensity : ''}</div>
+                    <div className="text-primary">MAIN_STAGE: {('reps' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.reps}x ` : ''} {('distanceMeters' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.distanceMeters}m` : (('durationMinutes' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.durationMinutes}m` : '')} @ {('intensity' in selectedTemplate.mainSet) ? (selectedTemplate.mainSet as any).intensity : ''}</div>
                   )}
                   {('cooldown' in selectedTemplate) && selectedTemplate.cooldown && <div>COOLDOWN STAGE = TRUE</div>}
                 </div>
@@ -237,67 +232,67 @@ export default function WorkoutLibraryPage() {
             </Card>
 
             {calcResult ? (
-              <Card className="border-cyan-900/50 bg-cyan-950/10 h-max">
-                <CardHeader>
-                  <CardTitle className="text-cyan-400">PROJECTION OUTPUT</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+              <div className="border-2 border-border-heavy bg-white rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] h-max flex flex-col overflow-hidden">
+                <div className="bg-accent text-accent-foreground px-6 py-4 border-b-2 border-border-heavy">
+                  <h3 className="font-bold uppercase tracking-wider text-sm">PROJECTION OUTPUT</h3>
+                </div>
+                <div className="p-6 space-y-4 flex flex-col flex-1">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
-                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Total Time</div>
-                      <div className="font-mono text-xl text-zinc-200 shadow-cyan-400/10 drop-shadow-sm">{formatSecondsToTimeString(calcResult.totalTime)}</div>
+                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Total Time</div>
+                      <div className="font-display font-black text-3xl text-foreground">{formatSecondsToTimeString(calcResult.totalTime)}</div>
                     </div>
-                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
-                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Rep Time</div>
-                      <div className="font-mono text-xl text-zinc-200">{calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}</div>
+                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Rep Time</div>
+                      <div className="font-display font-black text-2xl text-foreground mt-1">{calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}</div>
                     </div>
-                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
-                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Work Distance</div>
-                      <div className="font-mono text-xl text-zinc-200">{calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}</div>
+                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Work Distance</div>
+                      <div className="font-display font-black text-2xl text-foreground mt-1">{calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}</div>
                     </div>
-                    <div className="bg-zinc-950 p-3 border border-zinc-800/80">
-                      <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Work:Rest Time</div>
-                      <div className="font-mono text-sm text-zinc-400">
+                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Work:Rest Time</div>
+                      <div className="font-mono text-sm font-bold text-muted-foreground mt-2">
                         {formatSecondsToTimeString(Math.round(calcResult.workTime))} / {formatSecondsToTimeString(Math.round(calcResult.restTime))}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="text-[10px] text-zinc-500 mt-4 pt-4 border-t border-zinc-800 space-y-3 font-mono">
-                    <div className="space-y-2 mb-4 bg-zinc-950 p-3 border border-zinc-800/80">
-                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Input Used:</strong> Target {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
-                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Source:</strong> {selectedTemplate.name} Structure</p>
-                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Formula (Time):</strong> Work Time + Rest Time + Warmup + Cooldown</p>
-                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Limitation:</strong> Mathematical projection only. Does not factor in fatigue profiles, weather, or terrain.</p>
-                       <p><strong className="text-zinc-600 uppercase tracking-widest mb-1 block">Confidence Label:</strong> Estimate</p>
+                  <div className="text-[10px] text-muted-foreground mt-4 pt-4 border-t-2 border-border-heavy space-y-3 font-medium">
+                    <div className="space-y-2 mb-4 bg-muted p-4 border-2 border-border-heavy rounded-lg">
+                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Input Used:</strong> Target {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
+                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Source:</strong> {selectedTemplate.name} Structure</p>
+                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Formula (Time):</strong> Work Time + Rest Time + Warmup + Cooldown</p>
+                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Limitation:</strong> Mathematical projection only. Does not factor in fatigue profiles, weather, or terrain.</p>
+                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Confidence Label:</strong> Estimate</p>
                     </div>
 
                     {activeSafetyFlags.length > 0 && (
-                      <div className="bg-orange-950/10 border border-orange-900/30 text-orange-500/80 p-3 flex gap-3">
-                        <AlertCircle className="w-4 h-4 mt-0.5 shrink-0 text-orange-600" />
-                        <div className="space-y-1 w-full">
-                          <p className="font-bold uppercase tracking-widest text-[10px] mb-1 text-orange-600">SYS_WARN: Volume Exceeded</p>
+                      <div className="bg-white border-2 border-destructive text-destructive p-4 flex gap-3 rounded-lg shadow-[2px_2px_0px_rgba(232,76,61,1)]">
+                        <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+                        <div className="space-y-1 w-full text-foreground">
+                          <p className="font-bold uppercase tracking-widest text-[10px] mb-1 text-destructive">SYS_WARN: Volume Exceeded</p>
                           {activeSafetyFlags.map(rule => (
-                            <div key={rule.id} className="flex flex-col mb-1">
+                            <div key={rule.id} className="flex flex-col mb-1.5">
                               <strong className="text-[10px]">{rule.name}</strong>
-                              <span className="text-[10px] opacity-80">{rule.message}</span>
+                              <span className="text-[10px]">{rule.message}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
                     {activeSafetyFlags.length === 0 && !weeklyMileageInput && ('safetyRuleIds' in selectedTemplate) && (selectedTemplate.safetyRuleIds as unknown as string[])?.some(id => id.includes('volume') || id.includes('ratio')) && (
-                      <div className="bg-cyan-950/20 border border-cyan-900/30 text-cyan-400/80 p-3">
-                        <p className="text-[10px] uppercase tracking-widest">Provide weekly mileage to verify safe volume ratios for this template.</p>
+                      <div className="bg-card border-2 border-border-heavy text-muted-foreground p-3 rounded-lg font-bold">
+                        <p className="text-[10px] uppercase tracking-widest text-center">Provide weekly mileage to verify safe volume ratios for this template.</p>
                       </div>
                     )}
                   </div>
-                  <Button variant="ghost" className="w-full text-zinc-500 hover:text-cyan-400" onClick={() => {
+                  <Button variant="outline" className="w-full mt-auto" onClick={() => {
                     navigator.clipboard.writeText(`Workout: ${selectedTemplate.name}\nTotal Time: ${formatSecondsToTimeString(calcResult.totalTime)}\nTarget Rep Time: ${formatSecondsToTimeString(Math.round(calcResult.targetRepTime))}`);
                     alert('Copied to clipboard');
                   }}>Copy Summary</Button>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ) : (
               <Card className="h-max">
                 <CardContent className="p-6 text-center space-y-2">
@@ -319,26 +314,26 @@ export default function WorkoutLibraryPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
-                <div className="space-y-4 text-sm">
+                <div className="space-y-4 text-sm font-medium">
                   <div>
-                    <span className="text-zinc-500 font-medium pb-1 block">Main Set Summary:</span>
+                    <span className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] pb-1.5 block">Main Set Summary:</span>
                     {('reps' in (('mainSet' in template ? template.mainSet : {}) || {})) ? (
-                      <div className="bg-zinc-100 dark:bg-zinc-800/50 p-2 rounded text-zinc-900 dark:text-zinc-100 font-mono text-xs">
+                      <div className="border-2 border-border-heavy bg-card p-3 rounded-lg text-foreground font-mono font-bold text-xs shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)]">
                         {('mainSet' in template ? (template.mainSet as any).reps : '')} × {('mainSet' in template && 'distanceMeters' in (template.mainSet as any)) ? `${(template.mainSet as any).distanceMeters}m` : ('mainSet' in template ? `${(template.mainSet as any).durationMinutes} min` : '')} @ {('mainSet' in template ? (template.mainSet as any).intensity : '')}
                       </div>
                     ) : ('mainSet' in template) && template.mainSet ? (
-                      <div className="bg-zinc-100 dark:bg-zinc-800/50 p-2 rounded text-zinc-900 dark:text-zinc-100 font-mono text-xs">
+                      <div className="border-2 border-border-heavy bg-card p-3 rounded-lg text-foreground font-mono font-bold text-xs shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)]">
                         {'distanceMeters' in (template.mainSet as any) ? `${(template.mainSet as any).distanceMeters}m` : `${(template.mainSet as any).durationMinutes} min`} @ {(template.mainSet as any).intensity}
                       </div>
                     ) : (
-                      <div className="text-zinc-500 text-xs italic">Complex structured workout.</div>
+                      <div className="text-muted-foreground text-xs italic">Complex structured workout.</div>
                     )}
                   </div>
                 </div>
               </CardContent>
               <div className="p-6 pt-0 mt-auto">
-                <Button variant="ghost" className="w-full text-cyan-400 border border-cyan-900/50 hover:bg-cyan-950/30" onClick={() => setSelectedTemplateId(template.id)}>
-                  [ SELECT MATRIX ]
+                <Button variant="outline" className="w-full bg-white font-bold" onClick={() => setSelectedTemplateId(template.id)}>
+                  SELECT TEMPLATE
                 </Button>
               </div>
             </Card>

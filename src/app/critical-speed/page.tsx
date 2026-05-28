@@ -44,10 +44,10 @@ export default function CriticalSpeedPage() {
         
         setTteResult({
           result: (
-            <div className="space-y-4 w-full text-xs">
-              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Max Time</span>
-                <span className="text-xl font-bold font-mono text-cyan-400">{formatSecondsToTimeString(Math.round(tTteStr))}</span>
+            <div className="space-y-4 w-full">
+              <div className="flex flex-col items-center p-6 bg-card border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="text-muted-foreground text-[10px] mb-1 tracking-widest block uppercase font-bold">Max Time</span>
+                <span className="text-4xl font-display font-black text-foreground">{formatSecondsToTimeString(Math.round(tTteStr))}</span>
               </div>
             </div>
           ),
@@ -79,14 +79,14 @@ export default function CriticalSpeedPage() {
         
         setCsResult({
           result: (
-            <div className="space-y-4 w-full text-xs">
-              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Critical Speed (CS)</span>
-                <span className="text-xl font-bold font-mono text-cyan-400">{csPace}</span>
+            <div className="space-y-4 w-full">
+              <div className="flex justify-between items-center bg-card p-6 border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-1">Critical Speed (CS)</span>
+                <span className="text-3xl font-display font-black text-foreground">{csPace}</span>
               </div>
-              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">D-Prime (D&apos;)</span>
-                <span className="text-xl font-bold font-mono text-cyan-400">{dPrimeMeters.toFixed(1)} m</span>
+              <div className="flex justify-between items-center bg-card p-6 border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-1">D-Prime (D&apos;)</span>
+                <span className="text-3xl font-display font-black text-foreground">{dPrimeMeters.toFixed(1)} m</span>
               </div>
             </div>
           ),

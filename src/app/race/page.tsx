@@ -129,7 +129,12 @@ export default function RaceLabPage() {
             <ResultCard 
               result={{
                 ...result,
-                result: formatSecondsToTimeString(result.result)
+                result: (
+                  <div className="flex flex-col items-center p-6 bg-primary border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                    <span className="text-primary-foreground text-[10px] font-bold uppercase tracking-widest mb-1">Predicted Time</span>
+                    <span className="font-display text-5xl md:text-6xl font-bold tracking-tighter text-primary-foreground">{formatSecondsToTimeString(result.result)}</span>
+                  </div>
+                )
               }} 
             />
           )}

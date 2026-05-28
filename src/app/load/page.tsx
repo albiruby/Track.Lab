@@ -225,10 +225,10 @@ export default function LoadLabPage() {
             </CardContent>
           </Card>
           {weeklyDistResult && <ResultCard result={{...weeklyDistResult, result: (
-            <div className="w-full space-y-4 text-xs font-mono">
-              <div className="flex justify-between items-center bg-zinc-950/80 p-4 border border-zinc-800 rounded-none">
-                <span className="text-[10px] uppercase text-zinc-500 tracking-widest">Weekly Total</span>
-                <span className="text-xl font-bold text-cyan-400">{weeklyDistances.split(',').reduce((a,b)=>a+parseFloat(b),0)} units</span>
+            <div className="w-full space-y-4">
+              <div className="flex justify-between items-center bg-card p-6 border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-1">Weekly Total</span>
+                <span className="text-3xl font-display font-black text-foreground">{weeklyDistances.split(',').reduce((a,b)=>a+parseFloat(b),0)} units</span>
               </div>
             </div>
           )}} />}
@@ -243,7 +243,7 @@ export default function LoadLabPage() {
                 <div>
                   <Label htmlFor="dailyLoads">Daily Loads (comma separated)</Label>
                   <Input id="dailyLoads" value={dailyLoads} onChange={e => setDailyLoads(e.target.value)} required />
-                  <div className="text-xs text-zinc-500 mt-1">Example: 7 days of sRPE (duration × RPE)</div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-2">Example: 7 days of sRPE</div>
                 </div>
                 <ValidationMessage message={error} />
                 <div className="flex gap-3 pt-4">
@@ -258,15 +258,15 @@ export default function LoadLabPage() {
             <div className="h-full">
               <ResultCard result={{...monotonyResult, result: (
                 <div className="w-full space-y-4">
-                  <div className="flex flex-col items-center p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
-                    <span className="text-zinc-500 text-[10px] mb-1 tracking-widest block uppercase font-mono">Training Monotony</span>
-                    <span className="font-mono text-3xl font-bold text-cyan-400">
+                  <div className="flex flex-col items-center p-6 bg-card border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                    <span className="text-muted-foreground text-[10px] mb-1 tracking-widest block uppercase font-bold">Training Monotony</span>
+                    <span className="font-display text-5xl font-black text-foreground">
                       {calcMonotony(dailyLoads.split(',').map(s=>parseFloat(s)).filter(n=>!isNaN(n))).toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex flex-col items-center p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
-                    <span className="text-zinc-500 text-[10px] mb-1 tracking-widest block uppercase font-mono">Training Strain</span>
-                    <span className="font-mono text-xl font-bold text-cyan-400">
+                  <div className="flex flex-col items-center p-6 bg-card border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                    <span className="text-muted-foreground text-[10px] mb-1 tracking-widest block uppercase font-bold">Training Strain</span>
+                    <span className="font-display text-4xl font-black text-foreground">
                       {Math.round(calcStrain(dailyLoads.split(',').map(s=>parseFloat(s)).filter(n=>!isNaN(n)).reduce((a,b)=>a+b,0), calcMonotony(dailyLoads.split(',').map(s=>parseFloat(s)).filter(n=>!isNaN(n)))))}
                     </span>
                   </div>

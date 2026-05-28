@@ -82,17 +82,17 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
   }, [search, categoryFilter, confidenceFilter, inputFilter, statusFilter]);
 
   const getStatus = (m: any) => {
-    if (implementedIds.has(m.id)) return { label: 'Implemented', col: 'text-cyan-400 bg-cyan-950/30 border-cyan-500/50' };
-    if (metadataOnlyIds.has(m.id) || m.precision === 'qualitative' || m.formulaDisplay.includes('Qualitative')) return { label: 'Metadata Only', col: 'text-amber-500 bg-amber-950/30 border-amber-500/50' };
-    return { label: 'Unavailable: Function missing', col: 'text-zinc-500 bg-zinc-900/50 border-zinc-800' };
+    if (implementedIds.has(m.id)) return { label: 'Implemented', col: 'text-primary bg-primary/10 border-primary' };
+    if (metadataOnlyIds.has(m.id) || m.precision === 'qualitative' || m.formulaDisplay.includes('Qualitative')) return { label: 'Metadata Only', col: 'text-amber-600 bg-amber-100 border-amber-600' };
+    return { label: 'Unavailable: Function missing', col: 'text-muted-foreground bg-muted border-border-heavy' };
   };
 
   return (
     <div className="space-y-6 flex flex-col">
       <LabPageHeader title="Formula Library" subtitle="Reference index of all integrated equations and logic rules." />
-      <div className="text-[10px] font-mono tracking-widest text-zinc-500 mb-2 border border-zinc-800/80 bg-zinc-950/50 p-2 uppercase">SYS_NOTE: If a formula is &quot;Unavailable&quot;, no stored data or formula is shown in active calculators.</div>
+      <div className="text-[10px] font-bold tracking-widest text-muted-foreground mb-4 border-2 border-border-heavy bg-white p-3 uppercase rounded-lg shadow-[1px_1px_0px_rgba(23,23,23,1)]">NOTE: If a formula is &quot;Unavailable&quot;, no stored data or formula is shown in active calculators.</div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 p-6 bg-card border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
         <div className="space-y-2">
           <Label>Search Method</Label>
           <Input type="text" placeholder="Search name or ID..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -134,33 +134,33 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
           const st = getStatus(method);
           const route = categoryToRoute[method.category || ''];
           return (
-          <Card key={method.id} className="flex flex-col h-full hover:border-cyan-500/50 transition-colors">
-            <CardHeader className="pb-3 border-b border-zinc-800">
-              <div className="flex justify-between items-start gap-2 mb-2">
-                <div className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 truncate bg-zinc-900 px-2 py-0.5 rounded-none border border-zinc-800">
+          <div key={method.id} className="flex flex-col h-full bg-white border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all overflow-hidden group">
+            <div className="p-4 border-b-2 border-border-heavy bg-card">
+              <div className="flex justify-between items-start gap-2 mb-3">
+                <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground truncate border-2 border-border-heavy bg-white px-2 py-0.5 rounded shadow-[1px_1px_0px_rgba(23,23,23,1)]">
                   {method.category.replace(/_+/g, ' ')}
                 </div>
-                <div className={`text-[10px] font-mono uppercase tracking-widest items-center px-2 py-0.5 border rounded-none ${st.col}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 border-2 rounded shadow-[1px_1px_0px_rgba(23,23,23,1)] ${st.col}`}>
                   {st.label}
                 </div>
               </div>
-              <CardTitle className="text-lg leading-tight uppercase font-mono">{method.name}</CardTitle>
+              <h3 className="text-xl font-display font-bold uppercase tracking-tight text-foreground">{method.name}</h3>
               {route && (
-                <Link href={route} className="text-xs text-cyan-500 hover:text-cyan-400 hover:underline inline-block mt-1 uppercase tracking-widest font-mono">INIT CALCULATOR PROCEDURE →</Link>
+                <Link href={route} className="text-[10px] font-bold text-primary hover:text-foreground transition-colors mt-2 uppercase tracking-widest flex items-center gap-1 group-hover:underline">OPEN CALCULATOR EXPLORER →</Link>
               )}
-            </CardHeader>
-            <CardContent className="pt-4 flex-1 flex flex-col gap-4">
-              <div className="text-sm bg-zinc-950/80 border border-zinc-800 p-3 rounded-none font-mono break-words text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.2)]">
+            </div>
+            <div className="p-4 flex-1 flex flex-col gap-4">
+              <div className="text-sm border-2 border-border-heavy bg-card p-3 rounded-lg font-mono font-bold break-words text-foreground shadow-[inset_1px_1px_0px_rgba(0,0,0,0.1)]">
                 {method.formulaDisplay}
               </div>
               
               <div className="space-y-3">
                 {method.requiredInputs?.length > 0 && (
                   <div>
-                    <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest block mb-1 font-mono">REQUIRED VARS</span>
-                    <div className="flex flex-wrap gap-1">
+                    <span className="text-[10px] font-bold tracking-widest uppercase block mb-1 text-muted-foreground">REQUIRED VARS</span>
+                    <div className="flex flex-wrap gap-1.5">
                       {method.requiredInputs.map((req: string) => (
-                        <span key={req} className="text-[10px] text-zinc-400 border border-zinc-800 bg-zinc-950 px-1.5 py-0.5 rounded-none font-mono uppercase tracking-wider">{req}</span>
+                        <span key={req} className="text-[10px] font-bold uppercase tracking-widest text-foreground bg-muted px-2 py-0.5 rounded shadow-[1px_1px_0px_rgba(23,23,23,0.1)] border border-border">{req}</span>
                       ))}
                     </div>
                   </div>
@@ -168,8 +168,8 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
                 
                 {method.limitations?.length > 0 && (
                   <div>
-                    <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest block mb-1 font-mono">CONSTRAINTS</span>
-                    <ul className="text-[10px] text-zinc-500 list-disc list-inside space-y-1 font-mono uppercase tracking-wide">
+                    <span className="text-[10px] font-bold tracking-widest uppercase block mb-1 text-muted-foreground">CONSTRAINTS</span>
+                    <ul className="text-xs text-muted-foreground list-disc list-inside space-y-1 font-medium leading-relaxed">
                       {(method.limitations as readonly string[]).map((lim: string, idx: number) => (
                         <li key={idx} className="leading-snug">{lim}</li>
                       ))}
@@ -178,16 +178,16 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
                 )}
               </div>
               
-              <div className="pt-2 flex justify-between items-center text-[10px] text-zinc-600 mt-auto border-t border-zinc-800 pt-3 uppercase tracking-widest font-mono">
-                <span className="opacity-70 text-zinc-500">SYS_ID: {method.id}</span>
-                <span className="font-semibold text-cyan-700">{method.precision?.replace(/_+/g, ' ')}</span>
+              <div className="pt-2 flex justify-between items-center text-[10px] text-muted-foreground mt-auto border-t-2 border-border-heavy pt-3 uppercase font-bold tracking-widest">
+                <span>SYS_ID: {method.id}</span>
+                <span className="text-primary">{method.precision?.replace(/_+/g, ' ')}</span>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )})}
         {filteredMethods.length === 0 && (
-          <div className="col-span-full py-12 text-center text-zinc-500 border border-dashed border-zinc-800 bg-zinc-950/30 font-mono tracking-widest uppercase">
-            ERR: NO MATCHING PROCEDURES FOUND
+          <div className="col-span-full py-16 text-center text-muted-foreground border-2 border-dashed border-border-heavy bg-card rounded-xl font-bold tracking-widest uppercase shadow-[inset_2px_2px_0px_rgba(0,0,0,0.05)]">
+            NO MATCHING PROCEDURES FOUND
           </div>
         )}
       </div>

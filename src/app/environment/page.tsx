@@ -69,7 +69,14 @@ export default function EnvironmentPage() {
         const methodMeta = methodRegistry.find((m) => m.id === 'vertical_speed')!;
 
         setVSpeedResult({
-          result: `${vSpeed.toFixed(0)} m/hr`,
+          result: (
+            <div className="w-full">
+              <div className="flex justify-between items-center bg-card p-6 border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-1">Vertical Speed</span>
+                <span className="text-3xl font-display font-black text-foreground">{vSpeed.toFixed(0)} m/hr</span>
+              </div>
+            </div>
+          ) as any,
           inputUsed: { 'Gain (m)': gain, 'Duration (hours)': dur },
           methodSelected: methodMeta.name,
           formulaUsed: methodMeta.formulaDisplay,
@@ -116,13 +123,13 @@ export default function EnvironmentPage() {
 
           {gradeResult && <div className="h-full"><ResultCard result={{...gradeResult, result: (
             <div className="space-y-4 w-full">
-              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Average Grade</span>
-                <span className="text-xl font-bold font-mono text-cyan-400">{gradePercent(parseFloat(elevationGain), parseFloat(distance)).toFixed(1)}%</span>
+              <div className="flex justify-between items-center bg-card p-6 border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-1">Average Grade</span>
+                <span className="text-3xl font-display font-black text-foreground">{gradePercent(parseFloat(elevationGain), parseFloat(distance)).toFixed(1)}%</span>
               </div>
-              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Elevation Per Km</span>
-                <span className="text-xl font-bold font-mono text-cyan-400">{elevationPerKm(parseFloat(elevationGain), parseFloat(distance)/1000).toFixed(0)} m/km</span>
+              <div className="flex justify-between items-center bg-card p-6 border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-1">Elevation Per Km</span>
+                <span className="text-3xl font-display font-black text-foreground">{elevationPerKm(parseFloat(elevationGain), parseFloat(distance)/1000).toFixed(0)} m/km</span>
               </div>
             </div>
           )}} /></div>}
@@ -163,16 +170,16 @@ export default function EnvironmentPage() {
               <CardDescription>Modifiers for extreme conditions.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-3 border border-orange-900/30 bg-orange-950/10 text-orange-500/80 text-xs font-mono">
-                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-orange-600">HEAT/HUMIDITY:</span>
+              <div className="p-4 border-2 border-primary bg-white text-foreground text-sm font-medium rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-primary">HEAT/HUMIDITY:</span>
                 Significant adjustments to pace and perceived effort are required when temperature exceeds 15°C (60°F) or dew point is high. Standard calculators do not account for heat stress.
               </div>
-              <div className="p-3 border border-orange-900/30 bg-orange-950/10 text-orange-500/80 text-xs font-mono">
-                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-orange-600">ALTITUDE:</span>
+              <div className="p-4 border-2 border-primary bg-white text-foreground text-sm font-medium rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-primary">ALTITUDE:</span>
                 Aerobic capacity decreases linearly above ~600m (2000ft). Expect slower times and higher heart rates for the same effort.
               </div>
-              <div className="p-3 border border-red-900/50 bg-red-950/30 text-red-500/80 text-xs font-mono">
-                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-red-600">LIMITATION:</span>
+              <div className="p-4 border-2 border-destructive bg-white text-foreground text-sm font-medium rounded-xl shadow-[2px_2px_0px_rgba(232,76,61,1)]">
+                <span className="uppercase tracking-widest text-[10px] font-bold mr-2 text-destructive">LIMITATION:</span>
                 These are mathematical estimates only. Actual performance depends on individual response, acclimatization, terrain, wind, hydration, and conditions.
               </div>
             </CardContent>

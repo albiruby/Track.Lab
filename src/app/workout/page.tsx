@@ -119,26 +119,26 @@ export default function WorkoutLabPage() {
               result={{
                 ...result,
                 result: (
-                  <div className="flex flex-col p-2 space-y-1">
-                    <div className="flex justify-between p-2 border-b border-border">
-                      <span className="font-medium text-sm">Rep Time</span>
-                      <span className="font-mono text-primary">{formatSecondsToTimeString(result.result.repTimeSeconds)}</span>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex justify-between p-3 border-2 border-border-heavy bg-white rounded-lg shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+                      <span className="font-bold text-xs uppercase tracking-wider text-muted-foreground mt-0.5">Rep Time</span>
+                      <span className="font-mono font-bold text-primary-foreground bg-primary px-2 py-0.5 rounded text-sm">{formatSecondsToTimeString(result.result.repTimeSeconds)}</span>
                     </div>
-                    <div className="flex justify-between p-2 border-b border-border">
-                      <span className="font-medium text-sm">Total Work Time</span>
-                      <span className="font-mono text-primary">{formatSecondsToTimeString(result.result.totalWorkSeconds)}</span>
+                    <div className="flex justify-between p-3 border-2 border-border-heavy bg-white rounded-lg shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+                      <span className="font-bold text-xs uppercase tracking-wider text-muted-foreground mt-0.5">Total Work Time</span>
+                      <span className="font-mono font-bold text-foreground text-sm">{formatSecondsToTimeString(result.result.totalWorkSeconds)}</span>
                     </div>
-                    <div className="flex justify-between p-2 border-b border-border">
-                      <span className="font-medium text-sm">Total Rest Time</span>
-                      <span className="font-mono text-primary">{formatSecondsToTimeString(result.result.totalRestSeconds)}</span>
+                    <div className="flex justify-between p-3 border-2 border-border-heavy bg-white rounded-lg shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+                      <span className="font-bold text-xs uppercase tracking-wider text-muted-foreground mt-0.5">Total Rest Time</span>
+                      <span className="font-mono font-bold text-foreground text-sm">{formatSecondsToTimeString(result.result.totalRestSeconds)}</span>
                     </div>
-                    <div className="flex justify-between p-2 border-b border-border">
-                      <span className="font-medium text-sm">Rep Volume</span>
-                      <span className="font-mono text-primary">{result.result.sessionDistanceKm.toFixed(2)} km</span>
+                    <div className="flex justify-between p-3 border-2 border-border-heavy bg-white rounded-lg shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+                      <span className="font-bold text-xs uppercase tracking-wider text-muted-foreground mt-0.5">Rep Volume</span>
+                      <span className="font-mono font-bold text-foreground text-sm">{result.result.sessionDistanceKm.toFixed(2)} km</span>
                     </div>
-                    <div className="flex justify-between p-2">
-                      <span className="font-bold text-sm">Total Time</span>
-                      <span className="font-bold font-mono text-primary text-xl drop-shadow-sm">{formatSecondsToTimeString(result.result.totalSessionSeconds)}</span>
+                    <div className="flex flex-col items-center mt-2 p-5 border-2 border-border-heavy bg-card rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                      <span className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Total Session Time</span>
+                      <span className="font-display font-black text-4xl text-foreground">{formatSecondsToTimeString(result.result.totalSessionSeconds)}</span>
                     </div>
                   </div>
                 )
