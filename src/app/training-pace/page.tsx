@@ -1,15 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
+import { Input, Label } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
-import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { paceSecondsPerKm } from '@/lib/calculators_pack/pace';
 import { formatPace, parseDurationToSeconds , safeNumber } from '@/lib/formatters/time';
 import { riegelPredictTime } from '@/lib/calculators_pack/racePrediction';
+import { CalculatorPageShell } from '@/components/calculator/CalculatorPageShell';
+import { ManualInputPanel } from '@/components/calculator/ManualInputPanel';
+import { ExportPanel } from '@/components/calculator/CalculatorSystem';
+import { resultToText } from '@/lib/export/manualExport';
 
 export default function TrainingPaceLab() {
+  const [mode, setMode] = useState<'quick' | 'advanced'>('quick');
   const [distance, setDistance] = useState('10');
   const [timeStr, setTimeStr] = useState('50:00');
   const [error, setError] = useState<string | null>(null);
@@ -22,8 +25,8 @@ export default function TrainingPaceLab() {
     setError(null);
   };
   
-  const handleCalculate = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCalculate = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError(null);
     const d = safeNumber(distance);
     const secs = parseDurationToSeconds(timeStr);
@@ -33,7 +36,6 @@ export default function TrainingPaceLab() {
 
     // Estimate threshold pace as roughly 10k to 15k pace
     // Let's use Riegel to find equivalent 10km pace as a generic "Threshold" anchor
-    // If the input is exactly 10k, it uses it. Otherwise predicts it.
     const expected10kSeconds = d === 10 ? secs : riegelPredictTime(secs, d * 1000, 10000, 1.06);
     const thresholdSecsPerKm = expected10kSeconds / 10;
     
@@ -49,27 +51,17 @@ export default function TrainingPaceLab() {
       { name: "Repetition", pace: thresholdSecsPerKm * 0.88 },
     ];
 
-    const maxPace = Math.max(...paces.map(p => p.pace));
-    const minPace = Math.min(...paces.map(p => p.pace));
-    
-    // Reverse it so fast is at top or bottom? Usually fast at top (small pace)
-    
     const outTable = (
       <div className="flex flex-col pt-2 w-full gap-5">
         {paces.map((p, i) => {
-          // Calculate reverse width (faster pace = wider bar, or slower pace = wider bar?)
-          // Longer the pace (more seconds), the slower it is.
-          // Let's make faster paces have smaller widths, or longer widths. 
-          // 100% width = Recovery
           const widthPct = Math.min(100, (p.pace / paces[0].pace) * 100);
-          
           return (
           <div key={i} className="flex flex-col gap-1.5 w-full">
             <div className="flex justify-between items-baseline">
-              <span className="font-bold tracking-wider text-sm uppercase">{p.name}</span>
-              <span className="font-mono text-primary font-bold">{formatPace(p.pace)}</span>
+               <span className="font-bold tracking-wider text-sm uppercase">{p.name}</span>
+               <span className="font-mono text-primary font-bold">{formatPace(p.pace)}</span>
             </div>
-            <div className="w-full h-8 bg-neutral-200 border-2 border-border-heavy rounded-lg overflow-hidden flex items-stretch">
+            <div className="w-full h-8 bg-neutral-200 border-2 border-border-heavy rounded-lg overflow-hidden flex items-stretch shadow-[inset_1px_1px_0px_rgba(0,0,0,0.1)]">
                <div className="bg-primary/90 border-r-2 border-border-heavy" style={{ width: `${widthPct}%` }} />
             </div>
           </div>
@@ -81,7 +73,7 @@ export default function TrainingPaceLab() {
     setResult({
       result: outTable,
       methodSelected: 'Race-Derived Generic Pace Zones',
-      confidenceLabel: 'estimate',
+      confidenceLabel: 'Estimate',
       formulaUsed: 'Threshold anchored to ~10K pace, with fixed percentage multipliers.',
       inputUsed: { distance: d + ' km', time: timeStr },
       limitations: 'Goal-based pace may be too aggressive if current fitness is lower. These are mathematical approximations.'
@@ -89,49 +81,48 @@ export default function TrainingPaceLab() {
   };
 
   return (
-    <div className="space-y-6 pb-10">
-      <LabPageHeader title="Training Pace Lab" subtitle="Determine optimal paces for different types of training runs based on current fitness." />
-
+    <CalculatorPageShell title="Training Pace Lab" subtitle="Determine optimal paces for different types of training runs based on current fitness.">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Race</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleCalculate} className="space-y-4" noValidate>
-              <div>
-                <Label htmlFor="distance">Recent Race Distance (km)</Label>
-                <Input 
-                  id="distance" type="number" step="0.1" required
-                  value={distance} onChange={e => setDistance(e.target.value)} 
-                />
-              </div>
+        <ManualInputPanel
+          mode={mode}
+          setMode={setMode}
+          supportsAdvanced={false}
+          onCalculate={handleCalculate}
+          onReset={handleReset}
+          error={error}
+        >
+          <div>
+            <Label htmlFor="distance">Recent Race Distance (km)</Label>
+            <Input 
+              id="distance" type="number" step="0.1" required
+              value={distance} onChange={e => setDistance(e.target.value)} 
+            />
+          </div>
 
-              <div>
-                <Label htmlFor="timeStr">Recent Race Time (HH:MM:SS or MM:SS)</Label>
-                <Input 
-                  id="timeStr" type="text" required
-                  placeholder="50:00"
-                 
-                  value={timeStr} onChange={e => setTimeStr(e.target.value)} 
-                />
-              </div>
+          <div>
+            <Label htmlFor="timeStr">Recent Race Time (HH:MM:SS or MM:SS)</Label>
+            <Input 
+              id="timeStr" type="text" required
+              placeholder="50:00"
+              value={timeStr} onChange={e => setTimeStr(e.target.value)} 
+            />
+          </div>
+        </ManualInputPanel>
 
-              <ValidationMessage message={error} />
-                <div className="flex gap-3 pt-4">
-                  <Button type="submit" className="flex-1 ">Calculate</Button>
-                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
-                </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        <div className="h-full">
-          {result && (
-            <ResultCard result={result} />
+        <div className="h-full flex flex-col gap-6">
+          {result ? (
+            <>
+              <ResultCard result={result} />
+              <ExportPanel textToCopy={resultToText(result, "Training Pace Result")} />
+            </>
+          ) : (
+            <div className="p-6 border-2 border-dashed border-border-heavy bg-card rounded-xl text-center flex flex-col items-center justify-center h-full min-h-[200px]">
+              <span className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Awaiting Input</span>
+            </div>
           )}
         </div>
       </div>
-    </div>
+    </CalculatorPageShell>
   );
 }
+
