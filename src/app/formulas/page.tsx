@@ -9,18 +9,23 @@ import { useSearchParams } from 'next/navigation';
 
 const implementedIds = new Set([
   'fox_220_age', 'tanaka_208_07_age', 'gellish_2069_067_age', 'gulati_206_088_age',
-  'five_zone_karvonen_hrr', 
-  'riegel_106', 'goal_pace', 
-  'cs_two_point', 
+  'five_zone_karvonen_hrr', 'five_zone_hrmax_standard', 'lthr_8020_five_zone', 'maf_180',
+  'manual_hrmax', 'custom_hr_zones', 'race_derived_generic', 'manual_pace_zones', 'threshold_based', 'critical_speed_based',
+  'riegel_106', 'goal_pace', 'riegel_custom_exponent', 'multi_race_fit',
+  'cs_two_point', 'cs_three_point', 'manual_cs',
   'cooper_12min', 'acsm_running_vo2', 'met_from_vo2', 'calories_met', 
-  'weekly_mileage', 'long_run_ratio', 'srpe_load', 'monotony', 'strain', 'acwr', 
-  'carb_total', 'gel_count', 'fluid_total', 'bottle_count', 'sodium_total', 
-  'cadence', 'step_count', 'stride_length'
+  'weekly_mileage', 'weekly_duration', 'long_run_ratio', 'srpe_load', 'monotony', 'strain', 'acwr', 'progression_rate', 'intensity_distribution',
+  'carb_total', 'gel_count', 'fluid_total', 'bottle_count', 'sodium_total', 'sweat_rate',
+  'cadence', 'step_count', 'stride_length', 'speed_from_cadence_stride',
+  'pace_to_kmh', 'kmh_to_pace', 'acsm_treadmill_vo2',
+  'grade_pct', 'elevation_per_km', 'vertical_speed', 'hill_repeat_volume',
+  'watts_per_kg', 'power_efficiency', 'power_drift', 'critical_power_zone',
+  'sleep_duration', 'rhr_delta', 'hrv_delta_pct', 'body_mass_delta_pct', 'session_rpe_recovery',
+  'shoe_remaining_km', 'shoe_cost_per_km', 'fuel_cost'
 ]);
 
 const metadataOnlyIds = new Set([
-  'manual_hrmax', 'custom_hr_zones', 'race_derived_generic', 'manual_pace_zones',
-  'manual_cs', 'heat_adjustment_note', 'altitude_adjustment_note', 'wind_note'
+  'heat_adjustment_note', 'altitude_adjustment_note', 'wind_note'
 ]);
 
 const categoryToRoute: Record<string, string> = {
