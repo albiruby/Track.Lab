@@ -49,14 +49,32 @@ export default function TrainingPaceLab() {
       { name: "Repetition", pace: thresholdSecsPerKm * 0.88 },
     ];
 
+    const maxPace = Math.max(...paces.map(p => p.pace));
+    const minPace = Math.min(...paces.map(p => p.pace));
+    
+    // Reverse it so fast is at top or bottom? Usually fast at top (small pace)
+    
     const outTable = (
-      <div className="flex flex-col p-2">
-        {paces.map((p, i) => (
-          <div key={i} className="flex justify-between p-2 border-b last:border-0 border-border">
-            <span className="font-medium">{p.name}</span>
-            <span className="font-mono text-primary">{formatPace(p.pace)}</span>
+      <div className="flex flex-col pt-2 w-full gap-5">
+        {paces.map((p, i) => {
+          // Calculate reverse width (faster pace = wider bar, or slower pace = wider bar?)
+          // Longer the pace (more seconds), the slower it is.
+          // Let's make faster paces have smaller widths, or longer widths. 
+          // 100% width = Recovery
+          const widthPct = Math.min(100, (p.pace / paces[0].pace) * 100);
+          
+          return (
+          <div key={i} className="flex flex-col gap-1.5 w-full">
+            <div className="flex justify-between items-baseline">
+              <span className="font-bold tracking-wider text-sm uppercase">{p.name}</span>
+              <span className="font-mono text-primary font-bold">{formatPace(p.pace)}</span>
+            </div>
+            <div className="w-full h-8 bg-neutral-200 border-2 border-border-heavy rounded-lg overflow-hidden flex items-stretch">
+               <div className="bg-primary/90 border-r-2 border-border-heavy" style={{ width: `${widthPct}%` }} />
+            </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     );
 

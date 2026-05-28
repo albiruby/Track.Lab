@@ -9,7 +9,6 @@ export function ResultCard<T extends string | number | React.ReactNode>({ result
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    // Only copy string/number results
     if (typeof result.result === 'string' || typeof result.result === 'number') {
       navigator.clipboard.writeText(String(result.result));
       setCopied(true);
@@ -18,74 +17,74 @@ export function ResultCard<T extends string | number | React.ReactNode>({ result
   };
 
   return (
-    <Card className="h-full flex flex-col relative transition-all duration-300">
-      <CardHeader className="pb-4 bg-muted/20">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-muted-foreground uppercase text-xs tracking-wider">Results</CardTitle>
-          <div className="text-[10px] tracking-wide text-muted-foreground bg-muted/50 px-2.5 py-1 rounded-md">
-             {result.methodSelected}
-          </div>
+    <div className="h-full flex flex-col relative transition-all duration-300 rounded-xl overflow-hidden shadow-[4px_4px_0px_rgba(23,23,23,1)] border-2 border-border-heavy bg-white">
+      <div className="px-6 py-4 border-b-2 border-border-heavy bg-accent text-accent-foreground flex items-center justify-between">
+        <h3 className="font-bold uppercase tracking-wider text-sm">Results</h3>
+        <div className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground bg-white/20 px-3 py-1 rounded-full border border-white/30">
+           {result.methodSelected}
         </div>
-      </CardHeader>
+      </div>
       
-      <CardContent className="space-y-6 flex-1 flex flex-col p-6">
-        <div className="flex flex-col flex-1">
+      <div className="p-6 flex-1 flex flex-col">
+        <div className="flex flex-col flex-1 mb-6">
           {typeof result.result === 'string' || typeof result.result === 'number' ? (
-            <div className="text-3xl md:text-4xl font-semibold tracking-tight text-primary drop-shadow-sm min-h-[60px] flex items-center">
+            <div className="text-4xl md:text-5xl font-display font-bold tracking-tighter text-foreground drop-shadow-sm flex items-center">
               {result.result}
             </div>
           ) : (
-            <div className="text-sm border rounded-md overflow-hidden bg-background">
+            <div className="text-sm font-medium border-2 border-border-heavy rounded-lg overflow-hidden bg-background">
               {result.result}
             </div>
           )}
         </div>
         
-        <div className="space-y-4 pt-6 border-t border-border mt-auto">
-          <div className="flex justify-between items-center text-xs text-muted-foreground">
-            <span className="font-medium tracking-wide">Formula Used</span>
-            <span className="text-[10px] text-primary/80 bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">{result.confidenceLabel}</span>
+        <div className="space-y-4 pt-6 border-t-2 border-border-heavy mt-auto">
+          <div className="flex justify-between items-center text-xs text-muted-foreground font-bold uppercase tracking-wider">
+            <span>Formula Details</span>
+            <span className="text-[10px] text-primary-foreground bg-primary px-3 py-1 rounded-full border-2 border-border-heavy shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+              {result.confidenceLabel}
+            </span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg text-sm border border-border/50">
+          <div className="grid grid-cols-1 gap-4 bg-background p-4 rounded-lg border-2 border-border-heavy">
             <div>
-              <div className="text-muted-foreground mb-1 text-[10px] uppercase font-semibold">Method</div>
-              <div className="font-mono text-xs text-foreground/80 break-all select-all">
+              <div className="text-muted-foreground mb-1 text-[10px] uppercase font-bold tracking-wider">Computation</div>
+              <div className="font-mono text-xs font-semibold text-foreground break-all select-all">
                 {result.formulaUsed}
               </div>
             </div>
-            <div>
-              <div className="text-muted-foreground mb-1 text-[10px] uppercase font-semibold">Inputs</div>
-              <div className="font-mono text-xs text-foreground/80">
-                {Object.entries(result.inputUsed).map(([k, v]) => `${k}: ${v}`).join(' | ')}
+            <div className="border-t-2 border-border-heavy/20 pt-3">
+              <div className="text-muted-foreground mb-1 text-[10px] uppercase font-bold tracking-wider">Variables</div>
+              <div className="font-mono text-xs font-semibold text-foreground">
+                {Object.entries(result.inputUsed).map(([k, v]) => `${k}:${v}`).join(' ')}
               </div>
             </div>
           </div>
           
           <div className="pt-2">
-             <Link href={`/formulas?search=${encodeURIComponent(result.methodSelected)}`} className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 w-fit">
-               <ExternalLink className="w-3 h-3" />
+             <Link href={`/formulas?search=${encodeURIComponent(result.methodSelected)}`} className="text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 w-fit">
+               <ExternalLink className="w-3.5 h-3.5" />
                View in Formula Library
              </Link>
           </div>
         </div>
 
         {result.limitations && (
-          <div className="mt-4 p-3 rounded-lg border border-orange-500/20 bg-orange-500/5 text-orange-500/90 text-xs flex gap-2 items-start">
+          <div className="mt-4 p-4 rounded-xl border-2 border-destructive bg-white text-destructive font-semibold text-xs flex gap-3 items-start shadow-[2px_2px_0px_rgba(232,76,61,1)]">
             <Info className="w-4 h-4 shrink-0 mt-0.5" />
             <span className="leading-relaxed">{result.limitations}</span>
           </div>
         )}
-      </CardContent>
+      </div>
 
       {(typeof result.result === 'string' || typeof result.result === 'number') && (
         <button 
           onClick={handleCopy}
-          className="absolute top-4 right-4 p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors z-10"
+          className="absolute top-[80px] right-6 p-2 rounded-lg text-foreground hover:bg-neutral-100 transition-colors z-10 border-2 border-transparent hover:border-border-heavy"
           title="Copy result"
         >
-          {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+          {copied ? <Check className="w-5 h-5 text-emerald-500" /> : <Copy className="w-5 h-5" />}
         </button>
       )}
-    </Card>
+    </div>
   );
 }

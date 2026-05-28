@@ -40,12 +40,19 @@ export default function ZoneLab() {
         const m = parseInt(maxHr);
         if (isNaN(m) || m <= 0) return setError('Invalid Max HR');
         resZones = zones.map((z, i) => {
-          const r = zoneFromHrmax(m, z.minPct, z.maxPct);
+          const res = zoneFromHrmax(m, z.minPct, z.maxPct);
+          const widthPct = Math.max(5, (z.maxPct || 1.0) * 100 - (z.minPct * 100));
+          const leftPct = z.minPct * 100;
           return (
-            <div key={i} className="flex justify-between p-2 border-b last:border-0 border-border">
-              <span className="font-medium">{z.zone} ({z.name})</span>
-              <span className="font-mono text-primary">{r.min}{r.max ? ' - ' + r.max : '+'} bpm</span>
-            </div>
+             <div key={i} className="mb-4">
+               <div className="flex justify-between mb-1 text-sm font-bold uppercase tracking-wider">
+                 <span>{z.zone} <span className="text-muted-foreground ml-1">({z.name})</span></span>
+                 <span className="font-mono text-primary">{res.min}{res.max ? ' - ' + res.max : '+'} bpm</span>
+               </div>
+               <div className="w-full bg-neutral-200 h-6 rounded-md overflow-hidden border-2 border-border-heavy relative">
+                 <div className="absolute top-0 bottom-0 bg-primary border-r-2 border-border-heavy" style={{ left: 0, width: `${(z.maxPct || 1.0) * 100}%` }}></div>
+               </div>
+             </div>
           );
         });
         inputUsed = { HRmax: m };
@@ -55,11 +62,17 @@ export default function ZoneLab() {
         if (isNaN(m) || isNaN(r) || m <= 0 || r <= 0 || r >= m) return setError('Invalid HR metrics');
         resZones = zones.map((z, i) => {
           const res = zoneFromKarvonen(m, r, z.minPct, z.maxPct);
+          const maxPct = z.maxPct || 1.0;
           return (
-            <div key={i} className="flex justify-between p-2 border-b last:border-0 border-border">
-              <span className="font-medium">{z.zone} ({z.name})</span>
-              <span className="font-mono text-primary">{res.min}{res.max ? ' - ' + res.max : '+'} bpm</span>
-            </div>
+             <div key={i} className="mb-4">
+               <div className="flex justify-between mb-1 text-sm font-bold uppercase tracking-wider">
+                 <span>{z.zone} <span className="text-muted-foreground ml-1">({z.name})</span></span>
+                 <span className="font-mono text-primary">{res.min}{res.max ? ' - ' + res.max : '+'} bpm</span>
+               </div>
+               <div className="w-full bg-neutral-200 h-6 rounded-md overflow-hidden border-2 border-border-heavy relative">
+                 <div className="absolute top-0 bottom-0 bg-primary border-r-2 border-border-heavy opacity-90" style={{ left: 0, width: `${maxPct * 100}%` }}></div>
+               </div>
+             </div>
           );
         });
         inputUsed = { HRmax: m, RHR: r };
@@ -68,11 +81,18 @@ export default function ZoneLab() {
         if (isNaN(l) || l <= 0) return setError('Invalid LTHR');
         resZones = zones.map((z, i) => {
           const res = zoneFromLthr(l, z.minPct, z.maxPct);
+          const maxPct = z.maxPct || 1.1; // lthr can go above 100%
+          const fillWidth = Math.min(100, maxPct * 100);
           return (
-            <div key={i} className="flex justify-between p-2 border-b last:border-0 border-border">
-              <span className="font-medium">{z.zone} ({z.name})</span>
-              <span className="font-mono text-primary">{res.min}{res.max ? ' - ' + res.max : '+'} bpm</span>
-            </div>
+             <div key={i} className="mb-4">
+               <div className="flex justify-between mb-1 text-sm font-bold uppercase tracking-wider">
+                 <span>{z.zone} <span className="text-muted-foreground ml-1">({z.name})</span></span>
+                 <span className="font-mono text-primary">{res.min}{res.max ? ' - ' + res.max : '+'} bpm</span>
+               </div>
+               <div className="w-full bg-neutral-200 h-6 rounded-md overflow-hidden border-2 border-border-heavy relative">
+                 <div className="absolute top-0 bottom-0 bg-primary border-r-2 border-border-heavy opacity-90" style={{ left: 0, width: `${(fillWidth / 1.1)}%` }}></div>
+               </div>
+             </div>
           );
         });
         inputUsed = { LTHR: l };

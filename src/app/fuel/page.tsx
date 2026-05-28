@@ -66,7 +66,7 @@ export default function FuelLabPage() {
                     />
                   </div>
                 </div>
-                <div className="text-[10px] font-mono tracking-widest text-zinc-500 mb-2 mt-4 border border-zinc-800/80 bg-zinc-950/50 p-2 uppercase">SYS_NOTE: Scientific consensus recommends 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 mt-4 bg-white p-3 rounded-lg border-2 border-border-heavy">NOTE: Scientific consensus recommends 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
                 <ValidationMessage message={error} />
                 <div className="flex gap-3 pt-4">
                   <Button type="submit" className="flex-1 ">Calculate</Button>
@@ -84,21 +84,21 @@ export default function FuelLabPage() {
                 ...result,
                 result: (
                   <div className="w-full space-y-4">
-                    <div className="flex flex-col items-center p-4 bg-zinc-950/80 border border-zinc-800 rounded-none">
-                      <span className="text-zinc-500 text-[10px] font-mono tracking-widest mb-1 uppercase">Total Session Carbs</span>
-                      <span className="font-mono text-4xl font-bold text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]">{result.result.totalCarbs}g</span>
+                    <div className="flex flex-col items-center p-6 bg-primary border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+                      <span className="text-primary-foreground text-[10px] font-bold uppercase tracking-widest mb-1">Total Session Carbs</span>
+                      <span className="font-display text-5xl md:text-6xl font-bold tracking-tighter text-primary-foreground">{result.result.totalCarbs}g</span>
                     </div>
                     
-                    <div className="space-y-2 pt-2 border-t border-zinc-800">
-                      <div className="text-[10px] text-zinc-600 font-mono tracking-widest uppercase">Equivalents (approximate)</div>
-                      <div className="grid grid-cols-2 gap-2 text-sm font-mono">
-                        <div className="p-3 border border-zinc-800 bg-zinc-950/50 rounded-none text-center">
-                          <div className="font-mono text-xl mb-1 text-cyan-500/80">{result.result.gelsAt20g}</div>
-                          <div className="text-zinc-500 tracking-widest text-[9px] uppercase">Gels (20g eq)</div>
+                    <div className="space-y-3 pt-2">
+                      <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Equivalents (approximate)</div>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="p-4 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+                          <div className="font-display text-2xl font-bold tracking-tight mb-0.5">{result.result.gelsAt20g}</div>
+                          <div className="text-muted-foreground tracking-widest text-[9px] font-bold uppercase">Gels (20g ea)</div>
                         </div>
-                        <div className="p-3 border border-zinc-800 bg-zinc-950/50 rounded-none text-center">
-                          <div className="font-mono text-xl mb-1 text-cyan-500/80">{result.result.gelsAt30g}</div>
-                          <div className="text-zinc-500 tracking-widest text-[9px] uppercase">Gels (30g eq)</div>
+                        <div className="p-4 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+                          <div className="font-display text-2xl font-bold tracking-tight mb-0.5">{result.result.gelsAt30g}</div>
+                          <div className="text-muted-foreground tracking-widest text-[9px] font-bold uppercase">Gels (30g ea)</div>
                         </div>
                       </div>
                     </div>

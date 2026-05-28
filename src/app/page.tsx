@@ -1,7 +1,8 @@
 import { Card, CardContent, CardTitle, CardDescription } from '@/components/ui/Card';
 import { LAB_ROUTES } from '@/data/navigation';
 import Link from 'next/link';
-import { ShieldCheck, Database, BotOff, FunctionSquare } from 'lucide-react';
+import { ShieldCheck, Database, BotOff, FunctionSquare, ArrowUpRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const DESCRIPTIONS: Record<string, string> = {
   '/pace': 'Calculate pace, time, speed, and splits from your direct inputs.',
@@ -27,65 +28,96 @@ const DESCRIPTIONS: Record<string, string> = {
 
 export default function Home() {
   return (
-    <div className="space-y-12 pb-10">
-      <div className="space-y-6 pt-4 md:pt-8 max-w-3xl">
-        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground">
-          Welcome to Track.Lab
-        </h1>
-        <p className="text-muted-foreground text-lg leading-relaxed">
-          A formula-based running calculator suite for clear, transparent, and practical training calculations. Manual input only. No AI. No stored data.
-        </p>
-        <div className="flex flex-wrap gap-3 pt-2">
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground bg-muted/40 px-3 py-1.5 rounded-full border border-border">
-            <FunctionSquare className="w-3.5 h-3.5" />
-            Formula shown
+    <div className="space-y-12 pb-16">
+      <div className="brutalist-panel-heavy bg-card p-8 md:p-12 relative overflow-hidden">
+        <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary rounded-full opacity-20 blur-3xl pointer-events-none"></div>
+        <div className="relative z-10 space-y-6 max-w-4xl pt-4">
+          <div className="flex gap-2">
+             <div className="h-6 w-3 bg-primary rounded-full" />
+             <div className="text-xs font-bold uppercase tracking-widest text-primary">System Online</div>
           </div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground bg-muted/40 px-3 py-1.5 rounded-full border border-border">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            Manual input
-          </div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground bg-muted/40 px-3 py-1.5 rounded-full border border-border">
-            <BotOff className="w-3.5 h-3.5" />
-            No AI
-          </div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground bg-muted/40 px-3 py-1.5 rounded-full border border-border">
-            <Database className="w-3.5 h-3.5" />
-            No stored data
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-display font-black uppercase tracking-tighter text-foreground leading-[0.9]">
+            Running Architecture
+          </h1>
+          <p className="text-muted-foreground font-medium text-lg md:text-xl leading-relaxed max-w-2xl border-l-4 border-primary pl-4">
+            A deterministic, formula-based calculator suite for clear, transparent, and practical training analysis.
+          </p>
+          <div className="flex flex-wrap gap-4 pt-4">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground bg-white px-4 py-2 rounded-full border-2 border-border-heavy shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+              <FunctionSquare className="w-4 h-4 text-primary" />
+              Transparent
+            </div>
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground bg-white px-4 py-2 rounded-full border-2 border-border-heavy shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+              <ShieldCheck className="w-4 h-4 text-primary" />
+              Manual Input
+            </div>
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground bg-white px-4 py-2 rounded-full border-2 border-border-heavy shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+              <BotOff className="w-4 h-4 text-primary" />
+              No AI
+            </div>
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground bg-white px-4 py-2 rounded-full border-2 border-border-heavy shadow-[2px_2px_0px_rgba(23,23,23,1)]">
+              <Database className="w-4 h-4 text-primary" />
+              No Stored Data
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-        {LAB_ROUTES.filter(r => r.href !== '/').map((route) => {
-          const Icon = route.icon;
-          const desc = DESCRIPTIONS[route.href] || 'Calculate values and metrics for this module.';
-          const tagText = route.href === '/formulas' ? 'Reference' : (route.href === '/workout-library' ? 'Library' : 'Calculator');
-          
-          return (
-            <Link key={route.href} href={route.href} className="group outline-none block h-full">
-              <Card className="h-full transition-all duration-300 hover:shadow-md hover:border-primary/40 group-hover:-translate-y-1 bg-card">
-                <CardContent className="p-6 flex flex-col items-start gap-4 h-full">
-                  <div className="flex items-center justify-between w-full">
-                    <div className="p-2.5 bg-primary/10 rounded-lg text-primary group-hover:scale-110 transition-transform duration-300">
-                      <Icon className="w-5 h-5" />
+      <div className="space-y-6">
+        <h2 className="text-2xl font-display font-bold uppercase tracking-tighter flex items-center gap-3">
+          <span className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center border-2 border-foreground">
+            <span className="w-2 h-2 rounded-full bg-background" />
+          </span>
+          Active Modules
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {LAB_ROUTES.filter(r => r.href !== '/').map((route, i) => {
+            const Icon = route.icon;
+            const desc = DESCRIPTIONS[route.href] || 'Calculate values and metrics for this module.';
+            const tagText = route.href === '/formulas' ? 'Reference' : (route.href === '/workout-library' ? 'Library' : 'Calculator');
+            const isFeatured = i % 5 === 0;
+            
+            return (
+              <Link key={route.href} href={route.href} className="group outline-none block h-full">
+                <div className={cn(
+                  "h-full transition-all duration-200 brutalist-panel-heavy p-6 flex flex-col group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:shadow-[0px_0px_0px_rgba(23,23,23,1)]",
+                  isFeatured ? "bg-card relative overflow-hidden" : "bg-white"
+                )}>
+                  {isFeatured && (
+                    <div className="absolute -right-12 -top-12 w-32 h-32 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/40 transition-colors" />
+                  )}
+                  
+                  <div className="flex items-center justify-between w-full mb-6 relative z-10">
+                    <div className={cn(
+                      "p-3 rounded-xl border-2 border-border-heavy shadow-[2px_2px_0px_rgba(23,23,23,1)] group-hover:shadow-none group-hover:translate-x-[2px] group-hover:translate-y-[2px] transition-all",
+                      isFeatured ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
+                    )}>
+                      <Icon className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                      {tagText}
-                    </span>
+                    <div className="flex gap-2">
+                      <span className="text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border-2 border-border-heavy bg-card text-muted-foreground shadow-[1px_1px_0px_rgba(23,23,23,1)]">
+                        {tagText}
+                      </span>
+                      <div className="w-8 h-8 rounded-full border-2 border-border-heavy flex items-center justify-center bg-card shadow-[1px_1px_0px_rgba(23,23,23,1)] text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors group-hover:shadow-none group-hover:translate-y-[1px] group-hover:translate-x-[1px]">
+                         <ArrowUpRight className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <CardTitle className="text-base group-hover:text-primary transition-colors">
+                  
+                  <div className="space-y-3 mt-auto relative z-10">
+                    <h3 className="text-xl font-display font-bold uppercase tracking-tight text-foreground group-hover:text-primary transition-colors">
                       {route.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm mt-0 line-clamp-3">
+                    </h3>
+                    <p className="text-sm font-medium text-muted-foreground line-clamp-2">
                       {desc}
-                    </CardDescription>
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

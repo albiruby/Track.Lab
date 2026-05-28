@@ -155,13 +155,20 @@ export default function HeartRateLabPage() {
               <ResultCard result={{
                 ...zonesResult,
                 result: (
-                  <div className="flex flex-col p-2">
-                    {zonesResult.result.map((z, i) => (
-                      <div key={i} className="flex justify-between p-2 border-b last:border-0 border-border">
-                        <span className="font-medium">{z.name} ({z.intensity})</span>
-                        <span className="font-mono text-primary">~{z.bpm} bpm</span>
+                  <div className="flex flex-col pt-2">
+                    {zonesResult.result.map((z, i) => {
+                      const maxPct = z.intensity.includes('-') ? parseFloat(z.intensity.split('-')[1]) : 100;
+                      return (
+                      <div key={i} className="mb-4">
+                        <div className="flex justify-between mb-1 text-sm font-bold uppercase tracking-wider">
+                          <span>{z.name} <span className="text-muted-foreground ml-1">({z.intensity})</span></span>
+                          <span className="font-mono text-primary">~{z.bpm} bpm</span>
+                        </div>
+                        <div className="w-full bg-neutral-200 h-6 rounded-md overflow-hidden border-2 border-border-heavy relative">
+                          <div className="absolute top-0 bottom-0 bg-primary border-r-2 border-border-heavy opacity-90" style={{ left: 0, width: `${maxPct}%` }}></div>
+                        </div>
                       </div>
-                    ))}
+                    )})}
                   </div>
                 )
               }} />

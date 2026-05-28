@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TopBar } from '@/components/layout/TopBar';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -14,6 +14,11 @@ const jbMono = JetBrains_Mono({
   variable: '--font-mono',
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-display',
+});
+
 export const metadata: Metadata = {
   title: 'Track.Lab | Running Calculator Suite',
   description: 'Running calculators for pace, zones, race planning, workouts, load, fueling, and more.',
@@ -21,8 +26,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${jbMono.variable}`}>
-      <body className="bg-background text-foreground min-h-screen font-sans selection:bg-cyan-500/30 overflow-hidden" suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${jbMono.variable} ${spaceGrotesk.variable}`}>
+      <body className="bg-background text-foreground min-h-screen font-sans selection:bg-primary/30 overflow-hidden" suppressHydrationWarning>
         <div className="flex h-screen bg-background">
           <Sidebar />
           <div className="flex-1 flex flex-col items-stretch overflow-hidden relative">

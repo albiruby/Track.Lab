@@ -4,27 +4,37 @@
 @theme {
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-display: var(--font-display), var(--font-sans);
 
-  /* We define the background color globally to match semantic tokens */
-  --color-background: #0B0F14;
-  --color-foreground: #F8FAFC;
-  --color-card: #111827;
-  --color-card-foreground: #F8FAFC;
-  --color-popover: #111827;
-  --color-popover-foreground: #F8FAFC;
-  --color-primary: #38BDF8;
-  --color-primary-foreground: #0B0F14;
-  --color-secondary: #1E293B;
-  --color-secondary-foreground: #F8FAFC;
-  --color-muted: #1E293B;
-  --color-muted-foreground: #94A3B8;
-  --color-accent: #1E293B;
-  --color-accent-foreground: #F8FAFC;
-  --color-destructive: #EF4444;
-  --color-destructive-foreground: #F8FAFC;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-input: rgba(255, 255, 255, 0.08);
-  --color-ring: rgba(56, 189, 248, 0.5);
+  /* Bauhaus / Soft Brutalist Palette */
+  --color-background: #E8E4DA;
+  --color-foreground: #171717;
+  --color-card: #F3F0E8;
+  --color-card-foreground: #171717;
+  --color-popover: #F3F0E8;
+  --color-popover-foreground: #171717;
+  
+  --color-primary: #F2C300;
+  --color-primary-foreground: #171717;
+  
+  --color-secondary: #C8D4EA;
+  --color-secondary-foreground: #171717;
+  
+  --color-muted: #DDD5C7;
+  --color-muted-foreground: #4B4B4B;
+  
+  --color-accent: #161616;
+  --color-accent-foreground: #FFFFFF;
+  
+  --color-destructive: #E84C3D;
+  --color-destructive-foreground: #FFFFFF;
+  
+  --color-border: rgba(0, 0, 0, 0.15);
+  --color-border-heavy: #171717;
+  --color-input: rgba(0, 0, 0, 0.1);
+  --color-ring: #171717;
+  
+  --radius-xl: 1.25rem;
   --radius-lg: 1rem;
   --radius-md: 0.75rem;
   --radius-sm: 0.5rem;
@@ -34,14 +44,14 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    /* Removed the explicit radial gradient/cyberpunk backgrounds */
+    font-weight: 500; /* Add a bit to base readability */
   }
 }
 
-/* Base custom scrollbar - very thin and soft */
+/* Base custom scrollbar - clean and dark */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -54,22 +64,22 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.15);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 999px;
   border: 1px solid transparent;
   background-clip: padding-box;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid transparent;
   background-clip: padding-box;
 }
 
-/* Sidebar specifically can have a slightly tinted scrollbar thumb if necessary, but keep it soft */
+/* Sidebar soft scrollbar */
 .tracklab-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.25) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
 
 .tracklab-scrollbar::-webkit-scrollbar {
@@ -81,10 +91,29 @@
 }
 
 .tracklab-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.2);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 999px;
 }
 
 .tracklab-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.4);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Standard Brutalist Panel Styles to use in components */
+@layer components {
+  .brutalist-panel {
+    @apply bg-card border border-foreground/20 rounded-xl overflow-hidden shadow-[2px_4px_12px_rgba(0,0,0,0.05)];
+  }
+  
+  .brutalist-panel-heavy {
+    @apply bg-card border-2 border-foreground rounded-xl overflow-hidden shadow-[4px_4px_0px_rgba(23,23,23,1)];
+  }
+
+  .brutalist-panel-dark {
+    @apply bg-accent text-accent-foreground border-2 border-foreground rounded-xl overflow-hidden shadow-[4px_4px_0px_rgba(23,23,23,1)];
+  }
+
+  .brutalist-button {
+    @apply border-2 border-foreground bg-primary text-primary-foreground font-semibold rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+  }
 }
