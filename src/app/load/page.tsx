@@ -13,6 +13,67 @@ export default function LoadLabPage() {
   const [chronic, setChronic] = useState('450');
   const [acwrResult, setAcwrResult] = useState<CalculatorResult<string> | null>(null);
 
+  const [sRpeDuration, setSRpeDuration] = useState('60');
+  const [sRpeVal, setSRpeVal] = useState('5');
+  const [sRpeResult, setSRpeResult] = useState<CalculatorResult<string> | null>(null);
+
+  const [weeklyDistances, setWeeklyDistances] = useState('10, 0, 12, 8, 0, 20, 0');
+  const [longRunDist, setLongRunDist] = useState('20');
+  const [weeklyDistResult, setWeeklyDistResult] = useState<CalculatorResult<any> | null>(null);
+
+  const handleSRpe = (e: React.FormEvent) => {
+    e.preventDefault();
+    const dur = parseFloat(sRpeDuration);
+    const rpe = parseFloat(sRpeVal);
+    if (!isNaN(dur) && !isNaN(rpe)) {
+      const load = dur * rpe;
+      const meta = methodRegistry.find(m => m.id === 'srpe_load')!;
+      setSRpeResult({
+        result: load.toString(),
+        inputUsed: { 'Duration (min)': dur, 'RPE': rpe },
+        methodSelected: meta.name,
+        formulaUsed: meta.formulaDisplay,
+        limitations: Array.isArray(meta.limitations) ? meta.limitations.join(' ') : String(meta.limitations || ''),
+        confidenceLabel: meta.precision?.replace('_', ' ') || 'Estimate'
+      });
+    }
+  };
+
+  const handleWeeklyDist = (e: React.FormEvent) => {
+    e.preventDefault();
+    const dists = weeklyDistances.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+    const lrDist = parseFloat(longRunDist);
+    if (dists.length > 0) {
+      const total = dists.reduce((a, b) => a + b, 0);
+      const meta = methodRegistry.find(m => m.id === 'weekly_mileage')!;
+      let lrRatio = 0;
+      if (!isNaN(lrDist) && total > 0) {
+        lrRatio = lrDist / total;
+      }
+      setWeeklyDistResult({
+        result: (
+          <div className="w-full space-y-4">
+            <div className="flex justify-between items-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
+              <span className="text-sm font-semibold uppercase text-zinc-500">Weekly Total</span>
+              <span className="text-xl font-bold font-mono">{total} units</span>
+            </div>
+            {lrRatio > 0 && (
+              <div className="flex justify-between items-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
+                <span className="text-sm font-semibold uppercase text-zinc-500">Long Run Ratio</span>
+                <span className="text-xl font-bold font-mono">{(lrRatio * 100).toFixed(1)}%</span>
+              </div>
+            )}
+          </div>
+        ),
+        inputUsed: { 'Daily Distances': dists.join(', ') },
+        methodSelected: meta?.name || 'Weekly Distance',
+        formulaUsed: meta?.formulaDisplay || 'Weekly Distance = sum(daily distances)',
+        limitations: Array.isArray(meta?.limitations) ? meta.limitations.join(' ') : String(meta?.limitations || ''),
+        confidenceLabel: meta?.precision?.replace('_', ' ') || 'Exact'
+      });
+    }
+  };
+
   const [dailyLoads, setDailyLoads] = useState('50, 100, 0, 120, 0, 80, 150');
   const [monotonyResult, setMonotonyResult] = useState<CalculatorResult<any> | null>(null);
 
@@ -83,6 +144,28 @@ export default function LoadLabPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
+              <CardTitle>Session RPE (sRPE)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSRpe} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="sRpeDuration">Duration (min)</Label>
+                    <Input id="sRpeDuration" type="number" step="0.1" value={sRpeDuration} onChange={e => setSRpeDuration(e.target.value)} required />
+                  </div>
+                  <div>
+                    <Label htmlFor="sRpeVal">Session RPE (1-10)</Label>
+                    <Input id="sRpeVal" type="number" step="0.1" value={sRpeVal} onChange={e => setSRpeVal(e.target.value)} required />
+                  </div>
+                </div>
+                <Button type="submit" className="w-full">Calculate sRPE Load</Button>
+              </form>
+            </CardContent>
+          </Card>
+          {sRpeResult && <ResultCard result={sRpeResult} />}
+
+          <Card>
+            <CardHeader>
               <CardTitle>ACWR (Acute:Chronic Workload)</CardTitle>
             </CardHeader>
             <CardContent>
@@ -108,6 +191,26 @@ export default function LoadLabPage() {
         </div>
 
         <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Weekly Distance & Long Run Ratio</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleWeeklyDist} className="space-y-4">
+                <div>
+                  <Label htmlFor="weeklyDistances">Daily Distances (comma separated)</Label>
+                  <Input id="weeklyDistances" value={weeklyDistances} onChange={e => setWeeklyDistances(e.target.value)} required />
+                </div>
+                <div>
+                  <Label htmlFor="longRunDist">Long Run Distance</Label>
+                  <Input id="longRunDist" type="number" step="0.1" value={longRunDist} onChange={e => setLongRunDist(e.target.value)} required />
+                </div>
+                <Button type="submit" className="w-full">Calculate Distance Metrics</Button>
+              </form>
+            </CardContent>
+          </Card>
+          {weeklyDistResult && <ResultCard result={weeklyDistResult} />}
+
           <Card>
             <CardHeader>
               <CardTitle>Monotony & Strain</CardTitle>

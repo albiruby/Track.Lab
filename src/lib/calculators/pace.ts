@@ -18,11 +18,11 @@ export function calculatePace(distanceKm: number, timeSeconds: number): Calculat
 
 import { riegelPredictTime } from '@/lib/calculators_pack/racePrediction';
 
-export function calculateRiegelPrediction(d1Km: number, t1Seconds: number, d2Km: number): CalculatorResult<number> {
-  const t2Seconds = Math.round(riegelPredictTime(d1Km * 1000, t1Seconds, d2Km * 1000));
+export function calculateRiegelPrediction(d1Km: number, t1Seconds: number, d2Km: number, exponent: number = 1.06): CalculatorResult<number> {
+  const t2Seconds = Math.round(riegelPredictTime(d1Km * 1000, t1Seconds, d2Km * 1000, exponent));
 
   return {
-    inputUsed: { 'Base Dist (km)': d1Km, 'Base Time (s)': t1Seconds, 'Target Dist (km)': d2Km },
+    inputUsed: { 'Base Dist (km)': d1Km, 'Base Time (s)': t1Seconds, 'Target Dist (km)': d2Km, 'Exponent': exponent },
     methodSelected: METHOD_RIEGEL.name,
     formulaUsed: METHOD_RIEGEL.formulaDisplay,
     result: t2Seconds,

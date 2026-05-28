@@ -1,9 +1,28 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { useState, useMemo } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input, Select, Label } from '@/components/ui/Forms';
 import { methodRegistry } from '@/data';
 
 export default function FormulaLibraryPage() {
+  const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+
+  const categories = useMemo(() => {
+    const cats = new Set<string>();
+    methodRegistry.forEach(m => cats.add(m.category));
+    return Array.from(cats).sort();
+  }, []);
+
+  const filteredMethods = useMemo(() => {
+    return methodRegistry.filter(m => {
+      const matchSearch = m.name.toLowerCase().includes(search.toLowerCase()) || m.id.toLowerCase().includes(search.toLowerCase());
+      const matchCategory = categoryFilter === 'all' || m.category === categoryFilter;
+      return matchSearch && matchCategory;
+    });
+  }, [search, categoryFilter]);
+
   return (
     <div className="space-y-6 flex flex-col">
       <div className="space-y-2">
@@ -11,12 +30,33 @@ export default function FormulaLibraryPage() {
         <p className="text-zinc-600 dark:text-zinc-400">Reference index of all integrated equations and logic rules.</p>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl">
+        <div className="space-y-2">
+          <Label>Search Formulas</Label>
+          <Input 
+            type="text" 
+            placeholder="Search name or ID..." 
+            value={search} 
+            onChange={(e) => setSearch(e.target.value)} 
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Category</Label>
+          <Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+            <option value="all">All Categories</option>
+            {categories.map(c => (
+              <option key={c} value={c}>{c.replace(/_+/g, ' ').toUpperCase()}</option>
+            ))}
+          </Select>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
-        {methodRegistry.map(method => (
-          <Card key={method.id} className="flex flex-col h-full">
+        {filteredMethods.map(method => (
+          <Card key={method.id} className="flex flex-col h-full hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">
             <CardHeader className="pb-3 border-b border-zinc-100 dark:border-zinc-800">
               <div className="text-[10px] uppercase font-mono tracking-wider text-zinc-400 mb-2 truncate bg-zinc-100 dark:bg-zinc-800 self-start px-2 py-0.5 rounded">
-                Cat: {method.category.replace('_', ' ')}
+                Cat: {method.category.replace(/_+/g, ' ')}
               </div>
               <CardTitle className="text-lg leading-tight">{method.name}</CardTitle>
             </CardHeader>
@@ -45,13 +85,18 @@ export default function FormulaLibraryPage() {
                 )}
               </div>
               
-              <div className="pt-2 flex justify-between items-center text-xs text-zinc-400">
+              <div className="pt-2 flex justify-between items-center text-xs text-zinc-400 mt-auto border-t border-zinc-50 dark:border-zinc-800/50 pt-3">
                 <span className="font-mono">{method.id}</span>
-                <span className="capitalize">{method.precision?.replace('_', ' ')}</span>
+                <span className="capitalize">{method.precision?.replace(/_+/g, ' ')}</span>
               </div>
             </CardContent>
           </Card>
         ))}
+        {filteredMethods.length === 0 && (
+          <div className="col-span-full py-12 text-center text-zinc-500">
+            No formulas match your search.
+          </div>
+        )}
       </div>
     </div>
   );
