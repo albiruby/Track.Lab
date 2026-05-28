@@ -1,0 +1,46 @@
+[
+  {
+    "id": "cadence",
+    "name": "Cadence",
+    "formulaDisplay": "Cadence = steps / minutes",
+    "requiredInputs": [
+      "steps",
+      "durationMinutes"
+    ],
+    "unit": "steps/min",
+    "precision": "mathematical"
+  },
+  {
+    "id": "step_count",
+    "name": "Step Count",
+    "formulaDisplay": "Steps = cadence × duration minutes",
+    "requiredInputs": [
+      "cadence",
+      "durationMinutes"
+    ],
+    "unit": "steps",
+    "precision": "mathematical"
+  },
+  {
+    "id": "stride_length",
+    "name": "Stride Length",
+    "formulaDisplay": "Stride length = speed meters per minute / steps per minute",
+    "requiredInputs": [
+      "speedMetersPerMinute",
+      "cadence"
+    ],
+    "unit": "m/step",
+    "precision": "mathematical"
+  },
+  {
+    "id": "speed_from_cadence_stride",
+    "name": "Speed from Cadence and Stride Length",
+    "formulaDisplay": "Speed = cadence × stride length",
+    "requiredInputs": [
+      "cadence",
+      "strideLengthMeters"
+    ],
+    "unit": "m/min",
+    "precision": "mathematical"
+  }
+]

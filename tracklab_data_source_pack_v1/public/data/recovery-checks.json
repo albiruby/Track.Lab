@@ -1,0 +1,52 @@
+[
+  {
+    "id": "sleep_duration",
+    "name": "Sleep Duration",
+    "formulaDisplay": "Sleep duration = wake time - bedtime",
+    "requiredInputs": [
+      "bedtime",
+      "wakeTime"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "rhr_delta",
+    "name": "Resting HR Delta",
+    "formulaDisplay": "RHR delta = today RHR - baseline RHR",
+    "requiredInputs": [
+      "todayRHR",
+      "baselineRHR"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "hrv_delta_pct",
+    "name": "HRV Change %",
+    "formulaDisplay": "HRV change % = (today HRV - baseline HRV) / baseline HRV × 100",
+    "requiredInputs": [
+      "todayHRV",
+      "baselineHRV"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "body_mass_delta_pct",
+    "name": "Body Mass Change %",
+    "formulaDisplay": "Body mass change % = (today weight - baseline weight) / baseline weight × 100",
+    "requiredInputs": [
+      "todayWeight",
+      "baselineWeight"
+    ],
+    "precision": "mathematical"
+  },
+  {
+    "id": "session_rpe_recovery",
+    "name": "Session RPE Load",
+    "formulaDisplay": "sRPE load = duration minutes × RPE",
+    "requiredInputs": [
+      "durationMinutes",
+      "rpe"
+    ],
+    "precision": "field_estimate"
+  }
+]

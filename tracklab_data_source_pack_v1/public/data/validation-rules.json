@@ -1,0 +1,44 @@
+[
+  {
+    "id": "positive_number",
+    "fieldType": "number",
+    "rule": "value > 0",
+    "message": "Value must be greater than zero."
+  },
+  {
+    "id": "age_range",
+    "field": "age",
+    "rule": "5 <= value <= 100",
+    "message": "Age must be between 5 and 100."
+  },
+  {
+    "id": "hr_range",
+    "field": "heartRate",
+    "rule": "30 <= value <= 240",
+    "message": "Heart rate must be between 30 and 240 bpm."
+  },
+  {
+    "id": "rhr_less_than_hrmax",
+    "field": "restingHeartRate,maxHeartRate",
+    "rule": "restingHeartRate < maxHeartRate",
+    "message": "Resting HR must be lower than max HR."
+  },
+  {
+    "id": "pace_valid",
+    "field": "pace",
+    "rule": "paceSecondsPerKm > 0",
+    "message": "Pace must be valid."
+  },
+  {
+    "id": "race_time_valid",
+    "field": "raceTime",
+    "rule": "timeSeconds > 0",
+    "message": "Race time must be valid."
+  },
+  {
+    "id": "no_output_without_required_input",
+    "field": "global",
+    "rule": "all requiredInputs are present",
+    "message": "Input incomplete. This method requires additional fields."
+  }
+]

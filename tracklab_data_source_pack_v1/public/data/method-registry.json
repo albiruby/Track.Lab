@@ -1,0 +1,823 @@
+[
+  {
+    "id": "fox_220_age",
+    "category": "heart_rate_max",
+    "name": "Fox HRmax",
+    "requiredInputs": [
+      "age"
+    ],
+    "formulaDisplay": "HRmax = 220 - age",
+    "precision": "estimate",
+    "limitations": [
+      "Population estimate only.",
+      "Can be very inaccurate for individuals."
+    ]
+  },
+  {
+    "id": "tanaka_208_07_age",
+    "category": "heart_rate_max",
+    "name": "Tanaka HRmax",
+    "requiredInputs": [
+      "age"
+    ],
+    "formulaDisplay": "HRmax = 208 - 0.7 × age",
+    "precision": "estimate",
+    "limitations": [
+      "Population estimate only.",
+      "Prefer measured HRmax when available."
+    ]
+  },
+  {
+    "id": "gellish_2069_067_age",
+    "category": "heart_rate_max",
+    "name": "Gellish HRmax",
+    "requiredInputs": [
+      "age"
+    ],
+    "formulaDisplay": "HRmax = 206.9 - 0.67 × age",
+    "precision": "estimate",
+    "limitations": [
+      "Population estimate only.",
+      "Not a measured maximum."
+    ]
+  },
+  {
+    "id": "gulati_206_088_age",
+    "category": "heart_rate_max",
+    "name": "Gulati HRmax",
+    "requiredInputs": [
+      "age"
+    ],
+    "formulaDisplay": "HRmax = 206 - 0.88 × age",
+    "precision": "estimate",
+    "limitations": [
+      "Population estimate, often referenced for women.",
+      "Not a measured maximum."
+    ]
+  },
+  {
+    "id": "nes_211_064_age",
+    "category": "heart_rate_max",
+    "name": "HUNT/Nes HRmax",
+    "requiredInputs": [
+      "age"
+    ],
+    "formulaDisplay": "HRmax = 211 - 0.64 × age",
+    "precision": "estimate",
+    "limitations": [
+      "Population estimate only."
+    ]
+  },
+  {
+    "id": "manual_hrmax",
+    "category": "heart_rate_max",
+    "name": "Manual / Measured HRmax",
+    "requiredInputs": [
+      "maxHeartRate"
+    ],
+    "formulaDisplay": "HRmax = user-provided measured value",
+    "precision": "measured_or_custom",
+    "limitations": [
+      "Quality depends on how HRmax was measured.",
+      "Do not force max tests without supervision."
+    ]
+  },
+  {
+    "id": "five_zone_hrmax_standard",
+    "category": "heart_rate_zone",
+    "name": "5-Zone %HRmax",
+    "requiredInputs": [
+      "maxHeartRate"
+    ],
+    "formulaDisplay": "Zone HR = HRmax × percentage range",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "five_zone_karvonen_hrr",
+    "category": "heart_rate_zone",
+    "name": "5-Zone Karvonen / HRR",
+    "requiredInputs": [
+      "maxHeartRate",
+      "restingHeartRate"
+    ],
+    "formulaDisplay": "Target HR = RHR + intensity × (HRmax - RHR)",
+    "precision": "estimate_personalized",
+    "limitations": []
+  },
+  {
+    "id": "lthr_8020_five_zone",
+    "category": "heart_rate_zone",
+    "name": "5-Zone LTHR / 80-20 Style",
+    "requiredInputs": [
+      "lactateThresholdHeartRate"
+    ],
+    "formulaDisplay": "Zone HR = LTHR × percentage range",
+    "precision": "field_test",
+    "limitations": []
+  },
+  {
+    "id": "maf_180",
+    "category": "heart_rate_zone",
+    "name": "MAF 180 Aerobic Ceiling",
+    "requiredInputs": [
+      "age",
+      "mafModifier"
+    ],
+    "formulaDisplay": "MAF ceiling = 180 - age + modifier",
+    "precision": "estimate",
+    "limitations": [
+      "Simple aerobic ceiling, not full zone model."
+    ]
+  },
+  {
+    "id": "custom_hr_zones",
+    "category": "heart_rate_zone",
+    "name": "Custom HR Zones",
+    "requiredInputs": [
+      "customZoneRanges"
+    ],
+    "formulaDisplay": "User-defined HR ranges",
+    "precision": "custom",
+    "limitations": []
+  },
+  {
+    "id": "race_derived_generic",
+    "category": "pace_zone",
+    "name": "Race-Derived Generic Pace Zones",
+    "requiredInputs": [
+      "recentRaceDistance",
+      "recentRaceTime"
+    ],
+    "formulaDisplay": "Derive current training paces from recent race/time-trial result using selected model.",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "threshold_based",
+    "category": "pace_zone",
+    "name": "Threshold-Pace-Based Zones",
+    "requiredInputs": [
+      "thresholdPace"
+    ],
+    "formulaDisplay": "Zone pace ranges use threshold pace as anchor.",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "critical_speed_based",
+    "category": "pace_zone",
+    "name": "Critical-Speed-Based Zones",
+    "requiredInputs": [
+      "criticalSpeed"
+    ],
+    "formulaDisplay": "Zone speeds are anchored to critical speed.",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "manual_pace_zones",
+    "category": "pace_zone",
+    "name": "Manual Pace Zones",
+    "requiredInputs": [
+      "customPaceRanges"
+    ],
+    "formulaDisplay": "User-defined pace ranges.",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "riegel_106",
+    "category": "race_prediction",
+    "name": "Riegel 1.06",
+    "requiredInputs": [
+      "knownDistance",
+      "knownTime",
+      "targetDistance"
+    ],
+    "formulaDisplay": "T2 = T1 × (D2 / D1)^1.06",
+    "precision": "estimate",
+    "limitations": [
+      "Assumes adequate endurance for target distance.",
+      "Large distance jumps increase uncertainty."
+    ]
+  },
+  {
+    "id": "riegel_custom_exponent",
+    "category": "race_prediction",
+    "name": "Adjustable Riegel",
+    "requiredInputs": [
+      "knownDistance",
+      "knownTime",
+      "targetDistance",
+      "exponent"
+    ],
+    "formulaDisplay": "T2 = T1 × (D2 / D1)^exponent",
+    "precision": "custom_estimate",
+    "limitations": []
+  },
+  {
+    "id": "multi_race_fit",
+    "category": "race_prediction",
+    "name": "Multi-Race Regression Fit",
+    "requiredInputs": [
+      "raceResults[]"
+    ],
+    "formulaDisplay": "Fit log(time) vs log(distance) from multiple results, then estimate target time.",
+    "precision": "estimate",
+    "limitations": [
+      "Better with recent races over similar terrain and conditions."
+    ]
+  },
+  {
+    "id": "goal_pace",
+    "category": "race_prediction",
+    "name": "Goal Pace Calculator",
+    "requiredInputs": [
+      "targetDistance",
+      "targetTime"
+    ],
+    "formulaDisplay": "Goal pace = goal time / race distance",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "cs_two_point",
+    "category": "critical_speed",
+    "name": "2-Point Critical Speed",
+    "requiredInputs": [
+      "trial1Distance",
+      "trial1Time",
+      "trial2Distance",
+      "trial2Time"
+    ],
+    "formulaDisplay": "CS = (D2 - D1) / (T2 - T1); D′ = D1 - CS × T1",
+    "precision": "field_test",
+    "limitations": [
+      "Trials must be maximal and sufficiently different in duration."
+    ]
+  },
+  {
+    "id": "cs_three_point",
+    "category": "critical_speed",
+    "name": "3-Point Critical Speed",
+    "requiredInputs": [
+      "trialResults[3+]"
+    ],
+    "formulaDisplay": "Linear model: distance = CS × time + D′",
+    "precision": "field_test",
+    "limitations": [
+      "More robust than two-point but requires more testing."
+    ]
+  },
+  {
+    "id": "manual_cs",
+    "category": "critical_speed",
+    "name": "Manual Critical Speed",
+    "requiredInputs": [
+      "criticalSpeed"
+    ],
+    "formulaDisplay": "CS = user-provided value",
+    "precision": "custom",
+    "limitations": []
+  },
+  {
+    "id": "cooper_12min",
+    "category": "vo2_metabolic",
+    "name": "Cooper 12-Minute VO2max Estimate",
+    "requiredInputs": [
+      "distanceMetersIn12Min"
+    ],
+    "formulaDisplay": "VO2max = (distance_meters - 504.9) / 44.73",
+    "precision": "field_estimate",
+    "limitations": []
+  },
+  {
+    "id": "acsm_running_vo2",
+    "category": "vo2_metabolic",
+    "name": "ACSM Running VO2 Equation",
+    "requiredInputs": [
+      "speedMetersPerMinute",
+      "gradeDecimal"
+    ],
+    "formulaDisplay": "VO2 = 0.2 × speed + 0.9 × speed × grade + 3.5",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "met_from_vo2",
+    "category": "vo2_metabolic",
+    "name": "MET from VO2",
+    "requiredInputs": [
+      "vo2"
+    ],
+    "formulaDisplay": "MET = VO2 / 3.5",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "calories_met",
+    "category": "vo2_metabolic",
+    "name": "Calories from MET",
+    "requiredInputs": [
+      "met",
+      "bodyMassKg",
+      "durationMinutes"
+    ],
+    "formulaDisplay": "kcal = MET × 3.5 × bodyMassKg / 200 × minutes",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "weekly_mileage",
+    "category": "load",
+    "name": "Weekly Mileage",
+    "requiredInputs": [
+      "dailyDistances"
+    ],
+    "formulaDisplay": "Weekly Distance = sum(daily distances)",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "weekly_duration",
+    "category": "load",
+    "name": "Weekly Duration",
+    "requiredInputs": [
+      "dailyDurations"
+    ],
+    "formulaDisplay": "Weekly Duration = sum(daily durations)",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "long_run_ratio",
+    "category": "load",
+    "name": "Long Run Ratio",
+    "requiredInputs": [
+      "longRunDistance",
+      "weeklyDistance"
+    ],
+    "formulaDisplay": "Long Run Ratio = Long Run Distance / Weekly Distance × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "progression_rate",
+    "category": "load",
+    "name": "Progression Rate",
+    "requiredInputs": [
+      "currentWeekLoad",
+      "previousWeekLoad"
+    ],
+    "formulaDisplay": "Progression % = (currentWeek - previousWeek) / previousWeek × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "srpe_load",
+    "category": "load",
+    "name": "Session RPE Load",
+    "requiredInputs": [
+      "durationMinutes",
+      "rpe"
+    ],
+    "formulaDisplay": "sRPE Load = duration minutes × RPE",
+    "precision": "field_estimate",
+    "limitations": []
+  },
+  {
+    "id": "monotony",
+    "category": "load",
+    "name": "Training Monotony",
+    "requiredInputs": [
+      "dailyLoads"
+    ],
+    "formulaDisplay": "Monotony = mean daily load / standard deviation daily load",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "strain",
+    "category": "load",
+    "name": "Training Strain",
+    "requiredInputs": [
+      "weeklyLoad",
+      "monotony"
+    ],
+    "formulaDisplay": "Strain = Weekly Load × Monotony",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "acwr",
+    "category": "load",
+    "name": "Acute:Chronic Workload Ratio",
+    "requiredInputs": [
+      "acuteLoad",
+      "chronicLoad"
+    ],
+    "formulaDisplay": "ACWR = acute load / chronic load",
+    "precision": "mathematical",
+    "limitations": [
+      "Load ratio only, not injury prediction."
+    ]
+  },
+  {
+    "id": "intensity_distribution",
+    "category": "load",
+    "name": "Intensity Distribution",
+    "requiredInputs": [
+      "zoneDurations"
+    ],
+    "formulaDisplay": "Zone % = zone time / total time × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "carb_total",
+    "category": "fuel_hydration",
+    "name": "Total Carbohydrate",
+    "requiredInputs": [
+      "durationHours",
+      "carbGramsPerHour"
+    ],
+    "formulaDisplay": "Total carbs = duration hours × carb target per hour",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "gel_count",
+    "category": "fuel_hydration",
+    "name": "Gel Count",
+    "requiredInputs": [
+      "totalCarbs",
+      "carbsPerGel"
+    ],
+    "formulaDisplay": "Gel count = total carbs / carbs per gel",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "fluid_total",
+    "category": "fuel_hydration",
+    "name": "Total Fluid",
+    "requiredInputs": [
+      "durationHours",
+      "fluidMlPerHour"
+    ],
+    "formulaDisplay": "Total fluid = duration hours × fluid target per hour",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "bottle_count",
+    "category": "fuel_hydration",
+    "name": "Bottle Count",
+    "requiredInputs": [
+      "totalFluidMl",
+      "bottleVolumeMl"
+    ],
+    "formulaDisplay": "Bottle count = total fluid / bottle volume",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "sodium_total",
+    "category": "fuel_hydration",
+    "name": "Total Sodium",
+    "requiredInputs": [
+      "durationHours",
+      "sodiumMgPerHour"
+    ],
+    "formulaDisplay": "Total sodium = duration hours × sodium target per hour",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "sweat_rate",
+    "category": "fuel_hydration",
+    "name": "Sweat Rate",
+    "requiredInputs": [
+      "preWeightKg",
+      "postWeightKg",
+      "fluidIntakeL",
+      "urineOutputL",
+      "durationHours"
+    ],
+    "formulaDisplay": "Sweat loss = body mass loss + fluid intake - urine output; sweat rate = sweat loss / duration",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "heat_adjustment_note",
+    "category": "environment",
+    "name": "Heat Adjustment Estimate",
+    "requiredInputs": [
+      "temperatureC",
+      "humidityPct",
+      "targetPace"
+    ],
+    "formulaDisplay": "Use selected adjustment model to estimate pace/time penalty. Always label as environmental estimate.",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "altitude_adjustment_note",
+    "category": "environment",
+    "name": "Altitude Adjustment Estimate",
+    "requiredInputs": [
+      "altitudeMeters",
+      "distance",
+      "raceTime"
+    ],
+    "formulaDisplay": "Use selected adjustment model to estimate altitude effect. Always label as estimate.",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "wind_note",
+    "category": "environment",
+    "name": "Wind Note",
+    "requiredInputs": [
+      "windSpeed",
+      "windDirection"
+    ],
+    "formulaDisplay": "Qualitative note unless a validated wind model is implemented.",
+    "precision": "qualitative",
+    "limitations": []
+  },
+  {
+    "id": "grade_pct",
+    "category": "trail_elevation",
+    "name": "Grade Percentage",
+    "requiredInputs": [
+      "elevationGainMeters",
+      "horizontalDistanceMeters"
+    ],
+    "formulaDisplay": "Grade % = elevation gain / horizontal distance × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "elevation_per_km",
+    "category": "trail_elevation",
+    "name": "Elevation per KM",
+    "requiredInputs": [
+      "elevationGainMeters",
+      "distanceKm"
+    ],
+    "formulaDisplay": "Elevation per km = total elevation gain / distance km",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "vertical_speed",
+    "category": "trail_elevation",
+    "name": "Vertical Speed",
+    "requiredInputs": [
+      "elevationGainMeters",
+      "durationHours"
+    ],
+    "formulaDisplay": "Vertical speed = elevation gain / time",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "hill_repeat_volume",
+    "category": "trail_elevation",
+    "name": "Hill Repeat Climb Volume",
+    "requiredInputs": [
+      "reps",
+      "climbMetersPerRep"
+    ],
+    "formulaDisplay": "Total climb = reps × climb per rep",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "pace_to_kmh",
+    "category": "treadmill",
+    "name": "Pace to Treadmill Speed",
+    "requiredInputs": [
+      "paceMinPerKm"
+    ],
+    "formulaDisplay": "km/h = 60 / pace minutes per km",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "kmh_to_pace",
+    "category": "treadmill",
+    "name": "Treadmill Speed to Pace",
+    "requiredInputs": [
+      "speedKmh"
+    ],
+    "formulaDisplay": "pace min/km = 60 / km/h",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "acsm_treadmill_vo2",
+    "category": "treadmill",
+    "name": "Treadmill VO2 Estimate",
+    "requiredInputs": [
+      "speedMetersPerMinute",
+      "gradeDecimal"
+    ],
+    "formulaDisplay": "VO2 = 0.2 × speed + 0.9 × speed × grade + 3.5",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "cadence",
+    "category": "biomechanics",
+    "name": "Cadence",
+    "requiredInputs": [
+      "steps",
+      "durationMinutes"
+    ],
+    "formulaDisplay": "Cadence = steps / minutes",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "step_count",
+    "category": "biomechanics",
+    "name": "Step Count",
+    "requiredInputs": [
+      "cadence",
+      "durationMinutes"
+    ],
+    "formulaDisplay": "Steps = cadence × duration minutes",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "stride_length",
+    "category": "biomechanics",
+    "name": "Stride Length",
+    "requiredInputs": [
+      "speedMetersPerMinute",
+      "cadence"
+    ],
+    "formulaDisplay": "Stride length = speed meters per minute / steps per minute",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "speed_from_cadence_stride",
+    "category": "biomechanics",
+    "name": "Speed from Cadence and Stride Length",
+    "requiredInputs": [
+      "cadence",
+      "strideLengthMeters"
+    ],
+    "formulaDisplay": "Speed = cadence × stride length",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "watts_per_kg",
+    "category": "power",
+    "name": "W/kg",
+    "requiredInputs": [
+      "powerWatts",
+      "bodyMassKg"
+    ],
+    "formulaDisplay": "W/kg = power watts / body mass kg",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "power_efficiency",
+    "category": "power",
+    "name": "Power Efficiency Index",
+    "requiredInputs": [
+      "speed",
+      "powerWatts"
+    ],
+    "formulaDisplay": "Efficiency = speed / power",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "power_drift",
+    "category": "power",
+    "name": "Power Drift",
+    "requiredInputs": [
+      "firstHalfPower",
+      "secondHalfPower"
+    ],
+    "formulaDisplay": "Power drift % = (second half power - first half power) / first half power × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "critical_power_zone",
+    "category": "power",
+    "name": "Critical Power Zones",
+    "requiredInputs": [
+      "criticalPower"
+    ],
+    "formulaDisplay": "Power zones = critical power × selected percentage ranges",
+    "precision": "custom",
+    "limitations": []
+  },
+  {
+    "id": "sleep_duration",
+    "category": "recovery",
+    "name": "Sleep Duration",
+    "requiredInputs": [
+      "bedtime",
+      "wakeTime"
+    ],
+    "formulaDisplay": "Sleep duration = wake time - bedtime",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "rhr_delta",
+    "category": "recovery",
+    "name": "Resting HR Delta",
+    "requiredInputs": [
+      "todayRHR",
+      "baselineRHR"
+    ],
+    "formulaDisplay": "RHR delta = today RHR - baseline RHR",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "hrv_delta_pct",
+    "category": "recovery",
+    "name": "HRV Change %",
+    "requiredInputs": [
+      "todayHRV",
+      "baselineHRV"
+    ],
+    "formulaDisplay": "HRV change % = (today HRV - baseline HRV) / baseline HRV × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "body_mass_delta_pct",
+    "category": "recovery",
+    "name": "Body Mass Change %",
+    "requiredInputs": [
+      "todayWeight",
+      "baselineWeight"
+    ],
+    "formulaDisplay": "Body mass change % = (today weight - baseline weight) / baseline weight × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "session_rpe_recovery",
+    "category": "recovery",
+    "name": "Session RPE Load",
+    "requiredInputs": [
+      "durationMinutes",
+      "rpe"
+    ],
+    "formulaDisplay": "sRPE load = duration minutes × RPE",
+    "precision": "field_estimate",
+    "limitations": []
+  },
+  {
+    "id": "shoe_remaining_km",
+    "category": "gear",
+    "name": "Shoe Remaining Distance",
+    "requiredInputs": [
+      "estimatedMaxKm",
+      "currentKm"
+    ],
+    "formulaDisplay": "Remaining km = estimated max km - current km",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "shoe_cost_per_km",
+    "category": "gear",
+    "name": "Shoe Cost per KM",
+    "requiredInputs": [
+      "shoePrice",
+      "totalKm"
+    ],
+    "formulaDisplay": "Cost per km = shoe price / total km",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "fuel_cost",
+    "category": "gear",
+    "name": "Fueling Cost",
+    "requiredInputs": [
+      "servings",
+      "pricePerServing"
+    ],
+    "formulaDisplay": "Fuel cost = serving count × price per serving",
+    "precision": "mathematical",
+    "limitations": []
+  }
+]
