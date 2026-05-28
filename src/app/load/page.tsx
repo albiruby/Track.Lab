@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Input, Label, Button } from '@/components/ui/Forms';
+import { Input, Label, Button, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { acwr as calcAcwr, monotony as calcMonotony, strain as calcStrain } from '@/lib/calculators';
@@ -10,6 +10,7 @@ import { methodRegistry } from '@/data';
 import { CalculatorResult } from '@/types';
 
 export default function LoadLabPage() {
+  const [error, setError] = useState<string | null>(null);
   const [acute, setAcute] = useState('500');
   const [chronic, setChronic] = useState('450');
   const [acwrResult, setAcwrResult] = useState<CalculatorResult<string> | null>(null);
@@ -78,6 +79,8 @@ export default function LoadLabPage() {
   const [dailyLoads, setDailyLoads] = useState('50, 100, 0, 120, 0, 80, 150');
   const [monotonyResult, setMonotonyResult] = useState<CalculatorResult<any> | null>(null);
 
+  const handleReset = () => { window.location.reload(); };
+
   const handleAcwr = (e: React.FormEvent) => {
     e.preventDefault();
     const a = parseFloat(acute);
@@ -145,7 +148,7 @@ export default function LoadLabPage() {
               <CardTitle>SESSION RPE (sRPE)</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSRpe} className="space-y-4">
+              <form onSubmit={handleSRpe} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="sRpeDuration">Duration (min)</Label>
@@ -156,7 +159,11 @@ export default function LoadLabPage() {
                     <Input id="sRpeVal" type="number" step="0.1" value={sRpeVal} onChange={e => setSRpeVal(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">COMPUTE sRPE LOAD</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">COMPUTE sRPE LOAD</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>
@@ -167,7 +174,7 @@ export default function LoadLabPage() {
               <CardTitle>Acwr (Acute:chronic Workload)</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleAcwr} className="space-y-4">
+              <form onSubmit={handleAcwr} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="acute">Acute Load (1-week)</Label>
@@ -178,7 +185,11 @@ export default function LoadLabPage() {
                     <Input id="chronic" type="number" step="0.1" value={chronic} onChange={e => setChronic(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>
@@ -196,7 +207,7 @@ export default function LoadLabPage() {
               <CardTitle>Weekly Metrics</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleWeeklyDist} className="space-y-4">
+              <form onSubmit={handleWeeklyDist} className="space-y-4" noValidate>
                 <div>
                   <Label htmlFor="weeklyDistances">Daily Distances (comma separated)</Label>
                   <Input id="weeklyDistances" value={weeklyDistances} onChange={e => setWeeklyDistances(e.target.value)} required />
@@ -205,7 +216,11 @@ export default function LoadLabPage() {
                   <Label htmlFor="longRunDist">Long Run Distance</Label>
                   <Input id="longRunDist" type="number" step="0.1" value={longRunDist} onChange={e => setLongRunDist(e.target.value)} required />
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>
@@ -224,13 +239,17 @@ export default function LoadLabPage() {
               <CardDescription>Monotony = mean / standard deviation of daily load</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleMonotony} className="space-y-4">
+              <form onSubmit={handleMonotony} className="space-y-4" noValidate>
                 <div>
                   <Label htmlFor="dailyLoads">Daily Loads (comma separated)</Label>
                   <Input id="dailyLoads" value={dailyLoads} onChange={e => setDailyLoads(e.target.value)} required />
                   <div className="text-xs text-zinc-500 mt-1">Example: 7 days of sRPE (duration × RPE)</div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>

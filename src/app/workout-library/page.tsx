@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { workoutTemplates, raceDistances, workoutSafetyRules } from '@/data';
-import { parseTimeStringToSeconds, formatSecondsToTimeString, formatPace } from '@/lib/formatters/time';
+import { parseDurationToSeconds, formatSecondsToTimeString, formatPace , safeNumber } from '@/lib/formatters/time';
 import { AlertCircle } from 'lucide-react';
 
 function isDistanceRepTemplate(mainSet: any): boolean {
@@ -114,7 +114,8 @@ export default function WorkoutLibraryPage() {
   }, []);
 
   let calcResult = null;
-  const pSec = paceInput ? parseTimeStringToSeconds(paceInput) : 0;
+  const parsedSecs = paceInput ? parseDurationToSeconds(paceInput) : 0;
+  const pSec = parsedSecs === null ? 0 : parsedSecs;
   if (selectedTemplate && pSec > 0) {
     calcResult = calculateWorkout(
       selectedTemplate, 

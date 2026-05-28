@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { gradePercent, elevationPerKm, verticalSpeedMetersPerHour } from '@/lib/calculators';
@@ -11,6 +11,7 @@ import { CalculatorResult } from '@/types';
 import { WarningNote } from '@/components/ui/Note';
 
 export default function EnvironmentPage() {
+  const [error, setError] = useState<string | null>(null);
   const [elevationGain, setElevationGain] = useState('500');
   const [distance, setDistance] = useState('10000');
   const [gradeResult, setGradeResult] = useState<CalculatorResult<string> | null>(null);
@@ -18,6 +19,8 @@ export default function EnvironmentPage() {
   const [vGain, setVGain] = useState('1000');
   const [vDuration, setVDuration] = useState('2.5');
   const [vSpeedResult, setVSpeedResult] = useState<CalculatorResult<string> | null>(null);
+
+  const handleReset = () => { window.location.reload(); };
 
   const calculateGrade = (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +94,7 @@ export default function EnvironmentPage() {
               <CardDescription>Calculate average slope percentage and elevation per km.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={calculateGrade} className="space-y-4">
+              <form onSubmit={calculateGrade} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="elevationGain">Elevation Gain (m)</Label>
@@ -102,7 +105,11 @@ export default function EnvironmentPage() {
                     <Input id="distance" type="number" step="any" value={distance} onChange={e => setDistance(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>
@@ -128,7 +135,7 @@ export default function EnvironmentPage() {
               <CardDescription>Calculate your ascending rate (VAM) in meters per hour.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={calculateVSpeed} className="space-y-4">
+              <form onSubmit={calculateVSpeed} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="vGain">Elevation Gain (m)</Label>
@@ -139,7 +146,11 @@ export default function EnvironmentPage() {
                     <Input id="vDuration" type="number" step="any" value={vDuration} onChange={e => setVDuration(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>

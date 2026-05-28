@@ -40,7 +40,16 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
 });
 Select.displayName = 'Select';
 
-export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' }>(({ className, variant = 'primary', ...props }, ref) => {
+export const ValidationMessage = ({ message }: { message?: string | null }) => {
+  if (!message) return null;
+  return (
+    <div className="text-xs text-destructive mt-1 font-medium bg-destructive/10 px-2 py-1.5 rounded-md border border-destructive/20 select-none">
+      {message}
+    </div>
+  );
+};
+
+export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' | 'outline' }>(({ className, variant = 'primary', ...props }, ref) => {
   return (
     <button
       ref={ref}
@@ -49,6 +58,7 @@ export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttrib
         variant === 'primary' && "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md",
         variant === 'secondary' && "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         variant === 'ghost' && "bg-transparent text-muted-foreground hover:text-foreground hover:bg-accent shadow-none",
+        variant === 'outline' && "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         className
       )}
       {...props}

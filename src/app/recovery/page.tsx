@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Input, Label, Button } from '@/components/ui/Forms';
+import { Input, Label, Button, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
@@ -17,6 +17,7 @@ export default function RecoveryCheckLab() {
   const [todayW, setTodayW] = useState('');
   const [sessionDur, setSessionDur] = useState('');
   const [sessionRpe, setSessionRpe] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any | null>(null);
 
   const calculateSleepDuration = (start: string, end: string) => {
@@ -35,6 +36,7 @@ export default function RecoveryCheckLab() {
     return `${hrs}h ${mins}m`;
   };
 
+  const handleReset = () => { window.location.reload(); };
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -94,7 +96,7 @@ export default function RecoveryCheckLab() {
             <CardTitle>Calculate Deltas</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleCalculate} className="space-y-4">
+            <form onSubmit={handleCalculate} className="space-y-4" noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Sleep Start</Label>
@@ -150,7 +152,11 @@ export default function RecoveryCheckLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>

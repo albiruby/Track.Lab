@@ -2,34 +2,49 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input, Label, Button } from '@/components/ui/Forms';
+import { Input, Label, Button, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculateRiegelPrediction } from '@/lib/calculators';
-import { formatSecondsToTimeString, parseTimeStringToSeconds } from '@/lib/formatters/time';
+import { formatSecondsToTimeString, parseDurationToSeconds , safeNumber } from '@/lib/formatters/time';
 
 export default function RaceLabPage() {
   const [d1, setD1] = useState('5');
   const [t1, setT1] = useState('20:00');
   const [d2, setD2] = useState('10');
   const [exponent, setExponent] = useState('1.06');
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReturnType<typeof calculateRiegelPrediction> | null>(null);
 
+  const handleReset = () => {
+    setD1('5');
+    setT1('20:00');
+    setD2('10');
+    setExponent('1.06');
+    setResult(null);
+    setError(null);
+  };
+  
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    const d1v = parseFloat(d1);
-    const d2v = parseFloat(d2);
-    const t1v = parseTimeStringToSeconds(t1);
-    const expv = parseFloat(exponent);
+    setError(null);
     
-    if (!isNaN(d1v) && d1v > 0 && !isNaN(d2v) && d2v > 0 && t1v > 0 && !isNaN(expv) && expv > 0) {
-      setResult(calculateRiegelPrediction(d1v, t1v, d2v, expv));
-    }
+    const d1v = safeNumber(d1);
+    const d2v = safeNumber(d2);
+    const t1v = parseDurationToSeconds(t1);
+    const expv = safeNumber(exponent);
+    
+    if (d1v === null || d1v <= 0) return setError('Invalid recent distance.');
+    if (d2v === null || d2v <= 0) return setError('Invalid target distance.');
+    if (t1v === null || t1v <= 0) return setError('Invalid recent time format.');
+    if (expv === null || expv <= 0) return setError('Invalid fatigue exponent.');
+    
+    setResult(calculateRiegelPrediction(d1v, t1v, d2v, expv));
   };
 
   return (
-    <div className="space-y-6">
-      <LabPageHeader title="RACE PROJECTION" subtitle="Predict race finish times using Peter Riegel's formula." />
+    <div className="space-y-6 pb-10">
+      <LabPageHeader title="Race Lab" subtitle="Predict race finish times using Peter Riegel's formula." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <div className="space-y-6 flex flex-col h-full">
@@ -38,7 +53,7 @@ export default function RaceLabPage() {
               <CardTitle>Riegel Predictor</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleCalculate} className="space-y-4">
+              <form onSubmit={handleCalculate} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="d1">Recent Distance (km)</Label>
@@ -58,7 +73,7 @@ export default function RaceLabPage() {
                     <Input 
                       id="t1" 
                       type="text" 
-                      pattern="^(\\d{1,2}:)?([0-5]?\\d):([0-5]?\\d)$"
+                     
                       placeholder="HH:MM:SS"
                       value={t1} 
                       onChange={(e) => setT1(e.target.value)} 
@@ -99,7 +114,11 @@ export default function RaceLabPage() {
                     Default 1.06. Use 1.05 for elites, 1.07+ for novices or trails.
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>

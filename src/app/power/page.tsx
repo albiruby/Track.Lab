@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Input, Label, Button } from '@/components/ui/Forms';
+import { Input, Label, Button, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
@@ -13,8 +13,10 @@ export default function PowerLab() {
   const [speed, setSpeed] = useState('');
   const [p1, setP1] = useState('');
   const [p2, setP2] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any | null>(null);
 
+  const handleReset = () => { window.location.reload(); };
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     const p = parseFloat(power);
@@ -64,7 +66,7 @@ export default function PowerLab() {
             <CardTitle>Calculate Power Metrics</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleCalculate} className="space-y-4">
+            <form onSubmit={handleCalculate} className="space-y-4" noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="power">Average Power (W)</Label>
@@ -112,7 +114,11 @@ export default function PowerLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>

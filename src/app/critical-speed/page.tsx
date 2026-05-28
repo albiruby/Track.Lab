@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { twoPointCriticalSpeed, paceSecondsPerKmFromSpeedMetersPerSecond, timeToExhaustionAboveCs } from '@/lib/calculators';
-import { formatPace, formatSecondsToTimeString, parseTimeStringToSeconds } from '@/lib/formatters/time';
+import { formatPace, formatSecondsToTimeString, parseDurationToSeconds , safeNumber } from '@/lib/formatters/time';
 import { methodRegistry } from '@/data';
 import { CalculatorResult } from '@/types';
 
 export default function CriticalSpeedPage() {
+  const [error, setError] = useState<string | null>(null);
   const [d1, setD1] = useState('1200');
   const [t1, setT1] = useState('04:00');
   const [d2, setD2] = useState('3000');
@@ -23,14 +24,16 @@ export default function CriticalSpeedPage() {
   const [targetPace, setTargetPace] = useState('');
   const [tteResult, setTteResult] = useState<CalculatorResult<any> | null>(null);
 
+  const handleReset = () => { window.location.reload(); };
+
   const calculateTte = (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const cs = parseFloat(csInput);
       const dp = parseFloat(dPrimeInput);
-      const pacing = parseTimeStringToSeconds(targetPace);
+      const pacing = parseDurationToSeconds(targetPace);
 
-      if (cs > 0 && dp > 0 && pacing > 0) {
+      if (cs > 0 && dp > 0 && pacing !== null && pacing !== null && pacing > 0) {
         const targetSpeedMetersPerSecond = 1000 / pacing;
         
         if (targetSpeedMetersPerSecond <= cs) {
@@ -65,10 +68,10 @@ export default function CriticalSpeedPage() {
     try {
       const d1m = parseFloat(d1);
       const d2m = parseFloat(d2);
-      const t1s = parseTimeStringToSeconds(t1);
-      const t2s = parseTimeStringToSeconds(t2);
+      const t1s = parseDurationToSeconds(t1);
+      const t2s = parseDurationToSeconds(t2);
 
-      if (d1m > 0 && d2m > 0 && t1s > 0 && t2s > 0) {
+      if (d1m > 0 && d2m > 0 && t1s !== null && t1s !== null && t1s > 0 && t2s !== null && t2s !== null && t2s > 0) {
         const { csMetersPerSecond, dPrimeMeters } = twoPointCriticalSpeed(d1m, t1s, d2m, t2s);
         const csPace = formatPace(1000 / csMetersPerSecond);
         
@@ -111,7 +114,7 @@ export default function CriticalSpeedPage() {
               <CardDescription>Enter two maximal efforts of different durations.</CardDescription>
             </CardHeader>
           <CardContent>
-            <form onSubmit={calculate} className="space-y-4">
+            <form onSubmit={calculate} className="space-y-4" noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="d1">Trial 1 Distance (m)</Label>
@@ -134,7 +137,11 @@ export default function CriticalSpeedPage() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>
@@ -153,7 +160,7 @@ export default function CriticalSpeedPage() {
             <CardDescription>Calculate maximum sustainable time at a specific pace above your Critical Speed.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={calculateTte} className="space-y-4">
+            <form onSubmit={calculateTte} className="space-y-4" noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="csInput">Critical Speed (m/s)</Label>
@@ -170,7 +177,11 @@ export default function CriticalSpeedPage() {
                 <Input id="targetPace" type="text" placeholder="04:00" value={targetPace} onChange={e => setTargetPace(e.target.value)} required />
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>

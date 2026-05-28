@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
+import { safeNumber } from '@/lib/formatters/time';
 import { calculateHrMax, calculateKarvonenZones } from '@/lib/calculators';
 import { HR_MAX_METHODS, METHOD_KARVONEN } from '@/data';
 
@@ -12,42 +13,63 @@ export default function HeartRateLabPage() {
   const [age, setAge] = useState('30');
   const [hrMaxMethod, setHrMaxMethod] = useState('tanaka');
   const [hrMaxResult, setHrMaxResult] = useState<ReturnType<typeof calculateHrMax> | null>(null);
+  const [errorMax, setErrorMax] = useState<string | null>(null);
 
   const [hrMaxTarget, setHrMaxTarget] = useState('190');
   const [hrRest, setHrRest] = useState('60');
   const [zonesResult, setZonesResult] = useState<ReturnType<typeof calculateKarvonenZones> | null>(null);
+  const [errorZones, setErrorZones] = useState<string | null>(null);
+
+  const handleResetMax = () => {
+    setAge('30');
+    setHrMaxMethod('tanaka');
+    setHrMaxResult(null);
+    setErrorMax(null);
+  }
+
+  const handleResetZones = () => {
+    setHrMaxTarget('190');
+    setHrRest('60');
+    setZonesResult(null);
+    setErrorZones(null);
+  }
 
   const handleMaxCalc = (e: React.FormEvent) => {
     e.preventDefault();
-    const a = parseInt(age);
-    if (!isNaN(a) && a > 0 && a < 120) {
-      const res = calculateHrMax(a, hrMaxMethod);
-      setHrMaxResult(res);
-      setHrMaxTarget(res.result.toString());
-    }
+    setErrorMax(null);
+    const a = safeNumber(age);
+    if (a === null || a <= 0 || a > 120) return setErrorMax('Please enter a valid age (1-120).');
+    
+    const res = calculateHrMax(a, hrMaxMethod);
+    setHrMaxResult(res);
+    setHrMaxTarget(res.result.toString());
   };
 
   const handleZonesCalc = (e: React.FormEvent) => {
     e.preventDefault();
-    const max = parseInt(hrMaxTarget);
-    const rest = parseInt(hrRest);
-    if (!isNaN(max) && !isNaN(rest) && max > rest) {
-      setZonesResult(calculateKarvonenZones(max, rest));
-    }
+    setErrorZones(null);
+    const max = safeNumber(hrMaxTarget);
+    const rest = safeNumber(hrRest);
+    
+    if (max === null || max <= 0) return setErrorZones('Invalid Max HR');
+    if (rest === null || rest <= 0) return setErrorZones('Invalid Rest HR');
+    if (max <= rest) return setErrorZones('Max HR must be greater than Rest HR');
+
+    setZonesResult(calculateKarvonenZones(max, rest));
   };
 
   return (
-    <div className="space-y-6">
-      <LabPageHeader title="CARDIO MODEL" subtitle="Calculate Maximum Heart Rate estimates & Training Zones based on physiology." />
+    <div className="space-y-6 pb-10">
+      <LabPageHeader title="Heart Rate Lab" subtitle="Calculate Maximum Heart Rate estimates & Training Zones based on physiology." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>MAXIMUM HEART RATE (HRmax)</CardTitle>
+              <CardTitle>Maximum Heart Rate (HRmax)</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleMaxCalc} className="space-y-4">
+              <form onSubmit={handleMaxCalc} className="space-y-4" noValidate>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="age">Age</Label>
@@ -70,13 +92,17 @@ export default function HeartRateLabPage() {
                     </Select>
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">ESTIMATE HRmax</Button>
+                <ValidationMessage message={errorMax} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleResetMax} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>
           
           {hrMaxResult && (
-            <div className="h-full">
+            <div className="h-full mt-6">
               <ResultCard result={{...hrMaxResult, result: `${hrMaxResult.result} bpm`}} />
             </div>
           )}
@@ -85,10 +111,10 @@ export default function HeartRateLabPage() {
         <div className="space-y-6 flex flex-col h-full">
           <Card>
             <CardHeader>
-              <CardTitle>Karvonen Target Zones (Hrr)</CardTitle>
+              <CardTitle>Karvonen Target Zones (HRR)</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleZonesCalc} className="space-y-4">
+              <form onSubmit={handleZonesCalc} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="hrMaxTarget">Max HR (bpm)</Label>
@@ -115,21 +141,25 @@ export default function HeartRateLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={errorZones} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleResetZones} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>
 
           {zonesResult && (
-            <div className="h-full">
+            <div className="h-full mt-6">
               <ResultCard result={{
                 ...zonesResult,
                 result: (
-                  <div className="w-full space-y-2 text-sm">
+                  <div className="flex flex-col p-2">
                     {zonesResult.result.map((z, i) => (
-                      <div key={i} className="flex justify-between items-center py-2 px-3 bg-zinc-950/80 border border-zinc-800 rounded-none">
-                        <span className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase">{z.name} ({z.intensity})</span>
-                        <span className="font-mono text-cyan-400">~{z.bpm} bpm</span>
+                      <div key={i} className="flex justify-between p-2 border-b last:border-0 border-border">
+                        <span className="font-medium">{z.name} ({z.intensity})</span>
+                        <span className="font-mono text-primary">~{z.bpm} bpm</span>
                       </div>
                     ))}
                   </div>

@@ -2,17 +2,19 @@
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
-import { formatPace, parseTimeStringToSeconds } from '@/lib/formatters/time';
+import { formatPace, parseDurationToSeconds , safeNumber } from '@/lib/formatters/time';
 
 export default function TreadmillLab() {
   const [inputType, setInputType] = useState('speed_kmh');
   const [inputValue, setInputValue] = useState('12');
   const [incline, setIncline] = useState('1');
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any | null>(null);
 
+  const handleReset = () => { window.location.reload(); };
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -23,8 +25,8 @@ export default function TreadmillLab() {
     } else if (inputType === 'speed_mph') {
       speedKmh = parseFloat(inputValue) * 1.609344;
     } else if (inputType === 'pace_km') {
-      const secs = parseTimeStringToSeconds(inputValue);
-      if (secs > 0) speedKmh = 3600 / secs;
+      const secs = parseDurationToSeconds(inputValue);
+      if (secs !== null && secs !== null && secs > 0) speedKmh = 3600 / secs;
     }
 
     const inc = parseFloat(incline) || 0;
@@ -72,7 +74,7 @@ export default function TreadmillLab() {
             <CardTitle>Calculate Treadmill Stats</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleCalculate} className="space-y-4">
+            <form onSubmit={handleCalculate} className="space-y-4" noValidate>
               <div>
                 <Label htmlFor="inputType">Input Type</Label>
                 <Select id="inputType" value={inputType} onChange={e => setInputType(e.target.value)}>
@@ -98,7 +100,11 @@ export default function TreadmillLab() {
                 />
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>

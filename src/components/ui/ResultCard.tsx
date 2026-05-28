@@ -29,10 +29,16 @@ export function ResultCard<T extends string | number | React.ReactNode>({ result
       </CardHeader>
       
       <CardContent className="space-y-6 flex-1 flex flex-col p-6">
-        <div className="flex flex-col">
-          <div className="text-3xl md:text-4xl font-semibold tracking-tight text-primary drop-shadow-sm min-h-[60px] flex items-center">
-            {result.result}
-          </div>
+        <div className="flex flex-col flex-1">
+          {typeof result.result === 'string' || typeof result.result === 'number' ? (
+            <div className="text-3xl md:text-4xl font-semibold tracking-tight text-primary drop-shadow-sm min-h-[60px] flex items-center">
+              {result.result}
+            </div>
+          ) : (
+            <div className="text-sm border rounded-md overflow-hidden bg-background">
+              {result.result}
+            </div>
+          )}
         </div>
         
         <div className="space-y-4 pt-6 border-t border-border mt-auto">

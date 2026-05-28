@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { cooper12MinuteVo2, acsmRunningVo2, metFromVo2, caloriesFromMet } from '@/lib/calculators';
@@ -12,82 +12,104 @@ import { CalculatorResult } from '@/types';
 export default function Vo2Page() {
   const [cooperDist, setCooperDist] = useState('2800');
   const [cooperResult, setCooperResult] = useState<CalculatorResult<string> | null>(null);
+  const [errorCooper, setErrorCooper] = useState<string | null>(null);
 
   const [acsmSpeed, setAcsmSpeed] = useState('200'); // m/min
   const [acsmGrade, setAcsmGrade] = useState('0'); // %
   const [acsmMass, setAcsmMass] = useState('70'); // kg
   const [acsmDuration, setAcsmDuration] = useState('60'); // min
   const [acsmResult, setAcsmResult] = useState<CalculatorResult<any> | null>(null);
+  const [errorAcsm, setErrorAcsm] = useState<string | null>(null);
+
+  const handleResetCooper = () => {
+    setCooperDist('2800');
+    setCooperResult(null);
+    setErrorCooper(null);
+  };
+
+  const handleResetAcsm = () => {
+    setAcsmSpeed('200');
+    setAcsmGrade('0');
+    setAcsmMass('70');
+    setAcsmDuration('60');
+    setAcsmResult(null);
+    setErrorAcsm(null);
+  };
 
   const calculateCooper = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorCooper(null);
     try {
       const dist = parseFloat(cooperDist);
-      if (dist > 0) {
-        const vo2 = cooper12MinuteVo2(dist);
-        const methodMeta = methodRegistry.find((m) => m.id === 'cooper_12min')!;
+      if (isNaN(dist) || dist <= 0) return setErrorCooper('Invalid distance.');
+      
+      const vo2 = cooper12MinuteVo2(dist);
+      const methodMeta = methodRegistry.find((m) => m.id === 'cooper_12min')!;
 
-        setCooperResult({
-          result: vo2.toFixed(1) + ' ml/kg/min',
-          inputUsed: { 'Distance (m)': dist },
-          methodSelected: methodMeta.name,
-          formulaUsed: methodMeta.formulaDisplay,
-          confidenceLabel: 'estimated VO2max, not lab-measured',
-          limitations: 'Indirect estimate. ' + (Array.isArray(methodMeta.limitations) ? methodMeta.limitations.join(' ') : String(methodMeta.limitations || ''))
-        });
-      }
+      setCooperResult({
+        result: vo2.toFixed(1) + ' ml/kg/min',
+        inputUsed: { 'Distance (m)': dist },
+        methodSelected: methodMeta.name,
+        formulaUsed: methodMeta.formulaDisplay,
+        confidenceLabel: 'estimated VO2max, not lab-measured',
+        limitations: 'Indirect estimate. ' + (Array.isArray(methodMeta.limitations) ? methodMeta.limitations.join(' ') : String(methodMeta.limitations || ''))
+      });
     } catch (err: any) {
-      alert(err.message);
+      setErrorCooper(err.message);
     }
   };
 
   const calculateAcsm = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorAcsm(null);
     try {
       const speed = parseFloat(acsmSpeed);
       const grade = parseFloat(acsmGrade);
       const mass = parseFloat(acsmMass);
       const dur = parseFloat(acsmDuration);
 
-      if (speed > 0 && grade >= 0 && mass > 0 && dur > 0) {
-        const vo2 = acsmRunningVo2(speed, grade / 100);
-        const met = metFromVo2(vo2);
-        const kcals = caloriesFromMet(met, mass, dur);
-        
-        const methodMeta = methodRegistry.find((m) => m.id === 'acsm_running_vo2')!;
+      if (isNaN(speed) || speed <= 0) return setErrorAcsm('Invalid speed.');
+      if (isNaN(grade) || grade < 0) return setErrorAcsm('Invalid grade.');
+      if (isNaN(mass) || mass <= 0) return setErrorAcsm('Invalid mass.');
+      if (isNaN(dur) || dur <= 0) return setErrorAcsm('Invalid duration.');
 
-        setAcsmResult({
-          result: (
-            <div className="space-y-4 w-full">
-              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">Running VO2</span>
-                <span className="text-xl font-bold font-mono text-cyan-400">{vo2.toFixed(1)} ml/kg/min</span>
-              </div>
-              <div className="flex justify-between items-center bg-zinc-950/80 border border-zinc-800 p-4 rounded-none">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-500">METs Equivalent</span>
-                <span className="text-xl font-bold font-mono text-cyan-400">{met.toFixed(1)}</span>
-              </div>
-              <div className="flex justify-between items-center bg-zinc-950/80 p-4 rounded-none border border-cyan-900/50">
-                <span className="text-[10px] font-mono tracking-widest uppercase text-cyan-400">Calories</span>
-                <span className="text-xl font-bold font-mono text-cyan-300">{kcals.toFixed(0)} kcal</span>
-              </div>
+      const vo2 = acsmRunningVo2(speed, grade / 100);
+      const met = metFromVo2(vo2);
+      const kcals = caloriesFromMet(met, mass, dur);
+      
+      const methodMeta = methodRegistry.find((m) => m.id === 'acsm_running_vo2')!;
+
+      setAcsmResult({
+        result: (
+          <div className="flex flex-col p-2 space-y-1">
+            <div className="flex justify-between p-2 border-b border-border">
+              <span className="font-medium text-sm">Running VO2</span>
+              <span className="font-mono text-primary">{vo2.toFixed(1)} ml/kg/min</span>
             </div>
-          ),
-          inputUsed: { 'Speed': speed, 'Grade': grade, 'Mass (kg)': mass, 'Duration (min)': dur },
-          methodSelected: methodMeta.name,
-          formulaUsed: 'VO2 + MET = VO2/3.5 + kcal = METs x 3.5 x Mass / 200 x Time',
-          confidenceLabel: 'indirect estimate',
-          limitations: 'Estimated VO2max, not lab-measured. Requires valid input.'
-        });
-      }
+            <div className="flex justify-between p-2 border-b border-border">
+              <span className="font-medium text-sm">METs Equivalent</span>
+              <span className="font-mono text-primary">{met.toFixed(1)}</span>
+            </div>
+            <div className="flex justify-between p-2">
+              <span className="font-medium text-sm">Calories</span>
+              <span className="font-mono text-primary">{kcals.toFixed(0)} kcal</span>
+            </div>
+          </div>
+        ),
+        inputUsed: { 'Speed': speed, 'Grade': grade, 'Mass (kg)': mass, 'Duration (min)': dur },
+        methodSelected: methodMeta.name,
+        formulaUsed: 'VO2 + MET = VO2/3.5 + kcal = METs x 3.5 x Mass / 200 x Time',
+        confidenceLabel: 'indirect estimate',
+        limitations: 'Estimated VO2max, not lab-measured. Requires valid input.'
+      });
     } catch (err: any) {
-      alert(err.message);
+      setErrorAcsm(err.message);
     }
   };
 
   return (
-    <div className="space-y-6">
-      <LabPageHeader title="VO2 & METABOLIC DYNAMICS" subtitle="Estimate VO2max, METs, and caloric expenditure." />
+    <div className="space-y-6 pb-10">
+      <LabPageHeader title="VO2 & Metabolic Lab" subtitle="Estimate VO2max, METs, and caloric expenditure." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <div className="space-y-6 flex flex-col h-full">
@@ -97,12 +119,16 @@ export default function Vo2Page() {
               <CardDescription>Estimate VO2max from the distance covered in 12 minutes.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={calculateCooper} className="space-y-4">
+              <form onSubmit={calculateCooper} className="space-y-4" noValidate>
                 <div className="space-y-2">
                   <Label htmlFor="cooperDist">Distance covered in 12 minutes (meters)</Label>
                   <Input id="cooperDist" type="number" step="any" value={cooperDist} onChange={e => setCooperDist(e.target.value)} required />
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={errorCooper} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleResetCooper} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>
@@ -121,7 +147,7 @@ export default function Vo2Page() {
               <CardDescription>Estimate VO2 and METs required for a given speed and gradient.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={calculateAcsm} className="space-y-4">
+              <form onSubmit={calculateAcsm} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="acsmSpeed">Speed (m/min)</Label>
@@ -143,7 +169,11 @@ export default function Vo2Page() {
                     <Input id="acsmDuration" type="number" step="any" value={acsmDuration} onChange={e => setAcsmDuration(e.target.value)} required />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={errorAcsm} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleResetAcsm} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>

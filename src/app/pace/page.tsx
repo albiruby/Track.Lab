@@ -2,24 +2,41 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input, Label, Button } from '@/components/ui/Forms';
+import { Input, Label, Button, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculatePace } from '@/lib/calculators';
-import { formatPace, parseTimeStringToSeconds } from '@/lib/formatters/time';
+import { formatPace, parseDurationToSeconds, safeNumber } from '@/lib/formatters/time';
 
 export default function PaceLabPage() {
   const [distance, setDistance] = useState('5');
   const [timeStr, setTimeStr] = useState('25:00');
   const [result, setResult] = useState<ReturnType<typeof calculatePace> | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    const d = parseFloat(distance);
-    const secs = parseTimeStringToSeconds(timeStr);
-    if (!isNaN(d) && d > 0 && secs > 0) {
-      setResult(calculatePace(d, secs));
+    setError(null);
+    const d = safeNumber(distance);
+    const secs = parseDurationToSeconds(timeStr);
+    
+    if (d === null || d <= 0) {
+      setError('Please enter a valid positive distance.');
+      return;
     }
+    if (secs === null || secs <= 0) {
+      setError('Please enter a valid duration (MM:SS or HH:MM:SS).');
+      return;
+    }
+    
+    setResult(calculatePace(d, secs));
+  };
+
+  const handleReset = () => {
+    setDistance('5');
+    setTimeStr('25:00');
+    setResult(null);
+    setError(null);
   };
 
   return (
@@ -33,7 +50,7 @@ export default function PaceLabPage() {
               <CardTitle>Distance & Time To Pace</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleCalculate} className="space-y-4">
+              <form onSubmit={handleCalculate} className="space-y-4" noValidate>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="distance">Distance in km</Label>
@@ -52,7 +69,6 @@ export default function PaceLabPage() {
                     <Input 
                       id="timeStr" 
                       type="text" 
-                      pattern="^(\\d{1,2}:)?([0-5]?\\d):([0-5]?\\d)$"
                       placeholder="e.g. 25:00, 1:45:00"
                       title="Format: MM:SS or HH:MM:SS"
                       value={timeStr} 
@@ -61,7 +77,11 @@ export default function PaceLabPage() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-2">
+                  <Button type="submit" className="flex-1">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>

@@ -2,24 +2,34 @@
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { paceSecondsPerKm } from '@/lib/calculators_pack/pace';
-import { formatPace, parseTimeStringToSeconds } from '@/lib/formatters/time';
+import { formatPace, parseDurationToSeconds , safeNumber } from '@/lib/formatters/time';
 import { riegelPredictTime } from '@/lib/calculators_pack/racePrediction';
 
 export default function TrainingPaceLab() {
   const [distance, setDistance] = useState('10');
   const [timeStr, setTimeStr] = useState('50:00');
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any | null>(null);
 
+  const handleReset = () => {
+    setDistance('10');
+    setTimeStr('50:00');
+    setResult(null);
+    setError(null);
+  };
+  
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    const d = parseFloat(distance);
-    const secs = parseTimeStringToSeconds(timeStr);
+    setError(null);
+    const d = safeNumber(distance);
+    const secs = parseDurationToSeconds(timeStr);
     
-    if (isNaN(d) || d <= 0 || isNaN(secs) || secs <= 0) return;
+    if (d === null || d <= 0) return setError('Please enter a valid distance.');
+    if (secs === null || secs <= 0) return setError('Please enter a valid time (MM:SS or HH:MM:SS).');
 
     // Estimate threshold pace as roughly 10k to 15k pace
     // Let's use Riegel to find equivalent 10km pace as a generic "Threshold" anchor
@@ -39,10 +49,19 @@ export default function TrainingPaceLab() {
       { name: "Repetition", pace: thresholdSecsPerKm * 0.88 },
     ];
 
-    const outStrings = paces.map(p => `${p.name}: ${formatPace(p.pace)} /km`);
+    const outTable = (
+      <div className="flex flex-col p-2">
+        {paces.map((p, i) => (
+          <div key={i} className="flex justify-between p-2 border-b last:border-0 border-border">
+            <span className="font-medium">{p.name}</span>
+            <span className="font-mono text-primary">{formatPace(p.pace)}</span>
+          </div>
+        ))}
+      </div>
+    );
 
     setResult({
-      result: outStrings.join('\n'),
+      result: outTable,
       methodSelected: 'Race-Derived Generic Pace Zones',
       confidenceLabel: 'estimate',
       formulaUsed: 'Threshold anchored to ~10K pace, with fixed percentage multipliers.',
@@ -52,8 +71,8 @@ export default function TrainingPaceLab() {
   };
 
   return (
-    <div className="space-y-6">
-      <LabPageHeader title="TRAINING TARGETS" subtitle="Determine optimal paces for different types of training runs based on current fitness." />
+    <div className="space-y-6 pb-10">
+      <LabPageHeader title="Training Pace Lab" subtitle="Determine optimal paces for different types of training runs based on current fitness." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card>
@@ -61,7 +80,7 @@ export default function TrainingPaceLab() {
             <CardTitle>Recent Race</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleCalculate} className="space-y-4">
+            <form onSubmit={handleCalculate} className="space-y-4" noValidate>
               <div>
                 <Label htmlFor="distance">Recent Race Distance (km)</Label>
                 <Input 
@@ -75,12 +94,16 @@ export default function TrainingPaceLab() {
                 <Input 
                   id="timeStr" type="text" required
                   placeholder="50:00"
-                  pattern="^(\d{1,2}:)?([0-5]?\d):([0-5]?\d)$"
+                 
                   value={timeStr} onChange={e => setTimeStr(e.target.value)} 
                 />
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>

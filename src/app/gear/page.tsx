@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Input, Label, Button } from '@/components/ui/Forms';
+import { Input, Label, Button, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 
@@ -17,8 +17,10 @@ export default function GearLab() {
   const [mixPrice, setMixPrice] = useState('');
   const [mixServings, setMixServings] = useState('');
   
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any | null>(null);
 
+  const handleReset = () => { window.location.reload(); };
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -77,7 +79,7 @@ export default function GearLab() {
             <CardTitle>Calculate Expenses & Wear</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleCalculate} className="space-y-4">
+            <form onSubmit={handleCalculate} className="space-y-4" noValidate>
               <div className="space-y-2">
                 <h3 className="font-semibold text-sm">Shoe Wear & Tear</h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -126,7 +128,11 @@ export default function GearLab() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>

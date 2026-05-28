@@ -2,23 +2,28 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input, Label, Button } from '@/components/ui/Forms';
+import { Input, Label, Button, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { calculateFuel } from '@/lib/calculators';
-import { parseTimeStringToSeconds } from '@/lib/formatters/time';
+import { parseDurationToSeconds , safeNumber } from '@/lib/formatters/time';
 
 export default function FuelLabPage() {
   const [duration, setDuration] = useState('2:30:00');
   const [carbRate, setCarbRate] = useState('60');
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReturnType<typeof calculateFuel> | null>(null);
 
+  const handleReset = () => { window.location.reload(); };
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    const durationHours = parseTimeStringToSeconds(duration) / 3600;
+    const rawDur = parseDurationToSeconds(duration);
+    if (rawDur === null || rawDur <= 0 || isNaN(parseInt(carbRate))) return setError('Invalid input');
+    
+    const durationHours = rawDur / 3600;
     const rate = parseInt(carbRate);
 
-    if (durationHours > 0 && !isNaN(rate) && rate > 0) {
+    if (durationHours > 0 && rate > 0) {
       setResult(calculateFuel(durationHours, rate));
     }
   };
@@ -34,14 +39,14 @@ export default function FuelLabPage() {
               <CardTitle>Carb Requirement</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleCalculate} className="space-y-4">
+              <form onSubmit={handleCalculate} className="space-y-4" noValidate>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="duration">Session Duration</Label>
                     <Input 
                       id="duration" 
                       type="text" 
-                      pattern="^(\\d{1,2}:)?([0-5]?\\d):([0-5]?\\d)$"
+                     
                       placeholder="HH:MM:SS"
                       value={duration} 
                       onChange={(e) => setDuration(e.target.value)} 
@@ -62,7 +67,11 @@ export default function FuelLabPage() {
                   </div>
                 </div>
                 <div className="text-[10px] font-mono tracking-widest text-zinc-500 mb-2 mt-4 border border-zinc-800/80 bg-zinc-950/50 p-2 uppercase">SYS_NOTE: Scientific consensus recommends 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
-                <Button type="submit" className="w-full mt-4">Calculate</Button>
+                <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
               </form>
             </CardContent>
           </Card>

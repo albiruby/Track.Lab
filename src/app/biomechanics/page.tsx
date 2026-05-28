@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Input, Label, Button, Select } from '@/components/ui/Forms';
+import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { cadence, strideLengthMeters, stepCount } from '@/lib/calculators';
 import { methodRegistry } from '@/data';
 import { CalculatorResult } from '@/types';
-import { parseTimeStringToSeconds } from '@/lib/formatters/time';
+import { parseDurationToSeconds , safeNumber } from '@/lib/formatters/time';
 
 export default function BiomechanicsPage() {
+  const [error, setError] = useState<string | null>(null);
   const [speed, setSpeed] = useState('200'); // m/min
   const [cadenceVal, setCadenceVal] = useState('170');
   const [strideResult, setStrideResult] = useState<CalculatorResult<string> | null>(null);
@@ -22,6 +23,8 @@ export default function BiomechanicsPage() {
   const [stepCadence, setStepCadence] = useState('170');
   const [stepDuration, setStepDuration] = useState('60');
   const [stepCountResult, setStepCountResult] = useState<CalculatorResult<string> | null>(null);
+
+  const handleReset = () => { window.location.reload(); };
 
   const calculateStride = (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +119,7 @@ export default function BiomechanicsPage() {
             <CardDescription>Calculate stride length from running speed and cadence.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={calculateStride} className="space-y-4">
+            <form onSubmit={calculateStride} className="space-y-4" noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="speed">Speed (m/min)</Label>
@@ -128,7 +131,11 @@ export default function BiomechanicsPage() {
                   <Input id="cadenceVal" type="number" step="any" value={cadenceVal} onChange={e => setCadenceVal(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>
@@ -143,7 +150,7 @@ export default function BiomechanicsPage() {
             <CardDescription>Calculate cadence (steps per minute) from total steps taken.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={calculateCadence} className="space-y-4">
+            <form onSubmit={calculateCadence} className="space-y-4" noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="steps">Total Steps</Label>
@@ -154,7 +161,11 @@ export default function BiomechanicsPage() {
                   <Input id="cadenceDuration" type="number" step="any" value={cadenceDuration} onChange={e => setCadenceDuration(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>
@@ -169,7 +180,7 @@ export default function BiomechanicsPage() {
             <CardDescription>Calculate total steps taken from cadence and duration.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={calculateStepCount} className="space-y-4">
+            <form onSubmit={calculateStepCount} className="space-y-4" noValidate>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="stepCadence">Cadence (spm)</Label>
@@ -180,7 +191,11 @@ export default function BiomechanicsPage() {
                   <Input id="stepDuration" type="number" step="any" value={stepDuration} onChange={e => setStepDuration(e.target.value)} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full mt-4">Calculate</Button>
+              <ValidationMessage message={error} />
+                <div className="flex gap-3 pt-4">
+                  <Button type="submit" className="flex-1 ">Calculate</Button>
+                  <Button type="button" variant="outline" onClick={handleReset} className="flex-1">Reset</Button>
+                </div>
             </form>
           </CardContent>
         </Card>
