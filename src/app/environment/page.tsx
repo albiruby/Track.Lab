@@ -139,14 +139,18 @@ export default function EnvironmentPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Environmental Warning</CardTitle>
+              <CardTitle>Environmental Condition Factors</CardTitle>
+              <CardDescription>Estimate only. Modifiers for extreme conditions.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <WarningNote>
                 <strong>Heat & Humidity:</strong> Significant adjustments to pace and perceived effort are required when temperature exceeds 15°C (60°F) or dew point is high. Standard pace calculators do not account for heat stress.
               </WarningNote>
               <WarningNote>
-                <strong>Altitude:</strong> Aerobic capacity decreases linearly above ~600m (2000ft). Expect slower times and higher heart rates for the same effort. Acclimatization helps, but performance ceilings remain reduced.
+                <strong>Altitude:</strong> Aerobic capacity decreases linearly above ~600m (2000ft). Expect slower times and higher heart rates for the same effort.
+              </WarningNote>
+              <WarningNote className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-200">
+                <strong>Important:</strong> These are mathematical estimates only. Actual performance depends on individual response, acclimatization, terrain, wind, hydration, and conditions.
               </WarningNote>
             </CardContent>
           </Card>

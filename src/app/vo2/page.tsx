@@ -14,6 +14,8 @@ export default function Vo2Page() {
 
   const [acsmSpeed, setAcsmSpeed] = useState('200'); // m/min
   const [acsmGrade, setAcsmGrade] = useState('0'); // %
+  const [acsmMass, setAcsmMass] = useState('70'); // kg
+  const [acsmDuration, setAcsmDuration] = useState('60'); // min
   const [acsmResult, setAcsmResult] = useState<CalculatorResult<any> | null>(null);
 
   const calculateCooper = (e: React.FormEvent) => {
@@ -25,12 +27,12 @@ export default function Vo2Page() {
         const methodMeta = methodRegistry.find((m) => m.id === 'cooper_12min')!;
 
         setCooperResult({
-          result: vo2.toFixed(1),
+          result: vo2.toFixed(1) + ' ml/kg/min',
           inputUsed: { 'Distance (m)': dist },
           methodSelected: methodMeta.name,
           formulaUsed: methodMeta.formulaDisplay,
-          confidenceLabel: methodMeta.precision?.replace('_', ' ') || 'field test',
-          limitations: Array.isArray(methodMeta.limitations) ? methodMeta.limitations.join(' ') : String(methodMeta.limitations || '')
+          confidenceLabel: 'estimated VO2max, not lab-measured',
+          limitations: 'Indirect estimate. ' + (Array.isArray(methodMeta.limitations) ? methodMeta.limitations.join(' ') : String(methodMeta.limitations || ''))
         });
       }
     } catch (err: any) {
@@ -43,10 +45,13 @@ export default function Vo2Page() {
     try {
       const speed = parseFloat(acsmSpeed);
       const grade = parseFloat(acsmGrade);
+      const mass = parseFloat(acsmMass);
+      const dur = parseFloat(acsmDuration);
 
-      if (speed > 0 && grade >= 0) {
+      if (speed > 0 && grade >= 0 && mass > 0 && dur > 0) {
         const vo2 = acsmRunningVo2(speed, grade / 100);
         const met = metFromVo2(vo2);
+        const kcals = caloriesFromMet(met, mass, dur);
         
         const methodMeta = methodRegistry.find((m) => m.id === 'acsm_running_vo2')!;
 
@@ -61,13 +66,17 @@ export default function Vo2Page() {
                 <span className="text-sm font-semibold uppercase text-zinc-500">METs Equivalent</span>
                 <span className="text-xl font-bold font-mono">{met.toFixed(1)}</span>
               </div>
+              <div className="flex justify-between items-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20">
+                <span className="text-sm font-semibold uppercase text-emerald-600 dark:text-emerald-400">Calories</span>
+                <span className="text-xl font-bold font-mono text-emerald-700 dark:text-emerald-300">{kcals.toFixed(0)} kcal</span>
+              </div>
             </div>
           ),
-          inputUsed: { 'Speed (m/min)': speed, 'Grade (%)': grade },
+          inputUsed: { 'Speed': speed, 'Grade': grade, 'Mass (kg)': mass, 'Duration (min)': dur },
           methodSelected: methodMeta.name,
-          formulaUsed: methodMeta.formulaDisplay,
-          confidenceLabel: methodMeta.precision?.replace('_', ' ') || 'estimate',
-          limitations: Array.isArray(methodMeta.limitations) ? methodMeta.limitations.join(' ') : String(methodMeta.limitations || '')
+          formulaUsed: 'VO2 + MET = VO2/3.5 + kcal = METs x 3.5 x Mass / 200 x Time',
+          confidenceLabel: 'indirect estimate',
+          limitations: 'Estimated VO2max, not lab-measured. Requires valid input.'
         });
       }
     } catch (err: any) {
@@ -122,6 +131,16 @@ export default function Vo2Page() {
                   <div className="space-y-2">
                     <Label htmlFor="acsmGrade">Treadmill Grade (%)</Label>
                     <Input id="acsmGrade" type="number" step="any" value={acsmGrade} onChange={e => setAcsmGrade(e.target.value)} required />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="acsmMass">Body Mass (kg)</Label>
+                    <Input id="acsmMass" type="number" step="any" value={acsmMass} onChange={e => setAcsmMass(e.target.value)} required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="acsmDuration">Duration (min)</Label>
+                    <Input id="acsmDuration" type="number" step="any" value={acsmDuration} onChange={e => setAcsmDuration(e.target.value)} required />
                   </div>
                 </div>
                 <Button type="submit" className="w-full">Calculate VO2 & METs</Button>

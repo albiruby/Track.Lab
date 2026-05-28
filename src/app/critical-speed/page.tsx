@@ -17,6 +17,48 @@ export default function CriticalSpeedPage() {
   
   const [csResult, setCsResult] = useState<CalculatorResult<any> | null>(null);
 
+  const [csInput, setCsInput] = useState('');
+  const [dPrimeInput, setDPrimeInput] = useState('');
+  const [targetPace, setTargetPace] = useState('');
+  const [tteResult, setTteResult] = useState<CalculatorResult<any> | null>(null);
+
+  const calculateTte = (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const cs = parseFloat(csInput);
+      const dp = parseFloat(dPrimeInput);
+      const pacing = parseTimeStringToSeconds(targetPace);
+
+      if (cs > 0 && dp > 0 && pacing > 0) {
+        const targetSpeedMetersPerSecond = 1000 / pacing;
+        
+        if (targetSpeedMetersPerSecond <= cs) {
+           throw new Error("Target speed must be strictly above CS for D-prime depletion.");
+        }
+
+        const tTteStr = timeToExhaustionAboveCs(dp, targetSpeedMetersPerSecond, cs);
+        
+        setTteResult({
+          result: (
+            <div className="space-y-4 w-full">
+              <div className="flex justify-between items-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-lg">
+                <span className="text-sm font-semibold uppercase text-zinc-500">Max Time</span>
+                <span className="text-xl font-bold font-mono">{formatSecondsToTimeString(Math.round(tTteStr))}</span>
+              </div>
+            </div>
+          ),
+          inputUsed: { 'CS (m/s)': cs, 'D-Prime (m)': dp, 'Target Pace': targetPace },
+          methodSelected: 'Time to Exhaustion',
+          formulaUsed: 'TTE = D-Prime / (Target Speed - CS)',
+          confidenceLabel: 'mathematical',
+          limitations: 'Assumes continuous effort. Highly susceptible to pacing variation and fatigue state.'
+        });
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   const calculate = (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -100,6 +142,38 @@ export default function CriticalSpeedPage() {
 
         {csResult && (
           <ResultCard result={csResult} />
+        )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Time to Exhaustion (Above CS)</CardTitle>
+            <CardDescription>Calculate maximum sustainable time at a specific pace above your Critical Speed.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={calculateTte} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="csInput">Critical Speed (m/s)</Label>
+                  <Input id="csInput" type="number" step="any" value={csInput} onChange={e => setCsInput(e.target.value)} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dPrimeInput">D-Prime (m)</Label>
+                  <Input id="dPrimeInput" type="number" step="any" value={dPrimeInput} onChange={e => setDPrimeInput(e.target.value)} required />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="targetPace">Target Pace (mm:ss/km)</Label>
+                <Input id="targetPace" type="text" placeholder="04:00" value={targetPace} onChange={e => setTargetPace(e.target.value)} required />
+              </div>
+
+              <Button type="submit" className="w-full">Calculate TTE</Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {tteResult && (
+          <ResultCard result={tteResult} />
         )}
       </div>
     </div>

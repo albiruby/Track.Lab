@@ -18,6 +18,10 @@ export default function BiomechanicsPage() {
   const [cadenceDuration, setCadenceDuration] = useState('10');
   const [cadenceResult, setCadenceResult] = useState<CalculatorResult<string> | null>(null);
 
+  const [stepCadence, setStepCadence] = useState('170');
+  const [stepDuration, setStepDuration] = useState('60');
+  const [stepCountResult, setStepCountResult] = useState<CalculatorResult<string> | null>(null);
+
   const calculateStride = (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -50,11 +54,45 @@ export default function BiomechanicsPage() {
 
       if (stp > 0 && dur > 0) {
         const cad = cadence(stp, dur);
-        const methodMeta = methodRegistry.find((m) => m.id === 'cadence')!;
+        const methodMeta = methodRegistry.find((m) => m.id === 'cadence') || {
+           name: 'Cadence',
+           formulaDisplay: 'cadence = steps / durationMinutes',
+           precision: 'mathematical',
+           limitations: []
+        };
 
         setCadenceResult({
           result: `${Math.round(cad)} spm`,
           inputUsed: { 'Steps': stp, 'Duration (min)': dur },
+          methodSelected: methodMeta.name,
+          formulaUsed: methodMeta.formulaDisplay,
+          confidenceLabel: methodMeta.precision?.replace('_', ' ') || 'mathematical',
+          limitations: Array.isArray(methodMeta.limitations) ? methodMeta.limitations.join(' ') : String(methodMeta.limitations || '')
+        });
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const calculateStepCount = (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const cad = parseFloat(stepCadence);
+      const dur = parseFloat(stepDuration);
+
+      if (cad > 0 && dur > 0) {
+        const stp = stepCount(cad, dur);
+        const methodMeta = methodRegistry.find((m) => m.id === 'step_count') || {
+           name: 'Step Count',
+           formulaDisplay: 'steps = cadence * durationMinutes',
+           precision: 'mathematical',
+           limitations: []
+        };
+
+        setStepCountResult({
+          result: `${Math.round(stp)} steps`,
+          inputUsed: { 'Cadence (spm)': cad, 'Duration (min)': dur },
           methodSelected: methodMeta.name,
           formulaUsed: methodMeta.formulaDisplay,
           confidenceLabel: methodMeta.precision?.replace('_', ' ') || 'mathematical',
@@ -125,6 +163,32 @@ export default function BiomechanicsPage() {
 
         {cadenceResult && (
           <ResultCard result={cadenceResult} />
+        )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Step Count Calculator</CardTitle>
+            <CardDescription>Calculate total steps taken from cadence and duration.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={calculateStepCount} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="stepCadence">Cadence (spm)</Label>
+                  <Input id="stepCadence" type="number" step="any" value={stepCadence} onChange={e => setStepCadence(e.target.value)} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="stepDuration">Duration (min)</Label>
+                  <Input id="stepDuration" type="number" step="any" value={stepDuration} onChange={e => setStepDuration(e.target.value)} required />
+                </div>
+              </div>
+              <Button type="submit" className="w-full">Calculate Steps</Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {stepCountResult && (
+          <ResultCard result={stepCountResult} />
         )}
       </div>
     </div>
