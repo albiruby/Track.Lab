@@ -6,7 +6,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
     <input
       ref={ref}
       className={cn(
-        "flex h-12 w-full rounded-xl border-2 border-border-heavy bg-white px-4 py-2 text-sm font-medium placeholder:text-muted-foreground focus:outline-none focus:ring-0 focus:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-colors text-foreground shadow-[2px_2px_0px_rgba(23,23,23,0.1)] focus:shadow-[2px_2px_0px_rgba(242,195,0,1)]",
+        "flex h-10 w-full rounded-lg border border-[#d8ddd8] bg-white px-3.5 py-1.5 text-xs md:text-sm font-normal placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#0f6fae] focus:border-[#0f6fae] disabled:cursor-not-allowed disabled:opacity-50 transition-all text-foreground shadow-sm",
         className
       )}
       {...props}
@@ -19,7 +19,7 @@ export const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttribute
   return (
     <label
       ref={ref}
-      className={cn("text-xs font-bold uppercase tracking-wider peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground mb-2 block", className)}
+      className={cn("text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block select-none", className)}
       {...props}
     />
   );
@@ -31,7 +31,7 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
     <select
       ref={ref}
       className={cn(
-        "flex h-12 w-full items-center justify-between rounded-xl border-2 border-border-heavy bg-white px-4 py-2 text-sm font-medium placeholder:text-muted-foreground focus:outline-none focus:ring-0 focus:border-primary disabled:cursor-not-allowed disabled:opacity-50 text-foreground shadow-[2px_2px_0px_rgba(23,23,23,0.1)] focus:shadow-[2px_2px_0px_rgba(242,195,0,1)]",
+        "flex h-10 w-full items-center justify-between rounded-lg border border-[#d8ddd8] bg-white px-3.5 py-1.5 text-xs md:text-sm font-normal placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#0f6fae] focus:border-[#0f6fae] disabled:cursor-not-allowed disabled:opacity-50 text-foreground shadow-sm",
         className
       )}
       {...props}
@@ -43,8 +43,8 @@ Select.displayName = 'Select';
 export const ValidationMessage = ({ message }: { message?: string | null }) => {
   if (!message) return null;
   return (
-    <div className="text-xs text-destructive-foreground mt-2 font-bold tracking-wide uppercase bg-destructive px-3 py-2 rounded-lg border-2 border-border-heavy select-none shadow-[2px_2px_0px_rgba(23,23,23,1)]">
-      {message}
+    <div className="text-[10px] text-[#b91c1c] mt-1.5 font-medium tracking-normal bg-red-50/80 px-3 py-1.5 rounded border border-red-200 select-none">
+      * {message}
     </div>
   );
 };
@@ -54,11 +54,11 @@ export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttrib
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center rounded-xl text-sm font-bold uppercase tracking-wide transition-all focus-visible:outline-none focus-visible:ring-0 disabled:opacity-50 disabled:pointer-events-none h-12 py-2 px-6",
-        variant === 'primary' && "bg-primary text-primary-foreground border-2 border-border-heavy shadow-[2px_2px_0px_rgba(23,23,23,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
-        variant === 'secondary' && "bg-secondary text-secondary-foreground border-2 border-border-heavy shadow-[2px_2px_0px_rgba(23,23,23,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none",
-        variant === 'ghost' && "bg-transparent text-muted-foreground hover:text-foreground hover:bg-neutral-200",
-        variant === 'outline' && "border-2 border-border-heavy bg-card hover:bg-neutral-100 text-foreground shadow-[2px_2px_0px_rgba(23,23,23,0.1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]",
+        "inline-flex items-center justify-center rounded-lg text-xs font-bold uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#0f6fae] disabled:opacity-50 disabled:pointer-events-none h-10 py-1.5 px-4 cursor-pointer",
+        variant === 'primary' && "bg-[#0b2f4a] text-white border border-[#0b2f4a] hover:bg-[#0f6fae] shadow-sm",
+        variant === 'secondary' && "bg-[#e6f1f8] text-[#0b2f4a] border border-[#0b2f4a]/10 hover:bg-[#cbe3f3] shadow-xs",
+        variant === 'ghost' && "bg-transparent text-muted-foreground hover:text-foreground hover:bg-[#f3f4f1]",
+        variant === 'outline' && "border border-[#d8ddd8] bg-white hover:bg-[#f3f4f1] text-[#374151] shadow-xs",
         className
       )}
       {...props}

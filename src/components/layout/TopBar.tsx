@@ -3,17 +3,16 @@ import { BookOpen } from 'lucide-react';
 
 export function TopBar() {
   return (
-    <header className="h-[64px] border-b-2 border-border-heavy bg-card sticky top-0 z-20 flex items-center justify-between px-6 select-none shrink-0">
+    <header className="h-[64px] border-b border-[#d8ddd8] bg-white sticky top-0 z-20 flex items-center justify-between px-6 select-none shrink-0">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
-          {/* We rely on Sidebar for brand on desktop, but show something simple here maybe, or nothing if we want it super clean. Let's show route context or breadcrumb-like element on client side, but server side just simple text */}
-          <span className="font-display font-bold uppercase tracking-tight text-card-foreground md:hidden">Track.Lab</span>
+          <span className="font-sans font-bold uppercase tracking-tight text-[#0b2f4a] md:hidden">Track.Lab</span>
         </div>
       </div>
 
       <div className="flex items-center gap-4">
-        <Link href="/formulas" className="flex h-9 px-4 rounded-lg border-2 border-border-heavy bg-card hover:bg-neutral-100 text-card-foreground items-center justify-center text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer gap-2">
-          <BookOpen className="w-4 h-4" />
+        <Link href="/formulas" className="flex h-9 px-4 rounded-lg border border-[#d8ddd8] bg-white hover:bg-[#f3f4f1] text-[#0b2f4a] items-center justify-center text-xs font-bold uppercase tracking-wider transition-all cursor-pointer gap-2 shadow-sm">
+          <BookOpen className="w-4 h-4 text-[#0f6fae]" />
           <span className="hidden sm:inline">Formulas</span>
         </Link>
       </div>
