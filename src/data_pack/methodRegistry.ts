@@ -3,6 +3,9 @@
 
 import { workoutMethods } from "./workoutMethods";
 import { calendarMethods } from "./calendarMethods";
+import { recoveryRuleDefinitions } from "./recoveryRules";
+import { raceDayMethodDefinitions } from "./raceDayChecklists";
+import { conversionOptionsList } from "./conversionMethods";
 
 const staticRegistry = [
   {
@@ -1996,6 +1999,9 @@ export const methodRegistry = [
   ...staticRegistry,
   ...workoutMethods,
   ...calendarMethods,
-  ...phase8Methods
+  ...phase8Methods,
+  ...recoveryRuleDefinitions,
+  ...raceDayMethodDefinitions,
+  ...conversionOptionsList
 ] as any[];
 
