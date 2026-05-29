@@ -26,6 +26,7 @@ To prevent un-validated or raw JSON rendering and maintain perfect backward-comp
 - **Workout Templates**: **1,315** fully registered structural templates.
 - **Field Test Protocols**: **15** descriptive physical testing sequences.
 - **Formula Method Registry**: **110** JSON scientific calculation definitions, combined with existing implemented formula routes.
+- **Duplicate Method Handling**: Implemented a data-level deduplication merge strategy in `jsonAdapters.ts`. Known duplicate key warnings (such as `intensity_distribution`, `long_run_ratio`, and conversion items like `min_km_to_min_mile`) are securely unified into canonical methods or segregated using deterministic route suffixes (`__zone`, `__calendar`, `__load`) to prevent console key duplication regressions, while maintaining a fallback UI stable composite key format `${method.id}__${method.route}__${method.category}__${idx}` in rendering.
 
 ## 5. Architectural Safeguards
 - **Pure Local Calculation**: Calculator execution remains entirely handled by deterministic, local TypeScript logic inside `/src/lib/calculators_pack` and `/src/app`.
