@@ -1,12 +1,32 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Input, Label, Button, Select, ValidationMessage } from '@/components/ui/Forms';
 import { LabPageHeader } from '@/components/layout/LabPageHeader';
 import { workoutTemplates, raceDistances, workoutSafetyRules } from '@/data';
-import { parseDurationToSeconds, formatSecondsToTimeString, formatPace , safeNumber } from '@/lib/formatters/time';
-import { AlertCircle } from 'lucide-react';
+import { 
+  parseDurationToSeconds, 
+  formatSecondsToTimeString, 
+  formatPace, 
+  safeNumber 
+} from '@/lib/formatters/time';
+import { 
+  AlertCircle, 
+  SlidersHorizontal, 
+  Search, 
+  ArrowLeftRight, 
+  Code, 
+  ExternalLink, 
+  Copy, 
+  RotateCcw, 
+  BookOpen, 
+  ShieldAlert, 
+  Check,
+  FileSpreadsheet
+} from 'lucide-react';
+import Link from 'next/link';
 
 function isDistanceRepTemplate(mainSet: any): boolean {
   return mainSet && mainSet.type === 'distance_reps';
@@ -72,28 +92,41 @@ function calculateWorkout(template: typeof workoutTemplates[number], paceSec: nu
 }
 
 export default function WorkoutLibraryPage() {
+  // Filters & Search
+  const [searchQuery, setSearchQuery] = useState('');
   const [goalFilter, setGoalFilter] = useState<string>('all');
   const [scenarioFilter, setScenarioFilter] = useState<string>('all');
   const [formatFilter, setFormatFilter] = useState<string>('all');
+  const [intensityFilter, setIntensityFilter] = useState<string>('all');
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   
-  const [paceInput, setPaceInput] = useState('');
+  // Custom execution configs
+  const [paceInput, setPaceInput] = useState('5:00');
   const [warmupInput, setWarmupInput] = useState('15');
   const [cooldownInput, setCooldownInput] = useState('10');
-  
-  const [weeklyMileageInput, setWeeklyMileageInput] = useState('');
-  
-  const selectedTemplate = useMemo(() => workoutTemplates.find(t => t.id === selectedTemplateId), [selectedTemplateId]);
+  const [weeklyMileageInput, setWeeklyMileageInput] = useState('50');
 
-  const filteredTemplates = useMemo(() => {
-    return workoutTemplates.filter(t => {
-      const matchGoal = goalFilter === 'all' || ('goalDistances' in t && (t.goalDistances as unknown as string[]).includes(goalFilter));
-      const matchScenario = scenarioFilter === 'all' || ('scenario' in t && t.scenario === scenarioFilter);
-      const matchFormat = formatFilter === 'all' || ('format' in t && t.format === formatFilter);
-      return matchGoal && matchScenario && matchFormat;
+  // Copy status text helper
+  const [copyStatus, setCopyStatus] = useState<string | null>(null);
+
+  // Template Comparison State
+  const [compTemplateIdA, setCompTemplateIdA] = useState<string>('');
+  const [compTemplateIdB, setCompTemplateIdB] = useState<string>('');
+  const [isComparing, setIsComparing] = useState(false);
+
+  const selectedTemplate = useMemo(() => {
+    return workoutTemplates.find(t => t.id === selectedTemplateId);
+  }, [selectedTemplateId]);
+
+  // Compute uniquely occurring categories
+  const uniqueIntensities = useMemo(() => {
+    const list = new Set<string>();
+    workoutTemplates.forEach((t: any) => {
+      if (t.mainSet?.intensity) list.add(t.mainSet.intensity);
     });
-  }, [goalFilter, scenarioFilter, formatFilter]);
+    return Array.from(list).sort();
+  }, []);
 
   const uniqueGoals = useMemo(() => {
     const goals = new Set<string>();
@@ -113,18 +146,37 @@ export default function WorkoutLibraryPage() {
     return Array.from(formats).sort();
   }, []);
 
-  let calcResult = null;
-  const parsedSecs = paceInput ? parseDurationToSeconds(paceInput) : 0;
-  const pSec = parsedSecs === null ? 0 : parsedSecs;
-  if (selectedTemplate && pSec > 0) {
-    calcResult = calculateWorkout(
+  // Filter & Search Execution
+  const filteredTemplates = useMemo(() => {
+    return workoutTemplates.filter(t => {
+      const matchesSearch = searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (t.id && t.id.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        ('formulaNotes' in t && t.formulaNotes?.some(n => n.toLowerCase().includes(searchQuery.toLowerCase())));
+
+      const matchesGoal = goalFilter === 'all' || ('goalDistances' in t && (t.goalDistances as unknown as string[]).includes(goalFilter));
+      const matchesScenario = scenarioFilter === 'all' || ('scenario' in t && t.scenario === scenarioFilter);
+      const matchesFormat = formatFilter === 'all' || ('format' in t && t.format === formatFilter);
+      const matchesIntensity = intensityFilter === 'all' || ('mainSet' in t && (t.mainSet as any)?.intensity === intensityFilter);
+
+      return matchesSearch && matchesGoal && matchesScenario && matchesFormat && matchesIntensity;
+    });
+  }, [searchQuery, goalFilter, scenarioFilter, formatFilter, intensityFilter]);
+
+  // Single Template Projection
+  const calcResult = useMemo(() => {
+    if (!selectedTemplate) return null;
+    const pSec = paceInput ? parseDurationToSeconds(paceInput) : 0;
+    if (!pSec || pSec <= 0) return null;
+
+    return calculateWorkout(
       selectedTemplate, 
       pSec, 
       parseFloat(warmupInput) || 0, 
       parseFloat(cooldownInput) || 0
     );
-  }
+  }, [selectedTemplate, paceInput, warmupInput, cooldownInput]);
 
+  // Specific safety rule triggers (Static only)
   const activeSafetyFlags = useMemo(() => {
     if (!selectedTemplate || !('safetyRuleIds' in selectedTemplate)) return [];
     
@@ -141,7 +193,6 @@ export default function WorkoutLibraryPage() {
           flags.push(rule);
         }
       } else if (id === 'long_run_ratio_gt_35') {
-         // rough total dist estimate
          const totalDistKm = calcResult ? ((calcResult.workDist / 1000) + ((parseFloat(warmupInput) || 0) / 6) + ((parseFloat(cooldownInput) || 0) / 6)) : 0;
          if (wd > 0 && totalDistKm > 0 && totalDistKm / wd > 0.35) {
             flags.push(rule);
@@ -157,195 +208,444 @@ export default function WorkoutLibraryPage() {
     return flags;
   }, [selectedTemplate, calcResult, weeklyMileageInput, warmupInput, cooldownInput]);
 
+  // Double Template Comparer Routine
+  const comparisonData = useMemo(() => {
+    if (!isComparing || !compTemplateIdA || !compTemplateIdB) return null;
+    const tA = workoutTemplates.find(t => t.id === compTemplateIdA);
+    const tB = workoutTemplates.find(t => t.id === compTemplateIdB);
+    if (!tA || !tB) return null;
+
+    const pSec = parseDurationToSeconds(paceInput) || 300; // default 5:00
+    const wu = parseFloat(warmupInput) || 0;
+    const cd = parseFloat(cooldownInput) || 0;
+
+    const resA = calculateWorkout(tA, pSec, wu, cd);
+    const resB = calculateWorkout(tB, pSec, wu, cd);
+
+    return {
+      templateA: tA,
+      templateB: tB,
+      resA,
+      resB,
+      deltaDuration: resA.totalTime - resB.totalTime,
+      deltaDistanceKm: (resA.workDist - resB.workDist) / 1000
+    };
+  }, [isComparing, compTemplateIdA, compTemplateIdB, paceInput, warmupInput, cooldownInput]);
+
+  // Copy Summary Handler
+  const handleCopySummary = () => {
+    if (!selectedTemplate || !calcResult) return;
+    const summaryText = 
+      `Workout: ${selectedTemplate.name}\n` +
+      `Category: ${selectedTemplate.scenario} | Difficulty: ${selectedTemplate.difficulty}\n` +
+      `Target Rep Time: ${formatSecondsToTimeString(Math.round(calcResult.targetRepTime))}\n` +
+      `Estimated Session Work Distance: ${(calcResult.workDist/1000).toFixed(2)} km\n` +
+      `Calculated Session Duration: ${formatSecondsToTimeString(calcResult.totalTime)}`;
+    
+    navigator.clipboard.writeText(summaryText);
+    setCopyStatus('Summary copied!');
+    setTimeout(() => setCopyStatus(null), 2000);
+  };
+
+  const handleResetFilters = () => {
+    setSearchQuery('');
+    setGoalFilter('all');
+    setScenarioFilter('all');
+    setFormatFilter('all');
+    setIntensityFilter('all');
+    setIsComparing(false);
+  };
+
   return (
     <div className="space-y-6">
-      <LabPageHeader title="SESSION ARCHIVE" subtitle="View and calculate static structured interval templates." />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-card border-2 border-border-heavy rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)]">
-        <div className="space-y-2 z-10">
-          <Label>Goal Distance</Label>
-          <Select value={goalFilter} onChange={e => setGoalFilter(e.target.value)}>
-            <option value="all">All Distances</option>
-            {uniqueGoals.map(g => <option key={g} value={g}>{g.replace('_', ' ').toUpperCase()}</option>)}
-          </Select>
+      {/* Header bar and routing shortcuts */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
+        <div>
+          <h1 className="font-display font-black text-3xl uppercase tracking-tight text-foreground">SESSION ARCHIVE</h1>
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">Review static running protocol templates and calculate manual duration projections.</p>
         </div>
-        <div className="space-y-2">
-          <Label>Scenario</Label>
-          <Select value={scenarioFilter} onChange={e => setScenarioFilter(e.target.value)}>
-            <option value="all">All Scenarios</option>
-            {uniqueScenarios.map(s => <option key={s} value={s}>{s.replace('_', ' ').toUpperCase()}</option>)}
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label>Format</Label>
-          <Select value={formatFilter} onChange={e => setFormatFilter(e.target.value)}>
-            <option value="all">All Formats</option>
-            {uniqueFormats.map(f => <option key={f} value={f}>{f.replace('_', ' ').toUpperCase()}</option>)}
-          </Select>
+        <div className="flex gap-2">
+          <Link href="/workout" className="px-4 py-2 bg-primary text-primary-foreground border-2 border-border-heavy rounded-lg text-xs font-bold uppercase shadow-[1.5px_1.5px_0px_rgba(23,23,23,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
+            🛠️ GO TO WORKOUT LAB
+          </Link>
+          <Link href="/calendar" className="px-4 py-2 bg-white text-foreground border-2 border-border-heavy rounded-lg text-xs font-bold uppercase shadow-[1.5px_1.5px_0px_rgba(23,23,23,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
+            📅 PREVIEW WEEK
+          </Link>
         </div>
       </div>
 
-      {selectedTemplate ? (
-        <div className="space-y-6">
-          <Button variant="secondary" onClick={() => setSelectedTemplateId(null)}>← Back to Library</Button>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl font-display font-black uppercase tracking-tight">{selectedTemplate.name}</CardTitle>
-                <CardDescription className="capitalize font-bold text-xs tracking-widest text-primary">
-                  {('scenario' in selectedTemplate ? selectedTemplate.scenario.replace('_', ' ') : '')} • {('difficulty' in selectedTemplate ? selectedTemplate.difficulty.replace('_', ' ') : '')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-white border-2 border-border-heavy rounded-lg text-xs font-mono font-bold space-y-2 text-foreground shadow-[inset_1px_1px_0px_rgba(0,0,0,0.1)]">
-                  <div className="tracking-widest uppercase text-[10px] mb-2 text-muted-foreground font-sans">Structure Trace</div>
-                  {('warmup' in selectedTemplate) && selectedTemplate.warmup && <div>WARMUP STAGE = TRUE</div>}
-                  {('mainSet' in selectedTemplate) && selectedTemplate.mainSet && (
-                    <div className="text-primary">MAIN_STAGE: {('reps' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.reps}x ` : ''} {('distanceMeters' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.distanceMeters}m` : (('durationMinutes' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.durationMinutes}m` : '')} @ {('intensity' in selectedTemplate.mainSet) ? (selectedTemplate.mainSet as any).intensity : ''}</div>
-                  )}
-                  {('cooldown' in selectedTemplate) && selectedTemplate.cooldown && <div>COOLDOWN STAGE = TRUE</div>}
-                </div>
-                
-                <div className="space-y-4 pt-4 border-t border-zinc-800">
-                  <div className="space-y-2">
-                    <Label htmlFor="pace">Target Rep Pace (mm:ss/km)</Label>
-                    <Input id="pace" placeholder="e.g. 05:00" value={paceInput} onChange={e => setPaceInput(e.target.value)} />
-                    <p className="text-xs text-zinc-500">Provide an estimated pace to calculate total duration.</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="wu">Warm-up (min)</Label>
-                      <Input id="wu" type="number" value={warmupInput} onChange={e => setWarmupInput(e.target.value)} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cd">Cool-down (min)</Label>
-                      <Input id="cd" type="number" value={cooldownInput} onChange={e => setCooldownInput(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="wd">Weekly Mileage (optional)</Label>
-                    <Input id="wd" type="number" placeholder="e.g. 50" value={weeklyMileageInput} onChange={e => setWeeklyMileageInput(e.target.value)} />
-                    <p className="text-xs text-zinc-500">Used for volume and safety threshold verification.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Dynamic Filter Layout */}
+      {!selectedTemplate && !isComparing && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* FILTER PANEL */}
+          <div className="lg:col-span-4 p-6 border-2 border-border-heavy bg-card rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)] space-y-4">
+            <div className="flex justify-between items-center pb-2 border-b">
+              <span className="font-display font-black text-xs uppercase tracking-widest text-zinc-700 flex items-center gap-1.5">
+                <SlidersHorizontal className="w-4 h-4 text-primary" /> SEARCH & FILTER
+              </span>
+              <button onClick={handleResetFilters} className="text-[10px] font-black uppercase text-muted-foreground hover:text-foreground">
+                Reset
+              </button>
+            </div>
 
-            {calcResult ? (
-              <div className="border-2 border-border-heavy bg-white rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] h-max flex flex-col overflow-hidden">
-                <div className="bg-accent text-accent-foreground px-6 py-4 border-b-2 border-border-heavy">
-                  <h3 className="font-bold uppercase tracking-wider text-sm">PROJECTION OUTPUT</h3>
-                </div>
-                <div className="p-6 space-y-4 flex flex-col flex-1">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Total Time</div>
-                      <div className="font-display font-black text-3xl text-foreground">{formatSecondsToTimeString(calcResult.totalTime)}</div>
+            {/* Keyword Search */}
+            <div className="space-y-1">
+              <Label>Keyword Query</Label>
+              <div className="relative">
+                <Input 
+                  type="text" 
+                  placeholder="e.g. recovery, threshold..." 
+                  value={searchQuery} 
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+                <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-muted-foreground" />
+              </div>
+            </div>
+
+            {/* Target Distance Goal */}
+            <div className="space-y-1">
+              <Label>Goal Distance tag</Label>
+              <Select value={goalFilter} onChange={e => setGoalFilter(e.target.value)}>
+                <option value="all">All Goal Distances</option>
+                {uniqueGoals.map(g => (
+                  <option key={g} value={g}>{g.replace('_', ' ').toUpperCase()}</option>
+                ))}
+              </Select>
+            </div>
+
+            {/* Scenario Type */}
+            <div className="space-y-1">
+              <Label>System Scenario</Label>
+              <Select value={scenarioFilter} onChange={e => setScenarioFilter(e.target.value)}>
+                <option value="all">All Scenarios</option>
+                {uniqueScenarios.map(s => (
+                  <option key={s} value={s}>{s.replace('_', ' ').toUpperCase()}</option>
+                ))}
+              </Select>
+            </div>
+
+            {/* Format (e.g. time vs distance) */}
+            <div className="space-y-1">
+              <Label>Structural format</Label>
+              <Select value={formatFilter} onChange={e => setFormatFilter(e.target.value)}>
+                <option value="all">All Formats</option>
+                {uniqueFormats.map(f => (
+                  <option key={f} value={f}>{f.replace('_', ' ').toUpperCase()}</option>
+                ))}
+              </Select>
+            </div>
+
+            {/* Intensity Target (Z1, Threshold, etc.) */}
+            <div className="space-y-1">
+              <Label>Intensity Target</Label>
+              <Select value={intensityFilter} onChange={e => setIntensityFilter(e.target.value)}>
+                <option value="all">All Intensities</option>
+                {uniqueIntensities.map(i => (
+                  <option key={i} value={i}>{i.toUpperCase()}</option>
+                ))}
+              </Select>
+            </div>
+
+            {/* COMPARE SIDEBAR TRIGGER */}
+            <div className="pt-4 border-t-2 border-dashed border-border-heavy mt-4 space-y-4">
+              <span className="font-display font-black text-[10px] tracking-widest uppercase text-zinc-600 block">PROTOCOL COMPARER</span>
+              <div className="grid grid-cols-1 gap-2">
+                <Select value={compTemplateIdA} onChange={e => setCompTemplateIdA(e.target.value)}>
+                  <option value="">Choose Protocol A...</option>
+                  {workoutTemplates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                </Select>
+                <Select value={compTemplateIdB} onChange={e => setCompTemplateIdB(e.target.value)}>
+                  <option value="">Choose Protocol B...</option>
+                  {workoutTemplates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                </Select>
+                <Button 
+                  type="button" 
+                  onClick={() => setIsComparing(true)}
+                  disabled={!compTemplateIdA || !compTemplateIdB}
+                  variant="outline"
+                  className="w-full text-xs font-bold"
+                >
+                  <ArrowLeftRight className="w-4 h-4 mr-2" /> Match Delas
+                </Button>
+              </div>
+            </div>
+
+          </div>
+
+          {/* TEMPLATES LIST COLUMN */}
+          <div className="lg:col-span-8 space-y-4">
+            <div className="flex justify-between items-center px-2">
+              <span className="text-[11px] font-mono font-bold text-muted-foreground uppercase tracking-widest">
+                Showing {filteredTemplates.length} of {workoutTemplates.length} Static Protocols
+              </span>
+              <span className="px-2.5 py-1 bg-neutral-100 border border-border text-[9px] font-bold text-zinc-550 rounded-full">
+                🔐 NO DATABASE NO AI REGISTER
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredTemplates.map(template => {
+                const isDistanceReps = 'mainSet' in template && template.mainSet && 'reps' in (template.mainSet as any);
+                return (
+                  <motion.div 
+                    layout
+                    key={template.id} 
+                    className="border-2 border-border-heavy bg-white rounded-xl shadow-[2.5px_2.5px_0px_rgba(23,23,23,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[5px_5px_0px_rgba(23,23,23,1)] transition-all flex flex-col overflow-hidden"
+                  >
+                    <div className="bg-muted p-4 border-b-2 border-border-heavy flex justify-between items-start gap-2">
+                      <div>
+                        <h4 className="font-display font-black text-sm uppercase text-zinc-800 leading-tight">{template.name}</h4>
+                        <span className="text-[9px] font-mono font-bold uppercase text-primary tracking-widest bg-white border px-1.5 py-0.5 rounded block mt-1.5 w-max">
+                          {('difficulty' in template ? template.difficulty.replace('_', ' ') : 'Easy')} LEVEL
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-mono leading-none font-bold uppercase text-muted-foreground shrink-0 border border-border px-1.5 py-1 rounded bg-white">
+                        {template.format}
+                      </span>
                     </div>
-                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Rep Time</div>
-                      <div className="font-display font-black text-2xl text-foreground mt-1">{calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}</div>
-                    </div>
-                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Work Distance</div>
-                      <div className="font-display font-black text-2xl text-foreground mt-1">{calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}</div>
-                    </div>
-                    <div className="bg-card p-4 border-2 border-border-heavy rounded-lg shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)] text-center">
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Work:Rest Time</div>
-                      <div className="font-mono text-sm font-bold text-muted-foreground mt-2">
-                        {formatSecondsToTimeString(Math.round(calcResult.workTime))} / {formatSecondsToTimeString(Math.round(calcResult.restTime))}
+
+                    <div className="p-4 space-y-4 flex-1 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <span className="text-[9px] font-mono font-bold text-muted-foreground uppercase tracking-widest block mb-1">Workout Structure Bounds:</span>
+                        {isDistanceReps ? (
+                          <div className="p-2.5 bg-neutral-50 rounded border text-xs font-mono font-bold text-zinc-700">
+                            {('mainSet' in template ? (template.mainSet as any).reps : '')} × {('mainSet' in template && 'distanceMeters' in (template.mainSet as any)) ? `${(template.mainSet as any).distanceMeters}m` : ('mainSet' in template ? `${(template.mainSet as any).durationMinutes} min` : '')} @ {('mainSet' in template ? (template.mainSet as any).intensity : '')}
+                          </div>
+                        ) : ('mainSet' in template) && template.mainSet ? (
+                          <div className="p-2.5 bg-neutral-50 rounded border text-xs font-mono font-bold text-zinc-700">
+                            {'distanceMeters' in (template.mainSet as any) ? `${(template.mainSet as any).distanceMeters}m` : `${(template.mainSet as any).durationMinutes} min`} @ {(template.mainSet as any).intensity}
+                          </div>
+                        ) : (
+                          <div className="text-muted-foreground text-xs italic">Structured custom protocol outlines.</div>
+                        )}
+                        <p className="text-[10px] text-zinc-550 leading-normal">
+                          Goal Scenarios: {('goalDistances' in template ? (template.goalDistances as unknown as string[]).map(g => g.replace('_', ' ')).join(', ') : 'any')}
+                        </p>
+                      </div>
+
+                      <div className="pt-4 border-t border-neutral-100 flex gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setSelectedTemplateId(template.id)}
+                          className="w-full text-xs font-extrabold h-10 border-2"
+                        >
+                          OPEN CALCS
+                        </Button>
                       </div>
                     </div>
+                  </motion.div>
+                );
+              })}
+              {filteredTemplates.length === 0 && (
+                <div className="col-span-full py-16 text-center text-zinc-500 font-bold border-2 border-dashed border-border bg-card rounded-xl">
+                  No static protocol templates found matching selected filters. Try broadening inputs.
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* SINGLE TEMPLATE CALCULATION VIEW */}
+      {selectedTemplate && (
+        <div className="space-y-6">
+          <Button variant="outline" onClick={() => { setSelectedTemplateId(null); setCopyStatus(null); }} className="text-xs">
+            ← Back to Archive Gallery
+          </Button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* CONFIG PANEL */}
+            <div className="lg:col-span-5 p-6 border-2 border-border-heavy bg-white rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] space-y-4">
+              <div>
+                <span className="px-2 py-0.5 bg-neutral-900 text-white rounded text-[8px] font-bold uppercase tracking-widest mr-2 inline-block">
+                  STATIC PROTOCOL
+                </span>
+                <span className="px-2 py-0.5 bg-primary text-primary-foreground rounded text-[8px] font-bold uppercase tracking-widest inline-block">
+                  MANUAL INPUT REQUIRED
+                </span>
+                <h3 className="font-display font-black text-xl text-zinc-800 uppercase mt-2">{selectedTemplate.name}</h3>
+                <p className="text-xs font-bold text-muted-foreground capitalize mt-0.5">
+                  Scenario: {('scenario' in selectedTemplate ? selectedTemplate.scenario.replace('_', ' ') : '')} • Type: {('format' in selectedTemplate ? selectedTemplate.format : '')}
+                </p>
+              </div>
+
+              {/* Formulation Outline Box */}
+              <div className="p-3 bg-neutral-50 border-2 border-border-heavy rounded text-[10px] font-mono font-bold leading-relaxed space-y-1">
+                <span className="block uppercase text-[8px] text-muted-foreground font-sans">Sequence trace bounds:</span>
+                <div>Warmup Stage: Include optional warm up limits</div>
+                {('mainSet' in selectedTemplate) && selectedTemplate.mainSet && (
+                  <div className="text-primary uppercase">
+                    Main set: {('reps' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.reps}x ` : ''} 
+                    {('distanceMeters' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.distanceMeters}m ` : ''}
+                    {('durationMinutes' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.durationMinutes} min ` : ''}
+                    @ {('intensity' in selectedTemplate.mainSet) ? (selectedTemplate.mainSet as any).intensity : 'effort'}
                   </div>
-                  
-                  <div className="text-[10px] text-muted-foreground mt-4 pt-4 border-t-2 border-border-heavy space-y-3 font-medium">
-                    <div className="space-y-2 mb-4 bg-muted p-4 border-2 border-border-heavy rounded-lg">
-                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Input Used:</strong> Target {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
-                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Source:</strong> {selectedTemplate.name} Structure</p>
-                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Formula (Time):</strong> Work Time + Rest Time + Warmup + Cooldown</p>
-                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Limitation:</strong> Mathematical projection only. Does not factor in fatigue profiles, weather, or terrain.</p>
-                       <p><strong className="text-foreground uppercase tracking-widest mb-1 block">Confidence Label:</strong> Estimate</p>
+                )}
+                <div>Cooldown Stage: Include optional recovery limits</div>
+              </div>
+
+              {/* Parameters Form */}
+              <div className="space-y-4 pt-2">
+                <div className="space-y-1">
+                  <Label>Expected Rep Target Pace (MM:SS/km)</Label>
+                  <Input type="text" placeholder="5:00" value={paceInput} onChange={e => setPaceInput(e.target.value)} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label>Warmup (min)</Label>
+                    <Input type="number" min="0" value={warmupInput} onChange={e => setWarmupInput(e.target.value)} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label>Cooldown (min)</Label>
+                    <Input type="number" min="0" value={cooldownInput} onChange={e => setCooldownInput(e.target.value)} />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label>Weekly Cumulative Mileage (optional km/mile)</Label>
+                  <Input type="number" placeholder="50" value={weeklyMileageInput} onChange={e => setWeeklyMileageInput(e.target.value)} />
+                  <p className="text-[10px] text-muted-foreground leading-normal">Required for safety volume checks.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* RESULTS PANEL */}
+            <div className="lg:col-span-7 space-y-6">
+              {calcResult ? (
+                <div className="border-2 border-border-heavy bg-white rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] overflow-hidden">
+                  <div className="bg-neutral-900 text-white p-4 border-b-2 border-border-heavy">
+                    <span className="font-display font-black text-xs uppercase tracking-widest text-indigo-400">PROJECTED METRIC OUTPUTS</span>
+                  </div>
+                  <div className="p-6 space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
+                        <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Calculated Session Time</span>
+                        <strong className="font-display font-black text-3xl text-foreground">{formatSecondsToTimeString(calcResult.totalTime)}</strong>
+                      </div>
+                      <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
+                        <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Single Rep Limit</span>
+                        <strong className="font-display font-black text-2xl text-foreground">{calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}</strong>
+                      </div>
+                      <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
+                        <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Active Paced Distance</span>
+                        <strong className="font-display font-black text-2xl text-foreground">{calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}</strong>
+                      </div>
+                      <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
+                        <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Paced work : rest time</span>
+                        <strong className="font-mono text-sm font-bold text-zinc-700 leading-none">
+                          {formatSecondsToTimeString(Math.round(calcResult.workTime))} / {formatSecondsToTimeString(Math.round(calcResult.restTime))}
+                        </strong>
+                      </div>
                     </div>
 
+                    {/* Safety compliance alerts (Static Rules Only) */}
                     {activeSafetyFlags.length > 0 && (
-                      <div className="bg-white border-2 border-destructive text-destructive p-4 flex gap-3 rounded-lg shadow-[2px_2px_0px_rgba(232,76,61,1)]">
-                        <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
-                        <div className="space-y-1 w-full text-foreground">
-                          <p className="font-bold uppercase tracking-widest text-[10px] mb-1 text-destructive">SYS_WARN: Volume Exceeded</p>
+                      <div className="bg-white border-2 border-destructive text-destructive p-4 flex gap-3 rounded-lg shadow-[2.5px_2.5px_0px_rgba(232,76,61,1)]">
+                        <AlertCircle className="w-5 h-5 shrink-0 text-destructive" />
+                        <div className="space-y-1 text-foreground leading-normal text-xs">
+                          <p className="font-bold uppercase tracking-widest text-[9px] text-destructive">RULE-BASED SAFETY EXCEEDED</p>
                           {activeSafetyFlags.map(rule => (
-                            <div key={rule.id} className="flex flex-col mb-1.5">
-                              <strong className="text-[10px]">{rule.name}</strong>
-                              <span className="text-[10px]">{rule.message}</span>
+                            <div key={rule.id} className="flex flex-col mb-1 pt-1 border-t border-red-50">
+                              <strong className="text-foreground tracking-wide">{rule.name}</strong>
+                              <span className="text-zinc-550 text-[11px]">{rule.message}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
-                    {activeSafetyFlags.length === 0 && !weeklyMileageInput && ('safetyRuleIds' in selectedTemplate) && (selectedTemplate.safetyRuleIds as unknown as string[])?.some(id => id.includes('volume') || id.includes('ratio')) && (
-                      <div className="bg-card border-2 border-border-heavy text-muted-foreground p-3 rounded-lg font-bold">
-                        <p className="text-[10px] uppercase tracking-widest text-center">Provide weekly mileage to verify safe volume ratios for this template.</p>
-                      </div>
-                    )}
+
+                    {/* Explanation details and traceability */}
+                    <div className="p-4 bg-zinc-50 border border-zinc-200 rounded text-[10px] font-mono text-zinc-650 leading-relaxed space-y-3">
+                      <p><strong className="text-foreground uppercase text-[8px] font-sans block">Formula Method used:</strong> Static structure layout + multiplier durations.</p>
+                      <p><strong className="text-foreground uppercase text-[8px] font-sans block">Trace inputs used:</strong> Base Pace: {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
+                      <p><strong className="text-foreground uppercase text-[8px] font-sans block">Axioms &amp; Limitations:</strong> Mathematical projections. Does not represent environmental wind friction resistance, gradient changes, or biomechanical stride variations.</p>
+                      <p><strong className="text-foreground uppercase text-[8px] font-sans block">Confidence label:</strong> Estimate</p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button variant="secondary" onClick={handleCopySummary} className="flex-1 text-xs">
+                        <Copy className="w-4 h-4 mr-2" /> {copyStatus || 'Copy Metrics'}
+                      </Button>
+                      <Link 
+                        href={`/workout?template=${selectedTemplate.id}&warmup=${warmupInput}&cooldown=${cooldownInput}`}
+                        className="flex-1 px-4 py-2 bg-primary text-primary-foreground border-2 border-border-heavy rounded-lg text-xs font-bold uppercase text-center flex items-center justify-center shadow-[1.5px_1.5px_0px_rgba(23,23,23,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" /> Load in Workout Lab
+                      </Link>
+                    </div>
                   </div>
-                  <Button variant="outline" className="w-full mt-auto" onClick={() => {
-                    navigator.clipboard.writeText(`Workout: ${selectedTemplate.name}\nTotal Time: ${formatSecondsToTimeString(calcResult.totalTime)}\nTarget Rep Time: ${formatSecondsToTimeString(Math.round(calcResult.targetRepTime))}`);
-                    alert('Copied to clipboard');
-                  }}>Copy Summary</Button>
                 </div>
-              </div>
-            ) : (
-              <Card className="h-max">
-                <CardContent className="p-6 text-center space-y-2">
-                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Waiting for valid input</p>
-                  <p className="text-xs text-zinc-500">Provide a &quot;Target Rep Pace&quot; to calculate workout duration mathematically. No AI estimation occurs without valid user input.</p>
-                </CardContent>
-              </Card>
-            )}
+              ) : (
+                <div className="p-12 border-2 border-dashed border-border-heavy rounded-xl text-center bg-card flex flex-col items-center justify-center min-h-[300px]">
+                  <SlidersHorizontal className="w-12 h-12 text-muted-foreground stroke-1 mb-3" />
+                  <span className="font-bold text-xs uppercase tracking-widest text-muted-foreground">Waiting for valid inputs</span>
+                  <p className="text-[11px] text-zinc-500 max-w-xs mt-1 leading-normal">Provide a valid rep cadence pace (e.g. 5:00) to trace total duration sums inside the deterministic formula engine.</p>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTemplates.map(template => (
-            <Card key={template.id} className="flex flex-col hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">
-              <CardHeader>
-                <CardTitle className="text-lg">{template.name}</CardTitle>
-                <CardDescription className="capitalize">
-                  {('scenario' in template ? template.scenario.replace('_', ' ') : '')} • {('difficulty' in template ? template.difficulty.replace('_', ' ') : '')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <div className="space-y-4 text-sm font-medium">
-                  <div>
-                    <span className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] pb-1.5 block">Main Set Summary:</span>
-                    {('reps' in (('mainSet' in template ? template.mainSet : {}) || {})) ? (
-                      <div className="border-2 border-border-heavy bg-card p-3 rounded-lg text-foreground font-mono font-bold text-xs shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)]">
-                        {('mainSet' in template ? (template.mainSet as any).reps : '')} × {('mainSet' in template && 'distanceMeters' in (template.mainSet as any)) ? `${(template.mainSet as any).distanceMeters}m` : ('mainSet' in template ? `${(template.mainSet as any).durationMinutes} min` : '')} @ {('mainSet' in template ? (template.mainSet as any).intensity : '')}
+      )}
+
+      {/* DOUBLE TEMPLATE COMPARER SCREEN */}
+      {isComparing && (
+        <div className="space-y-6">
+          <Button variant="outline" onClick={() => setIsComparing(false)} className="text-xs">
+            ← Close Comparison Layout
+          </Button>
+
+          {comparisonData && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+              
+              <Card className="border-2 border-border-heavy shadow-[4px_4px_0px_rgba(23,23,23,1)] bg-white">
+                <CardHeader className="bg-neutral-900 text-white border-b-2 border-border-heavy">
+                  <span className="font-display font-black text-xs uppercase tracking-widest text-indigo-400">PROTOCOL COMPARISON DELTAS</span>
+                </CardHeader>
+                <div className="p-6 space-y-4 font-mono font-bold text-xs leading-relaxed text-zinc-805">
+                  <div className="flex justify-between items-center border-b pb-2">
+                    <span>Protocol A Label</span>
+                    <span className="text-primary uppercase">{comparisonData.templateA.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b pb-2">
+                    <span>Protocol B Label</span>
+                    <span className="text-primary uppercase">{comparisonData.templateB.name}</span>
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <div className="p-3 bg-muted border rounded">
+                      <span>DURATION DELTA</span>
+                      <div className="text-sm font-black text-zinc-850 mt-1">
+                        {comparisonData.deltaDuration === 0 ? 'Equal Session Times' : `${formatSecondsToTimeString(Math.abs(comparisonData.deltaDuration))} ${comparisonData.deltaDuration < 0 ? 'shorter A' : 'shorter B'}`}
                       </div>
-                    ) : ('mainSet' in template) && template.mainSet ? (
-                      <div className="border-2 border-border-heavy bg-card p-3 rounded-lg text-foreground font-mono font-bold text-xs shadow-[inset_1px_1px_0px_rgba(0,0,0,0.05)]">
-                        {'distanceMeters' in (template.mainSet as any) ? `${(template.mainSet as any).distanceMeters}m` : `${(template.mainSet as any).durationMinutes} min`} @ {(template.mainSet as any).intensity}
+                    </div>
+                    <div className="p-3 bg-muted border rounded">
+                      <span>DISTANCE DELTA</span>
+                      <div className="text-sm font-black text-zinc-850 mt-1">
+                        {comparisonData.deltaDistanceKm === 0 ? 'Equal Paced Volume' : `${Math.abs(comparisonData.deltaDistanceKm).toFixed(2)} km ${comparisonData.deltaDistanceKm < 0 ? 'smaller in A' : 'smaller in B'}`}
                       </div>
-                    ) : (
-                      <div className="text-muted-foreground text-xs italic">Complex structured workout.</div>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-              <div className="p-6 pt-0 mt-auto">
-                <Button variant="outline" className="w-full bg-white font-bold" onClick={() => setSelectedTemplateId(template.id)}>
-                  SELECT TEMPLATE
-                </Button>
+              </Card>
+
+              <div className="space-y-4">
+                <div className="p-4 border border-zinc-200 bg-zinc-50 rounded text-[10px] font-mono leading-relaxed font-bold">
+                  <span className="text-foreground uppercase tracking-wider block mb-1 font-sans text-[9px]">Calculated Basis:</span>
+                  <div>Pacing Basis used for match: {paceInput} per kilometer</div>
+                  <div>Planned Warmup Minutes: {warmupInput}m</div>
+                  <div>Planned Cooldown Minutes: {cooldownInput}m</div>
+                </div>
               </div>
-            </Card>
-          ))}
-          {filteredTemplates.length === 0 && (
-            <div className="col-span-full py-12 text-center text-zinc-500">
-              No matching templates found. Try adjusting filters.
+
             </div>
           )}
         </div>
       )}
+
     </div>
   );
 }
-

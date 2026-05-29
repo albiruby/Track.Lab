@@ -1,7 +1,10 @@
 // Auto-generated static datasource for Track.Lab.
 // No database. No AI. No runtime formula evaluation.
 
-export const methodRegistry = [
+import { workoutMethods } from "./workoutMethods";
+import { calendarMethods } from "./calendarMethods";
+
+const staticRegistry = [
   {
     "id": "fox_220_age",
     "category": "heart_rate_max",
@@ -1305,5 +1308,694 @@ export const methodRegistry = [
     "formulaDisplay": "Average, max, and trend logic",
     "precision": "qualitative",
     "limitations": []
+  },
+  {
+    "id": "cooper_12min_vo2",
+    "category": "vo2_metabolic",
+    "name": "Cooper 12-Minute VO2max Estimate",
+    "formulaDisplay": "VO2max = (distance_meters - 504.9) / 44.73",
+    "requiredInputs": ["distanceMeters"],
+    "precision": "field_estimate",
+    "limitations": [
+      "Estimated from 12-min distance, not a direct gas-exchange measurement.",
+      "Assumes uniform pacing and high motivation."
+    ]
+  },
+  {
+    "id": "one_five_mile_vo2",
+    "category": "vo2_metabolic",
+    "name": "1.5-Mile VO2max Estimate",
+    "formulaDisplay": "VO2max = 3.5 + 483 / (time_minutes)",
+    "requiredInputs": ["timeSeconds"],
+    "precision": "field_estimate",
+    "limitations": [
+      "Aerobic power assumption. Submaximal paces skew prediction.",
+      "Requires maximal running effort."
+    ]
+  },
+  {
+    "id": "rockport_vo2",
+    "category": "vo2_metabolic",
+    "name": "Rockport Walk Test VO2max Estimate",
+    "formulaDisplay": "VO2max = 132.853 - (0.0769 × weight_lbs) - (0.3877 × age) + (6.315 × sex_val) - (3.2649 × time_mins) - (0.1565 × HR)",
+    "requiredInputs": ["age", "sex", "weightKg", "timeSeconds", "heartRate"],
+    "precision": "field_estimate",
+    "limitations": [
+      "Specifically suited for walking rather than running protocols.",
+      "Explicitly requires an accurate post-effort pulse."
+    ]
+  },
+  {
+    "id": "acsm_walking_vo2",
+    "category": "vo2_metabolic",
+    "name": "ACSM Walking VO2 Equation",
+    "formulaDisplay": "VO2 = 0.1 × speed + 1.8 × speed × grade + 3.5",
+    "requiredInputs": ["speedMetersPerMinute", "gradeDecimal"],
+    "precision": "estimate",
+    "limitations": [
+      "Intended for slow to moderate walking speeds between 1.9 and 6.4 km/h (1.2 - 4.0 mph).",
+      "Inaccurate for running intensities."
+    ]
+  },
+  {
+    "id": "manual_device_vo2",
+    "category": "vo2_metabolic",
+    "name": "Manual Device VO2max Input",
+    "formulaDisplay": "VO2max = Custom user device input",
+    "requiredInputs": ["vo2Max"],
+    "precision": "measured_or_custom",
+    "limitations": [
+      "Smartwatches rely on proprietary HR/speed linear models.",
+      "Accuracy can degrade significantly with heat, terrain, or drift."
+    ]
+  },
+  {
+    "id": "manual_lab_vo2",
+    "category": "vo2_metabolic",
+    "name": "Manual Lab VO2max Input",
+    "formulaDisplay": "VO2max = Lab metabolic cart measurement",
+    "requiredInputs": ["vo2Max"],
+    "precision": "measured_or_custom",
+    "limitations": [
+      "Requires high-precision equipment and gas analysis.",
+      "Highly accurate but must be periodically updated."
+    ]
+  },
+  {
+    "id": "vo2_reserve",
+    "category": "vo2_metabolic",
+    "name": "VO2 Reserve (VO2R)",
+    "formulaDisplay": "VO2R = VO2max - Resting_VO2",
+    "requiredInputs": ["vo2Max"],
+    "precision": "mathematical",
+    "limitations": [
+      "Typically assumes standard resting VO2 of 3.5 ml/kg/min."
+    ]
+  },
+  {
+    "id": "pct_vo2_max",
+    "category": "vo2_metabolic",
+    "name": "%VO2max Utilization",
+    "formulaDisplay": "%VO2max = VO2_At_Speed / VO2max × 100",
+    "requiredInputs": ["vo2AtSpeed", "vo2Max"],
+    "precision": "mathematical",
+    "limitations": [
+      "Fictionalized if work speed VO2 is not calculated correctly."
+    ]
+  },
+  {
+    "id": "grade_impact_vo2",
+    "category": "vo2_metabolic",
+    "name": "Grade Impact on VO2",
+    "formulaDisplay": "Grade Impact = VO2_At_Grade - VO2_Flat",
+    "requiredInputs": ["flatVO2", "gradeVO2"],
+    "precision": "mathematical",
+    "limitations": [
+      "Examines aerobic demand delta, ignoring biomechanical stress changes."
+    ]
+  },
+  {
+    "id": "speed_to_vo2_table",
+    "category": "vo2_metabolic",
+    "name": "Speed-to-VO2 Table Generator",
+    "formulaDisplay": "Calculates ACSM output over preset range: speed vs grade",
+    "requiredInputs": ["speedRangeValues", "gradeDecimal"],
+    "precision": "mathematical",
+    "limitations": [
+      "Assumes typical environmental factors and standard metabolic economy."
+    ]
+  },
+  {
+    "id": "balke_vo2",
+    "category": "vo2_metabolic",
+    "name": "Balke Field Treadmill Protocol",
+    "formulaDisplay": "VO2max = 1.444 × duration_minutes + 14.99",
+    "requiredInputs": ["durationMinutes"],
+    "precision": "field_estimate",
+    "limitations": ["Specially suited for clinical treadmill populations."]
+  },
+  {
+    "id": "beep_test_vo2",
+    "category": "vo2_metabolic",
+    "name": "Multi-Stage Beep Test VO2",
+    "formulaDisplay": "VO2max = linear fit from peak level achieved",
+    "requiredInputs": ["shuttleLevel", "shuttleCount"],
+    "precision": "field_estimate",
+    "limitations": ["Requires aggressive turning and intermittent accelerations."]
+  },
+  {
+    "id": "uth_sorensen_vo2",
+    "category": "vo2_metabolic",
+    "name": "Uth-Sørensen HR Ratio Method",
+    "formulaDisplay": "VO2max = 15.3 × (HRmax / restingHR)",
+    "requiredInputs": ["maxHeartRate", "restingHeartRate"],
+    "precision": "estimate",
+    "limitations": ["Relies on direct correlation between metabolic and HR reserve."]
+  },
+  {
+    "id": "calories_per_session",
+    "category": "metabolic",
+    "name": "Calories per Session",
+    "formulaDisplay": "kcal_total = MET × bodyWeightKg × durationHours",
+    "requiredInputs": ["met", "bodyWeightKg", "durationHours"],
+    "precision": "estimate",
+    "limitations": [
+      "Reflects gross energy cost rather than net extra workout energy."
+    ]
+  },
+  {
+    "id": "calories_per_km",
+    "category": "metabolic",
+    "name": "Calories per Kilometer",
+    "formulaDisplay": "kcal/km = kcal_total / distanceKm",
+    "requiredInputs": ["totalCalories", "distanceKm"],
+    "precision": "mathematical",
+    "limitations": [
+      "Depends entirely on the precision of the total estimated task energy cost."
+    ]
+  },
+  {
+    "id": "calories_per_hour",
+    "category": "metabolic",
+    "name": "Calories per Hour",
+    "formulaDisplay": "kcal/hour = kcal_total / durationHours",
+    "requiredInputs": ["totalCalories", "durationHours"],
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "energy_cost_per_km",
+    "category": "metabolic",
+    "name": "Energy Cost per Kilometer",
+    "formulaDisplay": "kcal/kg/km = kcal_total / (bodyWeightKg × distanceKm)",
+    "requiredInputs": ["bodyWeightKg", "distanceKm", "totalCalories"],
+    "precision": "mathematical",
+    "limitations": [
+      "Standard net running cost is often around 1.0 kcal/kg/km."
+    ]
+  },
+  {
+    "id": "weekly_energy_manual",
+    "category": "metabolic",
+    "name": "Weekly Energy Expenditure",
+    "formulaDisplay": "Weekly kcal = sum(Session MET × mass × hours)",
+    "requiredInputs": ["sessionsList"],
+    "precision": "estimate",
+    "limitations": [
+      "Excludes non-running active energy expenditure and thermic effect of food."
+    ]
+  },
+  {
+    "id": "gross_vs_net_calories",
+    "category": "metabolic",
+    "name": "Gross vs Net Calorie Estimate",
+    "formulaDisplay": "Net kcal = Gross kcal - (1.0 × weight × duration)",
+    "requiredInputs": ["grossCalories", "bodyWeightKg", "durationHours"],
+    "precision": "estimate",
+    "limitations": ["Requires distinct base metabolic rate assumption."]
+  },
+  {
+    "id": "fuel_demand_estimate",
+    "category": "metabolic",
+    "name": "Fuel Demand / Substrate Partition Estimate",
+    "formulaDisplay": "Estimates carbohydrate vs fat ratio based on intensity",
+    "requiredInputs": ["intensityPctVO2max", "totalCalories"],
+    "precision": "estimate",
+    "limitations": ["Strongly depends on individual fat-oxidation profiles."]
+  },
+  {
+    "id": "cooper_12min_test",
+    "category": "field_test",
+    "name": "Cooper 12-Minute Test",
+    "formulaDisplay": "VO2max = (distance_meters - 504.9) / 44.73",
+    "requiredInputs": ["distanceMeters"],
+    "precision": "field_test",
+    "limitations": [
+      "Requires maximal sustained 12-minute effort.",
+      "Requires flat track or GPS measurement."
+    ]
+  },
+  {
+    "id": "one_mile_test",
+    "category": "field_test",
+    "name": "1-Mile Time Trial",
+    "formulaDisplay": "Threshold speed estimate from 1-mile pace adjustments",
+    "requiredInputs": ["timeSeconds"],
+    "precision": "field_test",
+    "limitations": [
+      "Typically overestimates threshold paces for aerobic-dominant athletes.",
+      "Requires severe high-intensity contribution."
+    ]
+  },
+  {
+    "id": "three_k_test",
+    "category": "field_test",
+    "name": "3K Time Trial Reference",
+    "formulaDisplay": "Speed mapping from 3K distance + time",
+    "requiredInputs": ["timeSeconds"],
+    "precision": "field_test",
+    "limitations": [
+      "Extremely demanding effort.",
+      "Threshold estimate uses typical ~8-10% offset factor."
+    ]
+  },
+  {
+    "id": "five_k_test",
+    "category": "field_test",
+    "name": "5K Time Trial Reference",
+    "formulaDisplay": "Pace offset style threshold calculation",
+    "requiredInputs": ["timeSeconds"],
+    "precision": "field_test",
+    "limitations": [
+      "Standard fitness standard. Threshold is roughly 5% slower than 5K pace."
+    ]
+  },
+  {
+    "id": "twenty_min_threshold_test",
+    "category": "field_test",
+    "name": "20-Minute Threshold Test",
+    "formulaDisplay": "LTHR = Average HR × 0.95 | Threshold Pace = 20-min pace × 1.05",
+    "requiredInputs": ["averageHr", "distanceMeters", "timeSeconds"],
+    "precision": "field_test",
+    "limitations": [
+      "Classic test of functional threshold speed.",
+      "User pacing errors inside initial 5 mins skew outputs."
+    ]
+  },
+  {
+    "id": "thirty_min_lthr_test",
+    "category": "field_test",
+    "name": "30-Minute LTHR Test",
+    "formulaDisplay": "LTHR = Average HR of final 20 minutes",
+    "requiredInputs": ["averageHrLast20Minutes"],
+    "precision": "field_test",
+    "limitations": [
+      "Requires sustained solo time-trial pacing."
+    ]
+  },
+  {
+    "id": "two_point_cs_test",
+    "category": "field_test",
+    "name": "2-Point CS Test",
+    "formulaDisplay": "CS = (D2 - D1)/(T2 - T1)",
+    "requiredInputs": ["t1Distance", "t1Time", "t2Distance", "t2Time"],
+    "precision": "field_test",
+    "limitations": [
+      "Very sensitive to timing or performance errors in either trial."
+    ]
+  },
+  {
+    "id": "three_point_cs_test",
+    "category": "field_test",
+    "name": "3-Point CS Test",
+    "formulaDisplay": "distance = CS × time + D′",
+    "requiredInputs": ["trialsList"],
+    "precision": "field_test",
+    "limitations": [
+      "Requires multiple high-intensity trials separated by adequate recovery."
+    ]
+  },
+  {
+    "id": "hr_recovery_test",
+    "category": "field_test",
+    "name": "HR Recovery Test",
+    "formulaDisplay": "HRR1 = Peak_HR - 1min_HR | HRR2 = Peak_HR - 2min_HR",
+    "requiredInputs": ["peakHR", "oneMinHR"],
+    "precision": "field_test",
+    "limitations": [
+      "Slight postures (sitting, standing, lying) modify recovery rates.",
+      "Non-medical indicator."
+    ]
+  },
+  {
+    "id": "sweat_rate_test",
+    "category": "field_test",
+    "name": "Sweat Rate Test",
+    "formulaDisplay": "Loss = Body_Mass_Loss + Fluid_Intake - Urine_Output",
+    "requiredInputs": ["preWeightKg", "postWeightKg", "fluidIntakeLiters", "urineLiters", "durationHours"],
+    "precision": "field_test",
+    "limitations": [
+      "Varies extensively with ambient humidity, solar load, heat acclimation, clothing, and metabolic power."
+    ]
+  },
+  {
+    "id": "treadmill_calibration_test",
+    "category": "field_test",
+    "name": "Treadmill Calibration Test",
+    "formulaDisplay": "Error % = (treadmill_dist - measured_dist) / measured_dist × 100",
+    "requiredInputs": ["measuredDistance", "treadmillDistance"],
+    "precision": "field_test",
+    "limitations": [
+      "Relies on precision tracker or wheel counting.",
+      "Treadmill belt speed often fluctuates under foot strikes."
+    ]
+  },
+  {
+    "id": "cadence_test",
+    "category": "field_test",
+    "name": "Cadence Test",
+    "formulaDisplay": "Cadence = steps / minutes",
+    "requiredInputs": ["stepsCount", "durationSeconds"],
+    "precision": "field_test",
+    "limitations": [
+      "Step count must be exactly tabulated or recorded from sensor."
+    ]
+  },
+  {
+    "id": "stride_length_test",
+    "category": "field_test",
+    "name": "Stride Length Test",
+    "formulaDisplay": "Stride Length = speed_m_per_min / cadence",
+    "requiredInputs": ["distanceMeters", "stepsCount"],
+    "precision": "field_test",
+    "limitations": [
+      "Yields descriptive biomechanical metrics, not target limits."
+    ]
+  },
+  {
+    "id": "easy_run_drift_test",
+    "category": "field_test",
+    "name": "Easy Run Metabolic Decoupling (Drift)",
+    "formulaDisplay": "Drift % = (EF1 - EF2) / EF1 × 100",
+    "requiredInputs": ["firstHalfAvgHR", "firstHalfAvgSpeed", "secondHalfAvgHR", "secondHalfAvgSpeed"],
+    "precision": "field_test",
+    "limitations": ["Cardiac drift estimate. Highly affected by ambient heat, hydration, and caffeine."]
+  },
+  {
+    "id": "long_run_fueling_test",
+    "category": "field_test",
+    "name": "Long-Run Fueling Challenge",
+    "formulaDisplay": "Qualitative hydration and calorie tolerances tracker",
+    "requiredInputs": [],
+    "precision": "qualitative",
+    "limitations": ["Qualitative protocol, no deterministic formula exists."]
   }
-] as const;
+];
+
+const phase8Methods = [
+  {
+    "id": "heat_index_estimate",
+    "category": "environment",
+    "name": "Heat Index Estimate",
+    "requiredInputs": ["temperatureC", "humidityPct"],
+    "formulaDisplay": "Rothfusz Regression or linear simplification based on heat conditions",
+    "precision": "estimate",
+    "limitations": ["Approximation of perceived temperature. High uncertainty in solar radiation."]
+  },
+  {
+    "id": "dew_point_category",
+    "category": "environment",
+    "name": "Dew Point Category",
+    "requiredInputs": ["temperatureC", "humidityPct"],
+    "formulaDisplay": "Magnus-Tetens Equation with rule-based humidity feeling classifications",
+    "precision": "mathematical",
+    "limitations": ["Atmospheric indicator of absolute moisture only."]
+  },
+  {
+    "id": "heat_stress_category",
+    "category": "environment",
+    "name": "Heat Stress Category",
+    "requiredInputs": ["temperatureC", "humidityPct"],
+    "formulaDisplay": "Rule-based classification mapping heat index threshold outputs",
+    "precision": "qualitative",
+    "limitations": ["Does not account for wind speed, shade, or sun exposure."]
+  },
+  {
+    "id": "heat_pace_scenario",
+    "category": "environment",
+    "name": "Heat Pace Scenario",
+    "requiredInputs": ["basePace", "heatCategory"],
+    "formulaDisplay": "Pace% Increase = f(HeatCategory)",
+    "precision": "estimate",
+    "limitations": ["Scenario simulation only. Individual acclimatization/economy varies."]
+  },
+  {
+    "id": "heat_hydration_scenario",
+    "category": "environment",
+    "name": "Heat Hydration Scenario",
+    "requiredInputs": ["baseFluidPerHour", "heatCategory"],
+    "formulaDisplay": "Adjusted Fluid = Base Fluid × Multiplier(heatCategory)",
+    "precision": "estimate",
+    "limitations": ["Fluid baseline simulation. Sweating rates are highly user-specific."]
+  },
+  {
+    "id": "heat_sodium_scenario",
+    "category": "environment",
+    "name": "Heat Sodium Scenario",
+    "requiredInputs": ["baseSodiumPerHour", "heatCategory"],
+    "formulaDisplay": "Adjusted Sodium = Base Sodium × Multiplier(heatCategory)",
+    "precision": "estimate",
+    "limitations": ["Sodium baseline simulation. Sweat concentration varies widely."]
+  },
+  {
+    "id": "altitude_category",
+    "category": "environment",
+    "name": "Altitude Category",
+    "requiredInputs": ["altitudeMeters"],
+    "formulaDisplay": "Rule-based mapping: Low <700m, Moderate <1500m, High <3000m, Extreme >=3000m",
+    "precision": "qualitative",
+    "limitations": ["Geographic classification. Individual hypoxia toll is personal."]
+  },
+  {
+    "id": "altitude_vo2_reduction",
+    "category": "environment",
+    "name": "Altitude VO2 Reduction Estimate",
+    "requiredInputs": ["altitudeMeters"],
+    "formulaDisplay": "VO2 Reduction % = Match(altitudeMeters > 700) ? 0.006 × (altitudeMeters - 700) : 0",
+    "precision": "estimate",
+    "limitations": ["Mathematical decrease of aerobic capacity based on effective oxygen pressure."]
+  },
+  {
+    "id": "wind_chill_estimate",
+    "category": "environment",
+    "name": "Wind Chill Estimate",
+    "requiredInputs": ["temperatureC", "windSpeedKmh"],
+    "formulaDisplay": "Wind Chill = 13.12 + 0.6215*T - 11.37*V^0.16 + 0.3965*T*V^0.16 if T <= 10 and V >= 4.8",
+    "precision": "estimate",
+    "limitations": ["Applies only to exposed skin under 10°C air temperature."]
+  },
+  {
+    "id": "wind_effect_classification",
+    "category": "environment",
+    "name": "Wind Effect Classification",
+    "requiredInputs": ["windSpeedKmh", "windDirection"],
+    "formulaDisplay": "Qualitative aerodynamic penalty and RPE adjustment guidelines",
+    "precision": "qualitative",
+    "limitations": ["Varies with drafting, clothing, and body surface area."]
+  },
+  {
+    "id": "aqi_category",
+    "category": "environment",
+    "name": "AQI Category",
+    "requiredInputs": ["aqi"],
+    "formulaDisplay": "Rule-based EPA AQI threshold mapping",
+    "precision": "qualitative",
+    "limitations": ["General guidelines only. Respiration sensitivity is highly individual."]
+  },
+  {
+    "id": "surface_effort_note",
+    "category": "environment",
+    "name": "Surface Effort Note",
+    "requiredInputs": ["surfaceType"],
+    "formulaDisplay": "Rule-based terrain mechanics and muscular work guidelines",
+    "precision": "qualitative",
+    "limitations": ["Broad generalizations of rolling resistance and slip characteristics."]
+  },
+  {
+    "id": "environmental_condition_summary",
+    "category": "environment",
+    "name": "Environmental Condition Summary",
+    "requiredInputs": ["temperatureC", "humidityPct", "altitudeMeters", "aqi"],
+    "formulaDisplay": "Compiled matrix of qualitative and quantitative microclimate stresses",
+    "precision": "qualitative",
+    "limitations": ["Aggregates multiple indices without modeling compounding physiological terms."]
+  },
+  {
+    "id": "elevation_per_mile",
+    "category": "trail_elevation",
+    "name": "Elevation per Mile",
+    "requiredInputs": ["elevationGainMeters", "distanceMiles"],
+    "formulaDisplay": "Elevation per mile = total elevation gain / distance miles",
+    "precision": "mathematical",
+    "limitations": ["Simple vertical accumulation over horizontal distance."]
+  },
+  {
+    "id": "vam",
+    "category": "trail_elevation",
+    "name": "VAM (Vertical Ascent Meters/Hour)",
+    "requiredInputs": ["elevationGainMeters", "durationHours"],
+    "formulaDisplay": "VAM = elevation gain in meters / duration in hours",
+    "precision": "mathematical",
+    "limitations": ["Varies with gradient steepness and trail technicality."]
+  },
+  {
+    "id": "climb_density",
+    "category": "trail_elevation",
+    "name": "Climb Density",
+    "requiredInputs": ["elevationGainMeters", "distanceKm"],
+    "formulaDisplay": "Climb Density = total gain / distance km",
+    "precision": "mathematical",
+    "limitations": ["Aggregated ratio. Does not specify individual hill gradients."]
+  },
+  {
+    "id": "descent_density",
+    "category": "trail_elevation",
+    "name": "Descent Density",
+    "requiredInputs": ["elevationLossMeters", "distanceKm"],
+    "formulaDisplay": "Descent Density = total loss / distance km",
+    "precision": "mathematical",
+    "limitations": ["Aggregated ratio; muscular eccentric load varies with steepness."]
+  },
+  {
+    "id": "gain_loss_ratio",
+    "category": "trail_elevation",
+    "name": "Gain to Loss Ratio",
+    "requiredInputs": ["elevationGainMeters", "elevationLossMeters"],
+    "formulaDisplay": "Gain/Loss Ratio = total gain / total loss",
+    "precision": "mathematical",
+    "limitations": ["Ratio metric only. Net zero on loops."]
+  },
+  {
+    "id": "net_elevation",
+    "category": "trail_elevation",
+    "name": "Net Elevation Change",
+    "requiredInputs": ["elevationGainMeters", "elevationLossMeters"],
+    "formulaDisplay": "Net Elevation = total gain - total loss",
+    "precision": "mathematical",
+    "limitations": ["Does not state overall muscular stress/eccentric damage."]
+  },
+  {
+    "id": "hill_repeat_time",
+    "category": "trail_elevation",
+    "name": "Hill Repeat Total Time",
+    "requiredInputs": ["reps", "workSeconds", "recoverySeconds", "restPolicy"],
+    "formulaDisplay": "reps × work + ((policy == 'between' ? reps - 1 : reps) × recovery)",
+    "precision": "mathematical",
+    "limitations": ["Excludes warm-up, cool-down, or transitions."]
+  },
+  {
+    "id": "segment_grade",
+    "category": "trail_elevation",
+    "name": "Segment Grade Percentage",
+    "requiredInputs": ["segmentDistanceMeters", "segmentGainMeters"],
+    "formulaDisplay": "Grade % = elevation gain / segment distance × 100",
+    "precision": "mathematical",
+    "limitations": ["Asserts linear slope projection. Local micro-gradients may be steeper."]
+  },
+  {
+    "id": "segment_difficulty",
+    "category": "trail_elevation",
+    "name": "Segment Difficulty Profile",
+    "requiredInputs": ["distanceKm", "gainMeters", "surface", "technicality"],
+    "formulaDisplay": "Rule-based scoring: (Distance × 5 + Gain × 0.1) × SurfaceMod × TechMod",
+    "precision": "qualitative",
+    "limitations": ["Terrain estimate only. Effort varies with weather conditions."]
+  },
+  {
+    "id": "manual_elevation_profile",
+    "category": "trail_elevation",
+    "name": "Manual Elevation Profile Builder",
+    "requiredInputs": ["segments"],
+    "formulaDisplay": "Compile table segments and trace cumulative elevation points",
+    "precision": "mathematical",
+    "limitations": ["Reliant on user manual entry accuracy and spacing interval resolution."]
+  },
+  {
+    "id": "equivalent_flat_distance",
+    "category": "trail_elevation",
+    "name": "Equivalent Flat Distance",
+    "requiredInputs": ["distanceKm", "gainMeters"],
+    "formulaDisplay": "Flat Equivalent = Distance + (Gain / 100)",
+    "precision": "estimate",
+    "limitations": ["Rule of thumb estimates biomechanical cost of uphill workload."]
+  },
+  {
+    "id": "kmh_to_mph",
+    "category": "treadmill",
+    "name": "km/h to mph Speed Converter",
+    "requiredInputs": ["speedKmh"],
+    "formulaDisplay": "mph = km/h × 0.62137119",
+    "precision": "mathematical",
+    "limitations": ["Direct physical conversion, zero metabolic scaling."]
+  },
+  {
+    "id": "mph_to_kmh",
+    "category": "treadmill",
+    "name": "mph to km/h Speed Converter",
+    "requiredInputs": ["speedMph"],
+    "formulaDisplay": "km/h = mph × 1.609344",
+    "precision": "mathematical",
+    "limitations": ["Direct physical conversion, zero metabolic scaling."]
+  },
+  {
+    "id": "incline_to_grade",
+    "category": "treadmill",
+    "name": "Incline to Grade Decimal Converter",
+    "requiredInputs": ["inclinePercent"],
+    "formulaDisplay": "grade = Incline % / 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "acsm_treadmill_running_vo2",
+    "category": "treadmill",
+    "name": "ACSM Treadmill Running VO2",
+    "requiredInputs": ["speedMetersPerMinute", "gradeDecimal"],
+    "formulaDisplay": "VO2 = (0.2 × Speed) + (0.9 × Speed × Grade) + 3.5",
+    "precision": "estimate",
+    "limitations": ["Formulated for steady state running speeds between 8.0 and 22.0 km/h."]
+  },
+  {
+    "id": "acsm_treadmill_walking_vo2",
+    "category": "treadmill",
+    "name": "ACSM Treadmill Walking VO2",
+    "requiredInputs": ["speedMetersPerMinute", "gradeDecimal"],
+    "formulaDisplay": "VO2 = (0.1 × Speed) + (1.8 × Speed × Grade) + 3.5",
+    "precision": "estimate",
+    "limitations": ["Formulated for steady state walking speeds between 3.0 and 7.5 km/h."]
+  },
+  {
+    "id": "speed_incline_matrix",
+    "category": "treadmill",
+    "name": "Speed-Incline VO2 Matrix Builder",
+    "requiredInputs": ["speedsKmh", "inclinesPercent", "mode"],
+    "formulaDisplay": "Map Speeds × Inclines through ACSM running/walking models",
+    "precision": "estimate",
+    "limitations": ["Calculates steady-state predictions. Assumes optimal running biomechanics."]
+  },
+  {
+    "id": "treadmill_calibration_error",
+    "category": "treadmill",
+    "name": "Treadmill Calibration Error Calculator",
+    "requiredInputs": ["treadmillDistance", "measuredDistance"],
+    "formulaDisplay": "Error % = (treadmillDistance - measuredDistance) / measuredDistance × 100",
+    "precision": "mathematical",
+    "limitations": ["Reliant on user device manual calibration accuracy."]
+  },
+  {
+    "id": "treadmill_segment_profile",
+    "category": "treadmill",
+    "name": "Treadmill Segment Profile",
+    "requiredInputs": ["segments", "weightKg", "mode"],
+    "formulaDisplay": "Trace total workload, calories, and timeline charts chronologically",
+    "precision": "mathematical",
+    "limitations": ["Assumes instantaneous speed/incline transitions. No metabolic lag modeled."]
+  },
+  {
+    "id": "road_vs_treadmill_note",
+    "category": "treadmill",
+    "name": "Road vs Treadmill Effort Note",
+    "requiredInputs": [],
+    "formulaDisplay": "Qualitative physical comparison regarding wind and stabilization muscles",
+    "precision": "qualitative",
+    "limitations": ["Individual biomechanical response dynamically varies."]
+  }
+];
+
+export const methodRegistry = [
+  ...staticRegistry,
+  ...workoutMethods,
+  ...calendarMethods,
+  ...phase8Methods
+] as any[];
+

@@ -8,9 +8,15 @@ export * from "./paceZoneModels";
 export * from "./racePredictors";
 export * from "./criticalSpeedMethods";
 export * from "./vo2Methods";
+export * from "./metabolicMethods";
+export * from "./testMethods";
+export * from "./fieldTestProtocols";
+
 export * from "./workoutCategories";
 export * from "./workoutTemplates";
 export * from "./workoutSafetyRules";
+export * from "./workoutMethods";
+export * from "./calendarMethods";
 export * from "./loadMethods";
 export * from "./fuelingHydrationRules";
 export * from "./environmentRules";

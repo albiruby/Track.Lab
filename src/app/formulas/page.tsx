@@ -31,11 +31,27 @@ const implementedIds = new Set([
   'track_pace_table', 'interval_builder', 'ladder_calculator', 'pyramid_calculator',
   'nes_211_064_age', 'hr_reserve', 'hr_drift', 'aerobic_decoupling', 'hr_recovery',
   'three_zone_polarized', 'seven_zone_advanced_hr', 'time_in_zone_distribution', 'intensity_distribution', 'zone_comparison',
-  'borg_6_20', 'rpe_to_zone_mapping', 'rpe_drift', 'planned_vs_actual_rpe', 'multi_day_rpe_trend'
+  'borg_6_20', 'rpe_to_zone_mapping', 'rpe_drift', 'planned_vs_actual_rpe', 'multi_day_rpe_trend',
+  // Phase 5 VO2 & Metabolic & Test methods
+  'cooper_12min_vo2', 'one_five_mile_vo2', 'rockport_vo2', 'acsm_walking_vo2', 'manual_device_vo2', 'manual_lab_vo2',
+  'vo2_reserve', 'pct_vo2_max', 'grade_impact_vo2', 'speed_to_vo2_table',
+  'calories_per_session', 'calories_per_km', 'calories_per_hour', 'energy_cost_per_km', 'weekly_energy_manual',
+  'cooper_12min_test', 'one_mile_test', 'three_k_test', 'five_k_test', 'twenty_min_threshold_test', 'thirty_min_lthr_test',
+  'two_point_cs_test', 'three_point_cs_test', 'hr_recovery_test', 'sweat_rate_test', 'treadmill_calibration_test',
+  'cadence_test', 'stride_length_test', 'easy_run_drift_test',
+  // Phase 6 Workout, Library and Calendar methods
+  'interval_set_calculator', 'total_work_distance', 'total_work_time', 'total_rest_time', 'session_duration', 'work_rest_ratio', 'workout_density', 'hard_easy_distribution', 'session_rpe_load', 'run_walk_workout', 'fartlek_totals', 'hill_repeat_totals', 'tempo_run_calculator', 'threshold_block_calculator', 'cruise_interval_calculator', 'progression_run_calculator', 'ladder_workout_calculator', 'pyramid_workout_calculator', 'workout_comparison', 'block_based_builder',
+  'weekly_mileage_sum', 'weekly_duration_sum', 'hard_easy_spacing_checker', 'intensity_distribution_preview', 'build_week_progression', 'deload_week_ratio', 'taper_reduction_ratio', 'manual_weekly_planner_impact', 'consecutive_hard_day_caution', 'rest_day_count', 'hard_day_count', 'easy_day_count',
+  'static_template_browser', 'template_filter_purpose', 'template_filter_distance', 'template_filter_duration', 'template_filter_surface', 'template_filter_intensity', 'template_to_workout_lab', 'template_comparison', 'export_template',
+  // Phase 8 Environment, Trail, Treadmill expands
+  'heat_index_estimate', 'dew_point_category', 'heat_stress_category', 'heat_pace_scenario', 'heat_hydration_scenario', 'heat_sodium_scenario', 'altitude_category', 'altitude_vo2_reduction', 'wind_chill_estimate', 'wind_effect_classification', 'aqi_category', 'surface_effort_note', 'environmental_condition_summary',
+  'elevation_per_mile', 'vam', 'climb_density', 'descent_density', 'gain_loss_ratio', 'net_elevation', 'hill_repeat_time', 'segment_grade', 'segment_difficulty', 'manual_elevation_profile', 'equivalent_flat_distance',
+  'kmh_to_mph', 'mph_to_kmh', 'incline_to_grade', 'acsm_treadmill_running_vo2', 'acsm_treadmill_walking_vo2', 'speed_incline_matrix', 'treadmill_calibration_error', 'treadmill_segment_profile', 'road_vs_treadmill_note'
 ]);
 
 const metadataOnlyIds = new Set([
-  'heat_adjustment_note', 'altitude_adjustment_note', 'wind_note'
+  'heat_adjustment_note', 'altitude_adjustment_note', 'wind_note',
+  'balke_vo2', 'beep_test_vo2', 'uth_sorensen_vo2', 'gross_vs_net_calories', 'fuel_demand_estimate', 'long_run_fueling_test'
 ]);
 
 const categoryToRoute: Record<string, string> = {
@@ -48,7 +64,10 @@ const categoryToRoute: Record<string, string> = {
   'training_pace': '/pace',
   'critical_speed': '/critical-speed',
   'vo2_metabolic': '/vo2',
+  'metabolic': '/vo2',
+  'field_test': '/test',
   'workout': '/workout',
+  'workout_library': '/workout-library',
   'load': '/load',
   'fuel_hydration': '/fuel',
   'environment': '/environment',
@@ -77,7 +96,7 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
 
   const requiredInputsList = useMemo(() => {
     const inputs = new Set<string>();
-    methodRegistry.forEach(m => m.requiredInputs?.forEach(i => inputs.add(i)));
+    methodRegistry.forEach(m => m.requiredInputs?.forEach((i: string) => inputs.add(i)));
     return Array.from(inputs).sort();
   }, []);
 
