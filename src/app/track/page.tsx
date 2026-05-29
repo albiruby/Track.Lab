@@ -5,7 +5,7 @@ import { Input, Label, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { CalculatorPageShell } from '@/components/calculator/CalculatorPageShell';
 import { ManualInputPanel } from '@/components/calculator/ManualInputPanel';
-import { ExportPanel } from '@/components/calculator/CalculatorSystem';
+import { ExportPanel, ResultActionRow } from '@/components/calculator/CalculatorSystem';
 import { resultToText } from '@/lib/export/manualExport';
 import { CalculatorResult } from '@/types';
 import { calculateTrackInterval, calculateLadder } from '@/lib/calculators_pack/track';
@@ -72,7 +72,11 @@ export default function TrackLabPage() {
                </tbody>
              </table>
              <div className="mt-4 flex gap-2">
-               <Link href="/workout" className="text-xs text-primary font-bold hover:underline">→ Use in Workout Lab</Link>
+               <ResultActionRow 
+                actions={[
+                  { label: "Use in Workout Lab", href: "/workout" }
+                ]} 
+              />
              </div>
            </div>
          ),

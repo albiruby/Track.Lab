@@ -17,7 +17,8 @@ import { formatPace, parseDurationToSeconds, safeNumber, formatSecondsToTimeStri
 import { convertKmToMile } from '@/lib/calculators_pack/conversion';
 import { CalculatorPageShell } from '@/components/calculator/CalculatorPageShell';
 import { ManualInputPanel } from '@/components/calculator/ManualInputPanel';
-import { ExportPanel } from '@/components/calculator/CalculatorSystem';
+import { ExportPanel, ResultActionRow } from '@/components/calculator/CalculatorSystem';
+import { formatDistanceKm } from '@/lib/format/display';
 import { resultToText } from '@/lib/export/manualExport';
 import { CalculatorResult } from '@/types';
 import Link from 'next/link';
@@ -87,7 +88,7 @@ export default function PaceLabPage() {
       if (p === null || p <= 0) return setError('Invalid pace.');
       const d = distanceFromTimeAndPace(secs, p) / 1000;
       res = {
-        result: { val: d.toFixed(3) + ' km', type: 'dist' },
+        result: { val: formatDistanceKm(d), type: 'dist' },
         methodSelected: 'Distance from Time + Pace',
         confidenceLabel: 'Exact',
         formulaUsed: 'Distance = Time / Pace',
@@ -185,10 +186,12 @@ export default function PaceLabPage() {
                 </div>
              )}
              
-             <div className="flex gap-2">
-               <Link href="/split" className="text-xs text-primary font-bold hover:underline">→ Build a split table</Link>
-               <Link href="/track" className="text-xs text-primary font-bold hover:underline">→ Convert to track splits</Link>
-             </div>
+             <ResultActionRow 
+               actions={[
+                 { label: "Build Split Table", href: "/split" },
+                 { label: "Convert to Track Splits", href: "/track" }
+               ]} 
+             />
           </div>
         )
       });

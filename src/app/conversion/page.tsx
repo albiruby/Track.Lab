@@ -387,7 +387,7 @@ export default function ConversionLabPage() {
     }
 
     // Build the visual string of converted result with correct units
-    const formattedResultText = isPaceType ? formatSecondsToPace(resRaw) : resRaw.toFixed(3);
+    const formattedResultText = isPaceType ? formatSecondsToPace(resRaw) : Number(resRaw.toFixed(3)).toString();
 
     // Build Benchmarks Scale List & Chart Data for Visual Comparison (20%, 50%, 100%, 150%, 200%)
     const multipliers = [0.2, 0.5, 1.0, 1.5, 2.0];

@@ -6,7 +6,7 @@ import { ResultCard } from '@/components/ui/ResultCard';
 import { safeNumber, parseDurationToSeconds, formatSecondsToTimeString, formatPace } from '@/lib/formatters/time';
 import { CalculatorPageShell } from '@/components/calculator/CalculatorPageShell';
 import { ManualInputPanel } from '@/components/calculator/ManualInputPanel';
-import { ExportPanel } from '@/components/calculator/CalculatorSystem';
+import { ExportPanel, ResultActionRow } from '@/components/calculator/CalculatorSystem';
 import { resultToText } from '@/lib/export/manualExport';
 import { CalculatorResult } from '@/types';
 import { hrZoneModels } from '@/data_pack/hrZoneModels';
@@ -105,7 +105,11 @@ export default function ZoneLabPage() {
                    </div>
                  )})}
                  <div className="mt-4 flex gap-2">
-                    <Link href="/heart-rate" className="text-[10px] text-primary font-bold hover:underline">→ Need to calculate HRmax? (Heart Rate Lab)</Link>
+                    <ResultActionRow 
+                      actions={[
+                        { label: "Heart Rate Lab", href: "/heart-rate" }
+                      ]} 
+                    />
                  </div>
                </div>
             ),
@@ -216,7 +220,12 @@ export default function ZoneLabPage() {
                      </div>
                  ))}
                  <div className="mt-4 flex gap-2">
-                    <Link href="/rpe" className="text-[10px] text-primary font-bold hover:underline">→ Go to RPE Lab for session load</Link>
+                    
+                    <ResultActionRow 
+                      actions={[
+                        { label: "RPE Lab", href: "/rpe" }
+                      ]} 
+                    />
                  </div>
                </div>
             ),

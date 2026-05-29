@@ -1,6 +1,37 @@
 import React from 'react';
 import { ShieldCheck, FunctionSquare, Database, AlertCircle, Copy, Download, Printer } from 'lucide-react';
 import { ConfidenceLabel } from '@/types/tracklab';
+import Link from 'next/link';
+
+interface ResultAction {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+}
+
+export function ResultActionRow({ actions }: { actions: ResultAction[] }) {
+  if (!actions || actions.length === 0) return null;
+  return (
+    <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-dashed border-[#d8ddd8]">
+      <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mr-1.5">Actions:</span>
+      {actions.map((act, idx) => {
+        const btnClasses = "px-3 py-1 bg-[#e6f1f8]/60 hover:bg-[#e6f1f8] border border-[#0f6fae]/25 hover:border-[#0f6fae]/40 rounded-md text-[11px] font-bold uppercase tracking-wider text-[#0f6fae] hover:text-[#0b2f4a] transition-all flex items-center gap-1 cursor-pointer";
+        if (act.href) {
+          return (
+            <Link key={idx} href={act.href} className={btnClasses}>
+              {act.label}
+            </Link>
+          );
+        }
+        return (
+          <button key={idx} type="button" onClick={act.onClick} className={btnClasses}>
+            {act.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export function QuickAdvancedToggle({ mode, setMode }: { mode: 'quick' | 'advanced', setMode: (m: 'quick' | 'advanced') => void }) {
   return (

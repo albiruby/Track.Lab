@@ -6,7 +6,7 @@ import { ResultCard } from '@/components/ui/ResultCard';
 import { safeNumber } from '@/lib/formatters/time';
 import { CalculatorPageShell } from '@/components/calculator/CalculatorPageShell';
 import { ManualInputPanel } from '@/components/calculator/ManualInputPanel';
-import { ExportPanel } from '@/components/calculator/CalculatorSystem';
+import { ExportPanel, ResultActionRow } from '@/components/calculator/CalculatorSystem';
 import { resultToText } from '@/lib/export/manualExport';
 import { CalculatorResult } from '@/types';
 import { classifyRPE10, classifyBorg620, calculateSessionRPELoad, mapRpeToZone, calculateRpeDrift, plannedVsActualRpe, multiDayRpeTrend } from '@/lib/calculators_pack/rpe';
@@ -106,7 +106,11 @@ export default function RpeLabPage() {
                     <span className="font-black text-4xl">{Math.round(load)}</span>
                  </div>
                  <div className="mt-2 flex gap-2">
-                    <Link href="/load" className="text-[10px] text-primary font-bold hover:underline">→ Analyze internal load (Load Lab)</Link>
+                    <ResultActionRow 
+                      actions={[
+                        { label: "Load Lab", href: "/load" }
+                      ]} 
+                    />
                  </div>
                </div>
             ),
@@ -181,7 +185,11 @@ export default function RpeLabPage() {
                     <span className="font-black text-2xl text-primary">{zoneMap}</span>
                  </div>
                  <div className="mt-2 flex gap-2">
-                    <Link href="/zone" className="text-[10px] text-primary font-bold hover:underline">→ Link to Zone Lab to compare physiological zones</Link>
+                    <ResultActionRow 
+                      actions={[
+                        { label: "Zone Lab", href: "/zone" }
+                      ]} 
+                    />
                  </div>
                </div>
             ),

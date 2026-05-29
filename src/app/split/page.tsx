@@ -5,7 +5,7 @@ import { Input, Label, Select } from '@/components/ui/Forms';
 import { ResultCard } from '@/components/ui/ResultCard';
 import { CalculatorPageShell } from '@/components/calculator/CalculatorPageShell';
 import { ManualInputPanel } from '@/components/calculator/ManualInputPanel';
-import { ExportPanel } from '@/components/calculator/CalculatorSystem';
+import { ExportPanel, ResultActionRow } from '@/components/calculator/CalculatorSystem';
 import { resultToText } from '@/lib/export/manualExport';
 import { CalculatorResult } from '@/types';
 import { calculateSplits, generateNegativeSplits, generateProgressiveSplits, compareSplits } from '@/lib/calculators_pack/split';
@@ -75,7 +75,11 @@ export default function SplitLabPage() {
                </tbody>
              </table>
              <div className="mt-4 flex gap-2">
-               <Link href="/pace" className="text-xs text-primary font-bold hover:underline">→ Calculate base pace</Link>
+               <ResultActionRow 
+                actions={[
+                  { label: "Calculate Base Pace", href: "/pace" }
+                ]} 
+              />
              </div>
            </div>
          ),

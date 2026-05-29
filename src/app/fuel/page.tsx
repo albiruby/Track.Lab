@@ -778,15 +778,15 @@ Standard Caution: Estimates are based on deterministic formulas and typical meta
                               <div className="grid grid-cols-3 gap-2">
                                 <div className="p-3 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[1px_1px_0px_rgba(23,23,23,1)]">
                                   <span className="text-[8px] font-bold text-muted-foreground uppercase">Gels Needed</span>
-                                  <div className="text-xl font-mono font-black text-foreground">{res.gels.toFixed(1)}</div>
+                                  <div className="text-xl font-mono font-black text-foreground">{Number(res.gels.toFixed(1))}</div>
                                 </div>
                                 <div className="p-3 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[1px_1px_0px_rgba(23,23,23,1)]">
                                   <span className="text-[8px] font-bold text-muted-foreground uppercase">Chews Serving</span>
-                                  <div className="text-xl font-mono font-black text-foreground">{res.chews.toFixed(1)}</div>
+                                  <div className="text-xl font-mono font-black text-foreground">{Number(res.chews.toFixed(1))}</div>
                                 </div>
                                 <div className="p-3 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[1px_1px_0px_rgba(23,23,23,1)]">
                                   <span className="text-[8px] font-bold text-muted-foreground uppercase">Carbs/Sta (opt)</span>
-                                  <div className="text-xl font-mono font-black text-foreground">{res.perAid.toFixed(1)}g</div>
+                                  <div className="text-xl font-mono font-black text-foreground">{Number(res.perAid.toFixed(1))}g</div>
                                 </div>
                               </div>
                             </div>
@@ -796,14 +796,14 @@ Standard Caution: Estimates are based on deterministic formulas and typical meta
                             <div className="space-y-4">
                               <div className="p-5 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[2px_2px_0px_rgba(23,23,23,1)]">
                                 <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest block mb-1">Total Fluid Intake</span>
-                                <span className="font-display text-5xl font-black text-blue-500">{(res.totalF / 1000).toFixed(2)} Liters</span>
+                                <span className="font-display text-5xl font-black text-blue-500">{Number((res.totalF / 1000).toFixed(2))} Liters</span>
                                 <span className="text-xs text-muted-foreground block mt-1">({Math.round(res.totalF)} mL total)</span>
                               </div>
 
                               <div className="grid grid-cols-2 gap-3">
                                 <div className="p-3 border border-border bg-card rounded-lg text-center">
                                   <span className="text-[9px] font-bold text-muted-foreground uppercase">Flasks / Bottles</span>
-                                  <div className="text-lg font-mono font-black">{res.bottles.toFixed(1)}</div>
+                                  <div className="text-lg font-mono font-black">{Number(res.bottles.toFixed(1))}</div>
                                 </div>
                                 <div className="p-3 border border-border bg-card rounded-lg text-center">
                                   <span className="text-[9px] font-bold text-muted-foreground uppercase">mL per Flask</span>
@@ -831,7 +831,7 @@ Standard Caution: Estimates are based on deterministic formulas and typical meta
                                 </div>
                                 <div className="p-2 border border-border bg-card rounded-lg">
                                   <span className="text-[8px] uppercase font-bold text-muted-foreground">Caps Count</span>
-                                  <div className="text-xs font-mono font-bold">{res.capsules.toFixed(1)}</div>
+                                  <div className="text-xs font-mono font-bold">{Number(res.capsules.toFixed(1))}</div>
                                 </div>
                               </div>
                             </div>
@@ -842,11 +842,11 @@ Standard Caution: Estimates are based on deterministic formulas and typical meta
                               <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[2px_2px_0px_rgba(23,23,23,1)]">
                                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest block mb-1">Sweat Rate Estimate</span>
-                                  <span className="font-display text-3xl font-black text-blue-500">{res.rate.toFixed(2)} L/hr</span>
+                                  <span className="font-display text-3xl font-black text-blue-500">{Number(res.rate.toFixed(2))} L/hr</span>
                                 </div>
                                 <div className="p-4 border-2 border-border-heavy bg-card rounded-xl text-center shadow-[2px_2px_0px_rgba(23,23,23,1)]">
                                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest block mb-1">Total Loss Vol</span>
-                                  <span className="font-display text-3xl font-black text-foreground">{res.totalLoss.toFixed(2)} Liters</span>
+                                  <span className="font-display text-3xl font-black text-foreground">{Number(res.totalLoss.toFixed(2))} Liters</span>
                                 </div>
                               </div>
 
@@ -854,13 +854,13 @@ Standard Caution: Estimates are based on deterministic formulas and typical meta
                                 <div className="p-3 border border-border bg-card rounded-lg">
                                   <span className="text-[9px] font-bold text-muted-foreground uppercase">Dehydration / Mass Loss</span>
                                   <div className={`text-md font-mono font-black ${res.massLossPct > 2.5 ? 'text-amber-500' : 'text-primary'}`}>
-                                    {res.massLossPct.toFixed(1)}%
+                                    {Number(res.massLossPct.toFixed(1))}%
                                   </div>
                                 </div>
                                 <div className="p-3 border border-border bg-card rounded-lg">
                                   <span className="text-[9px] font-bold text-muted-foreground uppercase">Fluid Replacement</span>
                                   <div className="text-md font-mono font-black text-foreground">
-                                    {res.replPct.toFixed(1)}%
+                                    {Number(res.replPct.toFixed(1))}%
                                   </div>
                                 </div>
                               </div>
@@ -872,8 +872,8 @@ Standard Caution: Estimates are based on deterministic formulas and typical meta
                               <div className="p-4 border-2 border-border-heavy bg-amber-50 border-amber-400 text-amber-900 rounded-xl">
                                 <span className="text-[10px] uppercase font-black tracking-widest block mb-1">Recipe Concentration Results</span>
                                 <div className="text-xs font-mono space-y-1">
-                                  <div>• Carbs Osmolarity: <strong>{res.carbConcentration.toFixed(1)}%</strong> (Optimal: 4-8% loop speed)</div>
-                                  <div>• Sodium Concentration: <strong>{res.sodiumConcentration.toFixed(2)} mg/mL</strong></div>
+                                  <div>• Carbs Osmolarity: <strong>{Number(res.carbConcentration.toFixed(1))}%</strong> (Optimal: 4-8% loop speed)</div>
+                                  <div>• Sodium Concentration: <strong>{Number(res.sodiumConcentration.toFixed(2))} mg/mL</strong></div>
                                 </div>
                               </div>
 
