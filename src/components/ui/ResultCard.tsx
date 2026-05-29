@@ -18,7 +18,7 @@ export function ResultCard<T extends string | number | React.ReactNode>({ result
 
   return (
     <div className="h-full flex flex-col relative transition-all duration-300 rounded-xl overflow-hidden border border-[#d8ddd8] bg-white shadow-sm">
-      <div className="px-6 py-3.5 border-b border-[#d8ddd8] bg-[#f3f4f1] text-[#0b2f4a] flex items-center justify-between">
+      <div className="px-6 py-3.5 border-b border-[#d8ddd8] bg-[#f3f4f1]/40 text-[#0b2f4a] flex items-center justify-between">
         <h3 className="font-sans font-bold uppercase tracking-wider text-xs">Calculated Outputs</h3>
         <div className="text-[10px] font-bold uppercase tracking-normal text-[#0f6fae] bg-[#e6f1f8] px-3 py-1 rounded-md border border-[#0f6fae]/20">
            {result.methodSelected}
