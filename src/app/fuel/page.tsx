@@ -73,7 +73,7 @@ export default function FuelLabPage() {
               />
             </div>
           </div>
-          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-4 bg-muted p-3 rounded-lg border border-border">NOTE: Scientific consensus recommends 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
+          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-4 bg-muted p-3 rounded-lg border border-border">NOTE: Scientific consensus suggests 30-60g/hr for efforts ~2hrs, and up to 90-120g/hr for efforts &gt; 3hrs.</div>
         </ManualInputPanel>
 
         <div className="h-full flex flex-col gap-6">

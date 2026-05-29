@@ -13,7 +13,9 @@ const implementedIds = new Set([
   'five_zone_karvonen_hrr', 'five_zone_hrmax_standard', 'lthr_8020_five_zone', 'maf_180',
   'manual_hrmax', 'custom_hr_zones', 'race_derived_generic', 'manual_pace_zones', 'threshold_based', 'critical_speed_based',
   'riegel_106', 'goal_pace', 'riegel_custom_exponent', 'multi_race_fit',
-  'cs_two_point', 'cs_three_point', 'manual_cs',
+  'equivalent_performance_table', 'abc_goal_builder', 'distance_similarity_confidence', 'conservative_start_scenario',
+  'manual_base_pace_training', 'pace_category_conversion_table',
+  'cs_two_point', 'cs_three_point', 'manual_cs', 'above_cs_tools', 'cs_based_zones', 'cs_vs_race_comparison',
   'cooper_12min', 'acsm_running_vo2', 'met_from_vo2', 'calories_met', 
   'weekly_mileage', 'weekly_duration', 'long_run_ratio', 'srpe_load', 'monotony', 'strain', 'acwr', 'progression_rate', 'intensity_distribution',
   'carb_total', 'gel_count', 'fluid_total', 'bottle_count', 'sodium_total', 'sweat_rate',
@@ -22,7 +24,14 @@ const implementedIds = new Set([
   'grade_pct', 'elevation_per_km', 'vertical_speed', 'hill_repeat_volume',
   'watts_per_kg', 'power_efficiency', 'power_drift', 'critical_power_zone',
   'sleep_duration', 'rhr_delta', 'hrv_delta_pct', 'body_mass_delta_pct', 'session_rpe_recovery',
-  'shoe_remaining_km', 'shoe_cost_per_km', 'fuel_cost'
+  'shoe_remaining_km', 'shoe_cost_per_km', 'fuel_cost',
+  'even_split', 'srpe_load_new', 'rpe_classification', 'track_interval', 'race_timeline', 'logistics_checkpoints', 'unit_conversion', 'weekly_calendar_analysis',
+  'pace_from_distance_time', 'time_from_distance_pace', 'distance_from_time_pace', 'speed_from_pace', 'pace_from_speed', 'min_km_to_min_mile', 'min_mile_to_min_km', 'elapsed_moving_pace', 'run_walk_blended_pace', 'pace_drift',
+  'even_split_table', 'negative_split_table', 'progressive_split_table', 'race_pace_band', 'split_comparison',
+  'track_pace_table', 'interval_builder', 'ladder_calculator', 'pyramid_calculator',
+  'nes_211_064_age', 'hr_reserve', 'hr_drift', 'aerobic_decoupling', 'hr_recovery',
+  'three_zone_polarized', 'seven_zone_advanced_hr', 'time_in_zone_distribution', 'intensity_distribution', 'zone_comparison',
+  'borg_6_20', 'rpe_to_zone_mapping', 'rpe_drift', 'planned_vs_actual_rpe', 'multi_day_rpe_trend'
 ]);
 
 const metadataOnlyIds = new Set([
@@ -31,18 +40,26 @@ const metadataOnlyIds = new Set([
 
 const categoryToRoute: Record<string, string> = {
   'heart_rate_max': '/heart-rate',
-  'heart_rate_zone': '/heart-rate',
-  'pace_zone': '/pace',
+  'heart_rate_zone': '/zone',
+  'heart_rate': '/heart-rate',
+  'zone': '/zone',
+  'pace_zone': '/zone',
   'race_prediction': '/race',
   'training_pace': '/pace',
   'critical_speed': '/critical-speed',
   'vo2_metabolic': '/vo2',
-  'workout': '/workout-library',
+  'workout': '/workout',
   'load': '/load',
   'fuel_hydration': '/fuel',
   'environment': '/environment',
   'treadmill': '/vo2',
   'biomechanics': '/biomechanics',
+  'split': '/split',
+  'rpe': '/rpe',
+  'track': '/track',
+  'race_day': '/race',
+  'conversion': '/conversion',
+  'calendar': '/calendar'
 };
 
 function FormulaLibraryInner({ searchParam }: { searchParam: string }) {

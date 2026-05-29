@@ -190,6 +190,30 @@ export const methodRegistry = [
     "limitations": []
   },
   {
+    "id": "manual_base_pace_training",
+    "category": "pace_zone",
+    "name": "Manual Base Pace Training Paces",
+    "requiredInputs": [
+      "basePace"
+    ],
+    "formulaDisplay": "Derive training paces from a manual base pace using % threshold estimates.",
+    "precision": "mathematical",
+    "limitations": [
+      "Relies on standard easy pace ratios (~122% threshold pace)."
+    ]
+  },
+  {
+    "id": "pace_category_conversion_table",
+    "category": "pace_zone",
+    "name": "Training Pace Conversion Table",
+    "requiredInputs": [
+      "pace"
+    ],
+    "formulaDisplay": "Convert calculated segment pace to equivalent track metrics (100m, 400m, mile) and linear speeds (km/h, mph).",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
     "id": "riegel_106",
     "category": "race_prediction",
     "name": "Riegel 1.06",
@@ -245,6 +269,59 @@ export const methodRegistry = [
     "limitations": []
   },
   {
+    "id": "equivalent_performance_table",
+    "category": "race_prediction",
+    "name": "Equivalent Performance Table",
+    "requiredInputs": [
+      "knownDistance",
+      "knownTime"
+    ],
+    "formulaDisplay": "Tabulate Riegel equivalent times across reference distances (400m to 100 Mile).",
+    "precision": "estimate",
+    "limitations": [
+      "Assumes typical physiological profile without specific fiber-type bias."
+    ]
+  },
+  {
+    "id": "abc_goal_builder",
+    "category": "race_prediction",
+    "name": "A/B/C Goal Builder",
+    "requiredInputs": [
+      "predictedTimeSeconds"
+    ],
+    "formulaDisplay": "A Goal (aggressive, -2%), B Goal (realistic, base), C Goal (conservative, +2%).",
+    "precision": "mathematical",
+    "limitations": [
+      "Does not replace a customized, condition-aware tactical goal plan."
+    ]
+  },
+  {
+    "id": "distance_similarity_confidence",
+    "category": "race_prediction",
+    "name": "Distance Similarity Confidence",
+    "requiredInputs": [
+      "knownDistance",
+      "targetDistance"
+    ],
+    "formulaDisplay": "Proximity-based confidence label mapping: <=1.5 (High), <=3.0 (Moderate), <=6.0 (Low), >6.0 (Very Low).",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "conservative_start_scenario",
+    "category": "race_prediction",
+    "name": "Conservative Start Scenario",
+    "requiredInputs": [
+      "totalDistance",
+      "targetTime"
+    ],
+    "formulaDisplay": "Calibrate splits with slower initial segments (+5% first km, +3% second km) while conserving total duration.",
+    "precision": "mathematical",
+    "limitations": [
+      "Requires late-race pacing acceleration."
+    ]
+  },
+  {
     "id": "cs_two_point",
     "category": "critical_speed",
     "name": "2-Point Critical Speed",
@@ -282,6 +359,43 @@ export const methodRegistry = [
     ],
     "formulaDisplay": "CS = user-provided value",
     "precision": "custom",
+    "limitations": []
+  },
+  {
+    "id": "above_cs_tools",
+    "category": "critical_speed",
+    "name": "Above-CS Capacity Tools",
+    "requiredInputs": [
+      "criticalSpeed",
+      "dPrime"
+    ],
+    "formulaDisplay": "TTE = D' / (Speed - CS) & Distance = (Speed - CS) × Duration",
+    "precision": "field_test",
+    "limitations": [
+      "Only valid for target intensities strictly above Critical Speed."
+    ]
+  },
+  {
+    "id": "cs_based_zones",
+    "category": "critical_speed",
+    "name": "CS-Based Zones",
+    "requiredInputs": [
+      "criticalSpeed"
+    ],
+    "formulaDisplay": "Five physiological intensities mapped relative to Critical Speed (Z1 <80%, Z2 80-90%, Z3 90-95%, Z4 95-103%, Z5 >103%).",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "cs_vs_race_comparison",
+    "category": "critical_speed",
+    "name": "CS vs Race Paces Comparison",
+    "requiredInputs": [
+      "criticalSpeedPace",
+      "thresholdPace"
+    ],
+    "formulaDisplay": "Compare Critical Speed to lactate threshold and equivalent racing speeds.",
+    "precision": "mathematical",
     "limitations": []
   },
   {
@@ -821,6 +935,375 @@ export const methodRegistry = [
     ],
     "formulaDisplay": "Fuel cost = serving count × price per serving",
     "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "even_split",
+    "category": "split",
+    "name": "Even Split Generator",
+    "requiredInputs": ["distance", "targetTime", "segmentDistance"],
+    "formulaDisplay": "Split Time = Segment Distance × (Target Time / Total Distance)",
+    "precision": "mathematical",
+    "limitations": ["Assumes perfectly even pacing without terrain or fatigue adjustments."]
+  },
+  {
+    "id": "srpe_load_new",
+    "category": "rpe",
+    "name": "Session RPE Load",
+    "requiredInputs": ["durationMinutes", "rpe"],
+    "formulaDisplay": "sRPE Load = Duration (min) × RPE",
+    "precision": "qualitative",
+    "limitations": ["Highly subjective. Can vary significantly day-to-day for the same absolute effort. Not a medical measurement."]
+  },
+  {
+    "id": "rpe_classification",
+    "category": "rpe",
+    "name": "RPE Classification",
+    "requiredInputs": ["rpe", "scale"],
+    "formulaDisplay": "Maps RPE numeric value to subjective classification label.",
+    "precision": "qualitative",
+    "limitations": ["Subjective mapping."]
+  },
+  {
+    "id": "track_interval",
+    "category": "track",
+    "name": "Track Interval Builder",
+    "requiredInputs": ["reps", "repDistance", "pace"],
+    "formulaDisplay": "Rep Time = Rep Distance × Pace",
+    "precision": "mathematical",
+    "limitations": ["Mathematical exact outputs. Ignores acceleration curve of actual track running."]
+  },
+  {
+    "id": "race_timeline",
+    "category": "race_day",
+    "name": "Race Timeline",
+    "requiredInputs": ["raceStart", "warmupOffset"],
+    "formulaDisplay": "Timeline Event = Race Start Time - Offset",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "logistics_checkpoints",
+    "category": "race_day",
+    "name": "Race Day Logistics Checkpoints",
+    "requiredInputs": ["duration", "interval"],
+    "formulaDisplay": "Checkpoints = Math.floor(Duration / Interval)",
+    "precision": "mathematical",
+    "limitations": ["Does not account for transition times, aid station spacing, or varying consumption rates."]
+  },
+  {
+    "id": "unit_conversion",
+    "category": "conversion",
+    "name": "Unit Conversion",
+    "requiredInputs": ["value", "conversionType"],
+    "formulaDisplay": "Value × Standard Conversion Factor",
+    "precision": "mathematical",
+    "limitations": ["Limited to specified precision."]
+  },
+  {
+    "id": "weekly_calendar_analysis",
+    "category": "calendar",
+    "name": "Weekly Calendar Analysis",
+    "requiredInputs": ["dailyDistances"],
+    "formulaDisplay": "Sums and extracts ratios from weekly distance array.",
+    "precision": "mathematical",
+    "limitations": ["Does not account for non-running stress or intensity."]
+  },
+  {
+    "id": "pace_from_distance_time",
+    "category": "pace",
+    "name": "Pace from Distance + Time",
+    "requiredInputs": ["distance", "time"],
+    "formulaDisplay": "Pace = Time / Distance",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "time_from_distance_pace",
+    "category": "pace",
+    "name": "Time from Distance + Pace",
+    "requiredInputs": ["distance", "pace"],
+    "formulaDisplay": "Time = Distance × Pace",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "distance_from_time_pace",
+    "category": "pace",
+    "name": "Distance from Time + Pace",
+    "requiredInputs": ["time", "pace"],
+    "formulaDisplay": "Distance = Time / Pace",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "speed_from_pace",
+    "category": "pace",
+    "name": "Speed from Pace",
+    "requiredInputs": ["pace"],
+    "formulaDisplay": "Speed = 3600 / paceSecsPerKm",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "pace_from_speed",
+    "category": "pace",
+    "name": "Pace from Speed",
+    "requiredInputs": ["speed"],
+    "formulaDisplay": "Pace = 3600 / speedKmh",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "min_km_to_min_mile",
+    "category": "pace",
+    "name": "min/km to min/mile",
+    "requiredInputs": ["paceKm"],
+    "formulaDisplay": "Pace (mi) = Pace (km) * 1.60934",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "min_mile_to_min_km",
+    "category": "pace",
+    "name": "min/mile to min/km",
+    "requiredInputs": ["paceMile"],
+    "formulaDisplay": "Pace (km) = Pace (mi) / 1.60934",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "elapsed_moving_pace",
+    "category": "pace",
+    "name": "Moving Pace vs Elapsed Pace",
+    "requiredInputs": ["distance", "movingTime", "stopTime"],
+    "formulaDisplay": "Elapsed Pace = (Moving Time + Stop Time) / Distance",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "run_walk_blended_pace",
+    "category": "pace",
+    "name": "Run/Walk Blended Pace",
+    "requiredInputs": ["runPace", "walkPace", "runDur", "walkDur"],
+    "formulaDisplay": "Blended Pace = Cycle Time / Total Distance in Cycle",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "pace_drift",
+    "category": "pace",
+    "name": "Pace Drift",
+    "requiredInputs": ["firstHalfPace", "secondHalfPace"],
+    "formulaDisplay": "Drift = ((Late Pace - Early Pace) / Early Pace) * 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "even_split_table",
+    "category": "split",
+    "name": "Even Split Table",
+    "requiredInputs": ["distance", "time", "segment"],
+    "formulaDisplay": "Split Time = Segment Distance × Pace",
+    "precision": "mathematical",
+    "limitations": ["Assumes perfectly even pacing"]
+  },
+  {
+    "id": "negative_split_table",
+    "category": "split",
+    "name": "Negative Split Table",
+    "requiredInputs": ["distance", "time", "ratio"],
+    "formulaDisplay": "First Half = Target * (Ratio/100)",
+    "precision": "mathematical",
+    "limitations": ["Scenario calculation, not training advice"]
+  },
+  {
+    "id": "progressive_split_table",
+    "category": "split",
+    "name": "Progressive Split Table",
+    "requiredInputs": ["distance", "time", "startSlower", "finishFaster", "segment"],
+    "formulaDisplay": "Linear segment pace interpolation",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "race_pace_band",
+    "category": "split",
+    "name": "Race Pace Band",
+    "requiredInputs": ["distance", "time", "segment"],
+    "formulaDisplay": "Time = Distance × Pace",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "split_comparison",
+    "category": "split",
+    "name": "Target vs Actual Split Comparison",
+    "requiredInputs": ["targetPace", "actualSplits", "segment"],
+    "formulaDisplay": "Delta = Actual - Target",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "track_pace_table",
+    "category": "track",
+    "name": "Track Split Calculator",
+    "requiredInputs": ["pace"],
+    "formulaDisplay": "Time = (Distance / 1000) × Pace",
+    "precision": "mathematical",
+    "limitations": ["Ignores acceleration curve"]
+  },
+  {
+    "id": "interval_builder",
+    "category": "track",
+    "name": "Interval Set Builder",
+    "requiredInputs": ["reps", "repDistance", "pace", "rest"],
+    "formulaDisplay": "Rep Time = Distance × Pace",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "ladder_calculator",
+    "category": "track",
+    "name": "Ladder Workout Calculator",
+    "requiredInputs": ["distances", "pace", "rest"],
+    "formulaDisplay": "Rep Time = Distance × Pace",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "pyramid_calculator",
+    "category": "track",
+    "name": "Pyramid Workout Calculator",
+    "requiredInputs": ["distances", "pace", "rest"],
+    "formulaDisplay": "Rep Time = Distance × Pace",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "hr_reserve",
+    "category": "heart_rate",
+    "name": "Heart Rate Reserve",
+    "requiredInputs": ["maxHeartRate", "restingHeartRate"],
+    "formulaDisplay": "HRR = HRmax - RHR",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "hr_drift",
+    "category": "heart_rate",
+    "name": "HR Drift",
+    "requiredInputs": ["firstHalfHR", "secondHalfHR"],
+    "formulaDisplay": "HR Drift % = (Second Half HR - First Half HR) / First Half HR × 100",
+    "precision": "mathematical",
+    "limitations": ["Input-based durability estimate, not diagnosis."]
+  },
+  {
+    "id": "aerobic_decoupling",
+    "category": "heart_rate",
+    "name": "Aerobic Decoupling",
+    "requiredInputs": ["firstHalfSpeed", "firstHalfHR", "secondHalfSpeed", "secondHalfHR"],
+    "formulaDisplay": "Decoupling % = (EF1 - EF2) / EF1 × 100",
+    "precision": "mathematical",
+    "limitations": ["Input-based durability estimate, not diagnosis."]
+  },
+  {
+    "id": "hr_recovery",
+    "category": "heart_rate",
+    "name": "HR Recovery",
+    "requiredInputs": ["peakHR", "recoveryHR"],
+    "formulaDisplay": "Recovery = Peak HR - Recovery HR",
+    "precision": "mathematical",
+    "limitations": ["Non-medical calculation."]
+  },
+  {
+    "id": "three_zone_polarized",
+    "category": "heart_rate_zone",
+    "name": "3-Zone Polarized",
+    "requiredInputs": ["maxHeartRate", "restingHeartRate"],
+    "formulaDisplay": "Zone 1, 2, 3 based on Ventilatory Thresholds",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "seven_zone_advanced_hr",
+    "category": "heart_rate_zone",
+    "name": "7-Zone Advanced HR",
+    "requiredInputs": ["maxHeartRate"],
+    "formulaDisplay": "7 fine-grained HR percentage zones",
+    "precision": "estimate",
+    "limitations": []
+  },
+  {
+    "id": "time_in_zone_distribution",
+    "category": "zone",
+    "name": "Time-in-Zone Distribution",
+    "requiredInputs": ["zoneTimes"],
+    "formulaDisplay": "Zone % = Zone Time / Total Time × 100",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "intensity_distribution",
+    "category": "zone",
+    "name": "80/20 / Polarized / Pyramidal Checker",
+    "requiredInputs": ["low", "moderate", "high"],
+    "formulaDisplay": "Distribution and rule-based classification",
+    "precision": "qualitative",
+    "limitations": []
+  },
+  {
+    "id": "zone_comparison",
+    "category": "zone",
+    "name": "Zone Comparison",
+    "requiredInputs": ["systemA", "systemB"],
+    "formulaDisplay": "Side-by-side comparison",
+    "precision": "mathematical",
+    "limitations": []
+  },
+  {
+    "id": "borg_6_20",
+    "category": "rpe",
+    "name": "Borg 6-20 Classification",
+    "requiredInputs": ["borg"],
+    "formulaDisplay": "Mapping table lookup",
+    "precision": "qualitative",
+    "limitations": ["Subjective metric"]
+  },
+  {
+    "id": "rpe_to_zone_mapping",
+    "category": "rpe",
+    "name": "RPE to Zone Mapping",
+    "requiredInputs": ["rpe"],
+    "formulaDisplay": "Qualitative mapping from effort to likely physiological zone",
+    "precision": "qualitative",
+    "limitations": ["Subjective effort mapping, not a physiological measurement."]
+  },
+  {
+    "id": "rpe_drift",
+    "category": "rpe",
+    "name": "RPE Drift",
+    "requiredInputs": ["firstHalfRpe", "secondHalfRpe"],
+    "formulaDisplay": "Drift = Later RPE - Early RPE",
+    "precision": "qualitative",
+    "limitations": []
+  },
+  {
+    "id": "planned_vs_actual_rpe",
+    "category": "rpe",
+    "name": "Planned vs Actual RPE Difference",
+    "requiredInputs": ["plannedRpe", "actualRpe"],
+    "formulaDisplay": "Delta = Actual - Planned",
+    "precision": "qualitative",
+    "limitations": []
+  },
+  {
+    "id": "multi_day_rpe_trend",
+    "category": "rpe",
+    "name": "Multi-day RPE Trend",
+    "requiredInputs": ["dailyRpes"],
+    "formulaDisplay": "Average, max, and trend logic",
+    "precision": "qualitative",
     "limitations": []
   }
 ] as const;
