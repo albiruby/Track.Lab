@@ -4,7 +4,7 @@ export function LabPageHeader({ title, subtitle }: { title: string, subtitle: st
   return (
     <div className="mb-8 space-y-4 brutalist-panel-heavy bg-card p-6 md:p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl md:text-5xl font-display font-bold uppercase tracking-tighter text-foreground">
+        <h1 className="text-3xl md:text-5xl font-display font-bold uppercase tracking-tight text-foreground pt-1 pb-1 leading-tight">
           {title}
         </h1>
         <p className="text-muted-foreground font-medium max-w-3xl leading-relaxed">

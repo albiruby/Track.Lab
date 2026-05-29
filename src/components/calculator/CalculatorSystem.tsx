@@ -89,7 +89,7 @@ export function FormulaTracePanel({ trace }: { trace: any }) {
   if (!trace) return null;
   return (
     <div className="mt-8 border-2 border-border-heavy bg-white rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] overflow-hidden flex flex-col">
-      <div className="bg-accent px-6 py-4 border-b-2 border-border-heavy flex justify-between items-center">
+      <div className="bg-accent text-accent-foreground px-6 py-4 border-b-2 border-border-heavy flex justify-between items-center">
         <h3 className="font-bold uppercase tracking-wider text-sm flex items-center gap-2">
           <FunctionSquare className="w-4 h-4" /> Formula Trace
         </h3>

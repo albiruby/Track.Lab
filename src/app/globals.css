@@ -8,20 +8,20 @@
 
   /* Bauhaus / Soft Brutalist Palette */
   --color-background: #E8E4DA;
-  --color-foreground: #171717;
+  --color-foreground: #111111;
   --color-card: #F3F0E8;
-  --color-card-foreground: #171717;
+  --color-card-foreground: #111111;
   --color-popover: #F3F0E8;
-  --color-popover-foreground: #171717;
+  --color-popover-foreground: #111111;
   
   --color-primary: #F2C300;
-  --color-primary-foreground: #171717;
+  --color-primary-foreground: #111111;
   
   --color-secondary: #C8D4EA;
-  --color-secondary-foreground: #171717;
+  --color-secondary-foreground: #111111;
   
   --color-muted: #DDD5C7;
-  --color-muted-foreground: #4B4B4B;
+  --color-muted-foreground: #2C2C2C;
   
   --color-accent: #161616;
   --color-accent-foreground: #FFFFFF;

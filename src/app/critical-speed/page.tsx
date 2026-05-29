@@ -512,7 +512,7 @@ export default function CriticalSpeedLabPage() {
                       <div className="border-2 border-border-heavy rounded-xl bg-white overflow-hidden shadow-[2px_2px_0px_rgba(23,23,23,1)]">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="bg-accent border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
+                            <tr className="bg-accent text-accent-foreground border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
                               <th className="p-3">Zone intensity</th>
                               <th className="p-3">Percentage of CS</th>
                               <th className="p-3">Limits speed</th>
@@ -625,7 +625,7 @@ export default function CriticalSpeedLabPage() {
                       <div className="border-2 border-border-heavy rounded-xl bg-white overflow-hidden shadow-[2px_2px_0px_rgba(23,23,23,1)]">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="bg-accent border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
+                            <tr className="bg-accent text-accent-foreground border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
                               <th className="p-3">Reference Marker</th>
                               <th className="p-3">Pace (/km)</th>
                               <th className="p-3">Pace Over/Under CS</th>

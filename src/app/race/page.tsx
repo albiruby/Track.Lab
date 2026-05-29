@@ -690,7 +690,7 @@ export default function RaceLabPage() {
                   <div className="border-2 border-border-heavy rounded-xl bg-white overflow-hidden shadow-[2px_2px_0px_rgba(23,23,23,1)]">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-accent border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
+                        <tr className="bg-accent text-accent-foreground border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
                           <th className="p-3">KM</th>
                           <th className="p-3">Segment Dist (km)</th>
                           <th className="p-3">Split Time</th>
@@ -722,7 +722,7 @@ export default function RaceLabPage() {
                   <div className="border-2 border-border-heavy rounded-xl bg-white overflow-hidden shadow-[2px_2px_0px_rgba(23,23,23,1)] max-h-[400px] overflow-y-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-accent border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest sticky top-0 bg-white">
+                        <tr className="bg-accent text-accent-foreground border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest sticky top-0 bg-accent">
                           <th className="p-3">Reference Distance</th>
                           <th className="p-3">Approx. Km</th>
                           <th className="p-3 font-bold">Predicted Finish</th>
@@ -769,7 +769,7 @@ export default function RaceLabPage() {
                   <div className="border-2 border-border-heavy rounded-xl bg-white overflow-hidden shadow-[2px_2px_0px_rgba(23,23,23,1)]">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-accent border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
+                        <tr className="bg-accent text-accent-foreground border-b-2 border-border-heavy text-[10px] uppercase font-bold tracking-widest">
                           <th className="p-3">KM / Lap</th>
                           <th className="p-3">Target Time</th>
                           <th className="p-3">Actual Time</th>

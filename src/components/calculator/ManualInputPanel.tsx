@@ -18,7 +18,7 @@ export function ManualInputPanel({
 }: ManualInputPanelProps) {
   return (
     <div className="bg-white border-2 border-border-heavy rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] overflow-hidden flex flex-col h-max">
-      <div className="bg-accent px-6 py-4 border-b-2 border-border-heavy flex justify-between items-center">
+      <div className="bg-accent text-accent-foreground px-6 py-4 border-b-2 border-border-heavy flex justify-between items-center">
         <h3 className="font-bold uppercase tracking-wider text-sm">Manual Input</h3>
         {supportsAdvanced && (
            <QuickAdvancedToggle mode={mode} setMode={setMode} />
