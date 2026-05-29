@@ -219,8 +219,8 @@ export function getAdaptedFieldTestProtocols(): TrackLabFieldTestProtocol[] {
 }
 
 // Helper to sanitize name for deduplication
-function getNormalizeNameKey(n: string): string {
-  return n.toLowerCase()
+export function getNormalizeNameKey(n: string): string {
+  return (n || "").toLowerCase()
     .replace(/\+/g, "and")
     .replace(/&/g, "and")
     .replace(/vs/g, "and")
@@ -229,89 +229,188 @@ function getNormalizeNameKey(n: string): string {
 }
 
 // 3. Adapter for Formula Method Registry
+export function getRouteSpecificId(id: string, category: string, route: string, name: string): string {
+  const finalId = id || "";
+  if (finalId === "intensity_distribution") {
+    const catLower = (category || "").toLowerCase();
+    const routeLower = (route || "").toLowerCase();
+    const nameLower = (name || "").toLowerCase();
+    if (catLower.includes("zone") || routeLower.includes("zone") || nameLower.includes("80/20") || nameLower.includes("polarized") || nameLower.includes("pyramidal")) {
+      return "intensity_distribution__zone";
+    }
+    if (catLower.includes("calendar") || routeLower.includes("calendar")) {
+      return "intensity_distribution__calendar";
+    }
+    return "intensity_distribution__load";
+  }
+  if (finalId === "long_run_ratio") {
+    const catLower = (category || "").toLowerCase();
+    const routeLower = (route || "").toLowerCase();
+    if (catLower.includes("calendar") || routeLower.includes("calendar")) {
+      return "long_run_ratio__calendar";
+    }
+    return "long_run_ratio__load";
+  }
+  return finalId;
+}
+
 export function getAdaptedMethodRegistry(existingRegistry: any[]): TrackLabFormulaMethod[] {
   const rawMethods = (formulaMethodRegistryJson as any).methods || [];
-  
-  // Map clean existing methods
-  const cleanExistingMap = new Map<string, any>();
-  existingRegistry.forEach((m: any) => {
-    const key = getNormalizeNameKey(m.name);
-    cleanExistingMap.set(key, m);
-  });
-  
-  const merged: TrackLabFormulaMethod[] = [];
-  const processedExistingKeys = new Set<string>();
-  
-  rawMethods.forEach((m: any) => {
-    const jsonKey = getNormalizeNameKey(m.methodName);
-    const existing = cleanExistingMap.get(jsonKey);
+  const uniqueMap = new Map<string, TrackLabFormulaMethod>();
+
+  // Helper to normalize any incoming item into standard TrackLabFormulaMethod
+  function normalizeToMethod(m: any, isFromTypeScript: boolean): TrackLabFormulaMethod {
+    const rawId = m.id || m.methodId || "";
+    const rawName = m.name || m.methodName || "";
+    const rawCategory = m.category || "General";
+    const rawRoute = m.route || "/pace";
     
+    // Resolve route-specific IDs for known duplicate fields
+    const id = getRouteSpecificId(rawId, rawCategory, rawRoute, rawName);
+    
+    const formulaDisplay = m.formulaDisplay || "";
+    const requiredInputs = m.requiredInputs || [];
+    const optionalInputs = m.optionalInputs || [];
+    const outputUnits = m.outputUnits || [];
+    const sourceNote = m.sourceNote || "";
+    
+    // Limitation string merging
+    let limitationStr = m.limitation || "";
+    if (!limitationStr && m.limitations && m.limitations.length > 0) {
+      limitationStr = m.limitations.join(" ");
+    }
+    const limitations = m.limitations || (m.limitation ? [m.limitation] : []);
+
     // Normalization of confidence labels
-    // Formula -> Exact for conversions, Estimate for predictions
-    let confidenceDisp = "Estimate";
-    if (m.confidenceLabel === "Formula") {
-       const isPaceSpeedDirect = m.category?.toLowerCase().includes("pace") || m.category?.toLowerCase().includes("speed") || m.category?.toLowerCase().includes("conversion");
-       confidenceDisp = isPaceSpeedDirect ? "Exact" : "Estimate";
-    } else {
-       confidenceDisp = m.confidenceLabel || "Estimate";
+    let confidenceDisp = m.confidenceLabel || "Estimate";
+    if (confidenceDisp === "Formula") {
+      const isPaceSpeedDirect = rawCategory.toLowerCase().includes("pace") || rawCategory.toLowerCase().includes("speed") || rawCategory.toLowerCase().includes("conversion");
+      confidenceDisp = isPaceSpeedDirect ? "Exact" : "Estimate";
+    } else if (confidenceDisp === "moderate") {
+      confidenceDisp = "Field Test Estimate";
+    } else if (confidenceDisp === "high") {
+      confidenceDisp = "Direct Metric Audit";
     }
-    
-    // Status mapping: preserve implemented from our explicit implementedIds if matching existing
-    let isImplemented = "planned";
-    
-    if (existing) {
-      processedExistingKeys.add(jsonKey);
-      isImplemented = "implemented"; // since existing registry items are mostly implemented or clearly tagged
+
+    // Status mapping: default is planned, but existing ts methods are implemented
+    let implementationStatus = m.implementationStatus || "planned";
+    if (isFromTypeScript) {
+      implementationStatus = "implemented";
+    } else if (implementationStatus === "readyForImplementation") {
+      implementationStatus = "ready";
     }
-    
-    const mapped: TrackLabFormulaMethod = {
-      id: existing ? existing.id : m.methodId,
-      name: existing ? existing.name : m.methodName,
-      category: m.category || (existing ? existing.category : "General"),
-      route: m.route || (existing && existing.route ? existing.route : "/pace"),
-      formulaDisplay: m.formulaDisplay || (existing ? existing.formulaDisplay : ""),
-      requiredInputs: m.requiredInputs || (existing ? existing.requiredInputs : []),
-      optionalInputs: m.optionalInputs || [],
-      outputUnits: m.outputUnits || [],
+
+    return {
+      id,
+      name: rawName,
+      category: rawCategory,
+      route: rawRoute,
+      formulaDisplay,
+      requiredInputs: [...requiredInputs],
+      optionalInputs: [...optionalInputs],
+      outputUnits: [...outputUnits],
       confidenceLabel: confidenceDisp,
       rawConfidenceLabel: m.confidenceLabel || "Formula",
-      limitation: m.limitation || (existing && existing.limitations ? existing.limitations.join(" ") : ""),
-      sourceNote: m.sourceNote || "",
-      implementationStatus: isImplemented,
-      relatedModules: m.relatedModules || [],
-      
-      // Compatibility to fit existing codebase queries
-      precision: existing ? existing.precision : (m.confidenceLabel === "Formula" ? "mathematical" : "estimate"),
-      limitations: m.limitation ? [m.limitation] : (existing ? existing.limitations || [] : [])
+      limitation: limitationStr,
+      sourceNote,
+      implementationStatus,
+      relatedModules: m.relatedModules ? [...m.relatedModules] : [],
+      precision: m.precision || (m.confidenceLabel === "Formula" ? "mathematical" : "estimate"),
+      limitations: [...limitations]
     };
-    
-    merged.push(mapped);
-  });
-  
-  // Add all remaining existing elements that did not match any JSON entries
+  }
+
+  // 1. Process TypeScript methods
   existingRegistry.forEach((m: any) => {
-    const key = getNormalizeNameKey(m.name);
-    if (!processedExistingKeys.has(key)) {
-       merged.push({
-         id: m.id,
-         name: m.name,
-         category: m.category || "General",
-         route: m.route || "/pace",
-         formulaDisplay: m.formulaDisplay || "",
-         requiredInputs: m.requiredInputs || [],
-         optionalInputs: [],
-         outputUnits: [],
-         confidenceLabel: m.precision === "mathematical" ? "Exact" : "Estimate",
-         rawConfidenceLabel: "Formula",
-         limitation: m.limitations ? m.limitations.join(" ") : "",
-         sourceNote: "Legacy registered arithmetic rule.",
-         implementationStatus: "implemented",
-         relatedModules: [],
-         precision: m.precision || "estimate",
-         limitations: m.limitations || []
-       });
+    if (!m) return;
+    const norm = normalizeToMethod(m, true);
+    if (uniqueMap.has(norm.id)) {
+      const existing = uniqueMap.get(norm.id)!;
+      uniqueMap.set(norm.id, mergeTwoMethods(existing, norm));
+    } else {
+      uniqueMap.set(norm.id, norm);
     }
   });
-  
-  return merged;
+
+  // 2. Process JSON methods
+  rawMethods.forEach((m: any) => {
+    if (!m) return;
+    // Map JSON methods, which are not from TS but have rich metadata
+    const norm = normalizeToMethod(m, false);
+    
+    // We can match by name key as well, but matching by ID is most robust
+    if (uniqueMap.has(norm.id)) {
+      const existing = uniqueMap.get(norm.id)!;
+      uniqueMap.set(norm.id, mergeTwoMethods(existing, norm));
+    } else {
+      // Find by normalized name to see if we can pair
+      const matchedByName = Array.from(uniqueMap.values()).find(
+        (existing) => getNormalizeNameKey(existing.name) === getNormalizeNameKey(norm.name)
+      );
+      if (matchedByName) {
+        uniqueMap.set(matchedByName.id, mergeTwoMethods(matchedByName, norm));
+      } else {
+        uniqueMap.set(norm.id, norm);
+      }
+    }
+  });
+
+  function mergeTwoMethods(a: TrackLabFormulaMethod, b: TrackLabFormulaMethod): TrackLabFormulaMethod {
+    const aImp = a.implementationStatus === "implemented";
+    const bImp = b.implementationStatus === "implemented";
+    
+    const primary = (aImp && !bImp) ? a : ((bImp && !aImp) ? b : a);
+    const secondary = primary === a ? b : a;
+    
+    const relatedModules = Array.from(new Set([...(primary.relatedModules || []), ...(secondary.relatedModules || [])]));
+    const requiredInputs = Array.from(new Set([...(primary.requiredInputs || []), ...(secondary.requiredInputs || [])]));
+    const optionalInputs = Array.from(new Set([...(primary.optionalInputs || []), ...(secondary.optionalInputs || [])]));
+    const outputUnits = Array.from(new Set([...(primary.outputUnits || []), ...(secondary.outputUnits || [])]));
+    
+    const mergedLimitations = Array.from(new Set([...(primary.limitations || []), ...(secondary.limitations || [])]));
+    const limitation = mergedLimitations.join(" ");
+
+    let finalRoute = primary.route || secondary.route || "/pace";
+    let finalCategory = primary.category || secondary.category || "General";
+    
+    // Conversions normalization
+    if (["min_km_to_min_mile", "min_mile_to_min_km", "kmh_to_mph", "mph_to_kmh"].includes(primary.id)) {
+      finalRoute = "/conversion";
+      finalCategory = "Conversion";
+      if (!relatedModules.includes("/conversion")) relatedModules.push("/conversion");
+      if (!relatedModules.includes("/pace")) relatedModules.push("/pace");
+      if (!relatedModules.includes("/treadmill")) relatedModules.push("/treadmill");
+    }
+
+    return {
+      id: primary.id,
+      name: primary.name || secondary.name,
+      category: finalCategory,
+      route: finalRoute,
+      formulaDisplay: primary.formulaDisplay || secondary.formulaDisplay,
+      requiredInputs,
+      optionalInputs,
+      outputUnits,
+      confidenceLabel: primary.confidenceLabel || secondary.confidenceLabel || "Estimate",
+      rawConfidenceLabel: primary.rawConfidenceLabel || secondary.rawConfidenceLabel || "Formula",
+      limitation,
+      sourceNote: primary.sourceNote || secondary.sourceNote,
+      implementationStatus: (aImp || bImp) ? "implemented" : (primary.implementationStatus === "ready" || secondary.implementationStatus === "ready" ? "ready" : primary.implementationStatus),
+      relatedModules,
+      precision: primary.precision || secondary.precision,
+      limitations: mergedLimitations
+    };
+  }
+
+  // 3. Final Validation check: verify ID uniqueness
+  const finalRegistry = Array.from(uniqueMap.values());
+  const checkedIds = new Set<string>();
+  finalRegistry.forEach(m => {
+    if (checkedIds.has(m.id)) {
+      console.warn(`[Track.Lab Unique Error] Found leftover duplicate ID during merge: ${m.id}`);
+    }
+    checkedIds.add(m.id);
+  });
+
+  return finalRegistry;
 }

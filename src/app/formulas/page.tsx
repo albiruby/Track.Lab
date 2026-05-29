@@ -379,14 +379,17 @@ function FormulaLibraryInner({ searchParam }: { searchParam: string }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
-        {filteredMethods.map(method => {
+        {filteredMethods.map((method, idx) => {
           const st = getStatusBadge(method);
           const friendlyCat = getFriendlyCategory(method);
           const route = friendlyCategoryToRoute[friendlyCat];
           const hasExport = methodRegistry.some(m => m.id === method.id) && getImplementationStatus(method) === 'implemented';
           
+          const baseKey = `${method.id}__${method.route ?? "no-route"}__${method.category ?? "no-category"}`;
+          const fallbackKey = `${baseKey}__${idx}`;
+          
           return (
-            <div key={method.id} className="flex flex-col h-full bg-white border-2 border-border-heavy rounded-xl shadow-[3px_3px_0px_rgba(23,23,23,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all overflow-hidden group">
+            <div key={fallbackKey} className="flex flex-col h-full bg-white border-2 border-border-heavy rounded-xl shadow-[3px_3px_0px_rgba(23,23,23,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all overflow-hidden group">
               <div className="p-4 border-b-2 border-border-heavy bg-card shrink-0">
                 <div className="flex justify-between items-start gap-2 mb-3">
                   <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground truncate border-2 border-border-heavy bg-white px-2 py-0.5 rounded shadow-[1px_1px_0px_rgba(23,23,23,1)]">
