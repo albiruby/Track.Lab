@@ -66,6 +66,7 @@ export interface TrackLabWorkoutTemplate {
   confidenceLabel: string;
   rawConfidenceLabel: string; // Normalization: high -> display as Manual or Qualitative, preserving raw
   relatedModules: string[];
+  calculationProfile?: any;
   
   // Backward compatibility fields
   difficulty: "easy" | "moderate" | "hard" | string;
@@ -93,6 +94,151 @@ export interface TrackLabFormulaMethod {
   // Legacy / existing compatibility
   precision: string;
   limitations: string[];
+}
+
+export function parseWorkoutTemplate(name: string, mainSet: string, recovery: string): any {
+  const nameClean = (name || "").toLowerCase();
+  const mainClean = (mainSet || "").toLowerCase();
+  const recClean = (recovery || "").toLowerCase();
+
+  // Initialize profile with fallback
+  let profile: any = {
+    calculationMode: "static_only",
+    canCalculateSession: false,
+    requiresUserPace: true,
+    requiresUserRecovery: false
+  };
+
+  // 1. Try to find distance reps pattern (e.g. "6 x 800m", "6 × 800m", "5 x 1k", "3 x 1 mile") [in mainSet or name]
+  // Pattern: reps x val unit
+  const distRepRegex = /(?:^|\s|—)(\d+)\s*[x×]\s*(\d+(?:\.\d+)?)\s*(m\b|meter|meters|km\b|kilometer|kilometers|mile|miles)/i;
+  let distMatch = mainClean.match(distRepRegex) || nameClean.match(distRepRegex);
+  if (distMatch) {
+    const reps = parseInt(distMatch[1]);
+    const val = parseFloat(distMatch[2]);
+    const unit = distMatch[3].toLowerCase();
+    
+    let repDistanceKm = 0;
+    if (unit.startsWith("m") && !unit.startsWith("mile")) {
+      repDistanceKm = val / 1000;
+    } else if (unit.startsWith("k")) {
+      repDistanceKm = val;
+    } else if (unit.startsWith("mile")) {
+      repDistanceKm = val * 1.60934;
+    }
+
+    if (reps > 0 && repDistanceKm > 0) {
+      profile.calculationMode = "distance_reps";
+      profile.reps = reps;
+      profile.repDistanceKm = repDistanceKm;
+      profile.canCalculateSession = true;
+    }
+  }
+
+  // 2. If no distance reps, try to find time/duration reps pattern (e.g. "3 x 5 min", "3 × 5 min", "10 x 30 sec", "5 x 3m", etc.)
+  if (profile.calculationMode === "static_only") {
+    const timeRepRegex = /(?:^|\s|—)(\d+)\s*[x×]\s*(\d+(?:\.\d+)?)\s*(min|mins|minute|minutes|sec|second|seconds|s\b)/i;
+    let timeMatch = mainClean.match(timeRepRegex) || nameClean.match(timeRepRegex);
+    if (timeMatch) {
+      const reps = parseInt(timeMatch[1]);
+      const val = parseFloat(timeMatch[2]);
+      const unit = timeMatch[3].toLowerCase();
+
+      let repDurationSeconds = 0;
+      if (unit.startsWith("min")) {
+        repDurationSeconds = val * 60;
+      } else if (unit.startsWith("sec") || unit === "s") {
+        repDurationSeconds = val;
+      }
+
+      if (reps > 0 && repDurationSeconds > 0) {
+        profile.calculationMode = "duration_reps";
+        profile.reps = reps;
+        profile.repDurationSeconds = repDurationSeconds;
+        profile.canCalculateSession = true;
+      }
+    }
+  }
+
+  // 3. If no reps reps, check for continuous duration (e.g. "15 min relaxed", "40 min easy", "30-minute")
+  if (profile.calculationMode === "static_only") {
+    const contDurationRegex = /(\d+(?:\.\d+)?)\s*(?:min|mins|minute|minutes|hour|hours|h\b)/i;
+    let contMatch = mainClean.match(contDurationRegex);
+    if (contMatch) {
+      const val = parseFloat(contMatch[1]);
+      const unit = contMatch[0].toLowerCase();
+      let repDurationSeconds = val * 60;
+      if (unit.includes("hour") || unit.includes("h")) {
+        repDurationSeconds = val * 3600;
+      }
+
+      if (repDurationSeconds > 0) {
+        profile.calculationMode = "continuous";
+        profile.reps = 1;
+        profile.repDurationSeconds = repDurationSeconds;
+        profile.canCalculateSession = true;
+      }
+    }
+  }
+
+  // 4. Check for continuous distance (e.g. "5 km continuous", "10k easy", "8 mile")
+  if (profile.calculationMode === "static_only") {
+    const contDistRegex = /(\d+(?:\.\d+)?)\s*(?:km\b|k\b|kilometer|kilometers|mile|miles)/i;
+    let contDistMatch = mainClean.match(contDistRegex);
+    if (contDistMatch) {
+      const val = parseFloat(contDistMatch[1]);
+      const unit = contDistMatch[0].toLowerCase();
+      let repDistanceKm = val;
+      if (unit.includes("mile")) {
+        repDistanceKm = val * 1.60934;
+      }
+
+      if (repDistanceKm > 0) {
+        profile.calculationMode = "continuous_distance";
+        profile.reps = 1;
+        profile.repDistanceKm = repDistanceKm;
+        profile.canCalculateSession = true;
+      }
+    }
+  }
+
+  // Parse recovery if we have structured reps
+  if (profile.canCalculateSession && profile.reps && profile.reps > 1) {
+    const recRangeRegex = /(\d+(?:\.\d+)?)\s*[:-–—to]+\s*(\d+(?:\.\d+)?)\s*(min|mins|minute|minutes|sec|second|seconds|s\b)/i;
+    const recSingleRegex = /(\d+(?:\.\d+)?)\s*(min|mins|minute|minutes|sec|second|seconds|s\b)/i;
+
+    let recRangeMatch = recClean.match(recRangeRegex);
+    if (recRangeMatch) {
+      const minVal = parseFloat(recRangeMatch[1]);
+      const maxVal = parseFloat(recRangeMatch[2]);
+      const unit = recRangeMatch[3].toLowerCase();
+      let multiplier = 1;
+      if (unit.startsWith("min")) {
+        multiplier = 60;
+      }
+      profile.recoveryMinSeconds = minVal * multiplier;
+      profile.recoveryMaxSeconds = maxVal * multiplier;
+      profile.requiresUserRecovery = true;
+    } else {
+      let recSingleMatch = recClean.match(recSingleRegex);
+      if (recSingleMatch) {
+        const val = parseFloat(recSingleMatch[1]);
+        const unit = recSingleMatch[2].toLowerCase();
+        let multiplier = 1;
+        if (unit.startsWith("min")) {
+          multiplier = 60;
+        }
+        profile.recoveryMinSeconds = val * multiplier;
+        profile.recoveryMaxSeconds = val * multiplier;
+      } else {
+        profile.recoveryMinSeconds = 0;
+        profile.recoveryMaxSeconds = 0;
+      }
+    }
+    profile.restPolicy = "between_reps";
+  }
+
+  return profile;
 }
 
 // 1. Adapter for Workout Templates
@@ -158,6 +304,7 @@ export function getAdaptedWorkoutTemplates(): TrackLabWorkoutTemplate[] {
       confidenceLabel: confidenceDisp,
       rawConfidenceLabel: w.confidenceLabel || "high",
       relatedModules: w.relatedModules || [],
+      calculationProfile: parseWorkoutTemplate(w.name, w.mainSet || "", w.recovery || ""),
       
       formulaNotes: [
         w.purpose || "",

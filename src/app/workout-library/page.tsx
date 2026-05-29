@@ -33,61 +33,65 @@ function isDistanceRepTemplate(mainSet: any): boolean {
 }
 
 function calculateWorkout(template: typeof workoutTemplates[number], paceSec: number, warmupMin: number, cooldownMin: number) {
-  let workDist = 0;
-  let workTime = 0;
-  let restTime = 0;
-  let targetRepTime = 0;
+  const profile = (template as any).calculationProfile;
+  if (!profile || profile.calculationMode === "static_only" || !profile.canCalculateSession) {
+    return null;
+  }
 
-  const mSet = 'mainSet' in template ? (template as any).mainSet : null;
+  const reps = profile.reps || 1;
+  const mode = profile.calculationMode;
 
-  if (mSet) {
-    if (mSet.type === 'distance_reps') {
-      const reps = mSet.reps || 1;
-      const dist = mSet.distanceMeters || 0;
-      workDist = reps * dist;
-      targetRepTime = (dist / 1000) * paceSec;
-      workTime = targetRepTime * reps;
-      let rSec = mSet.rest?.durationSeconds || (mSet.rest?.durationMinutes ? mSet.rest.durationMinutes * 60 : 0);
-      if (mSet.rest?.rule === 'equal_work_time') {
-         rSec = targetRepTime;
-      }
-      restTime = Math.max(0, reps - 1) * rSec;
-    } else if (mSet.type === 'time_reps') {
-      const reps = mSet.reps || 1;
-      const dur = mSet.durationMinutes ? mSet.durationMinutes * 60 : (mSet.durationSeconds || 0);
-      workTime = reps * dur;
-      workDist = (workTime / paceSec) * 1000;
-      targetRepTime = dur;
-      let rSec = mSet.rest?.durationSeconds || (mSet.rest?.durationMinutes ? mSet.rest.durationMinutes * 60 : 0);
-      if (mSet.rest?.rule === 'equal_work_time') {
-         rSec = targetRepTime;
-      }
-      restTime = Math.max(0, reps - 1) * rSec;
-    } else if (mSet.type === 'continuous_distance') {
-      workDist = mSet.distanceMeters || 0;
-      workTime = (workDist / 1000) * paceSec;
-    } else if (mSet.type === 'continuous') {
-      workTime = (mSet.durationMinutes || 0) * 60;
-      if (paceSec > 0) workDist = (workTime / paceSec) * 1000;
-    } else if (mSet.type === 'alternating_time') {
-      const reps = mSet.reps || 1;
-      const onTime = (mSet.onMinutes || 0) * 60;
-      const offTime = (mSet.offMinutes || 0) * 60;
-      workTime = reps * onTime;
-      restTime = reps * offTime; 
-      if (paceSec > 0) workDist = (workTime / paceSec) * 1000;
+  let singleRepDurationSeconds = 0;
+  let singleRepDistanceKm = 0;
+  
+  if (mode === "duration_reps" || mode === "continuous") {
+    singleRepDurationSeconds = profile.repDurationSeconds || 0;
+    if (paceSec > 0) {
+      singleRepDistanceKm = singleRepDurationSeconds / paceSec;
     }
+  } else if (mode === "distance_reps" || mode === "continuous_distance") {
+    singleRepDistanceKm = profile.repDistanceKm || 0;
+    if (paceSec > 0) {
+      singleRepDurationSeconds = singleRepDistanceKm * paceSec;
+    }
+  }
+
+  const workTime = reps * singleRepDurationSeconds;
+  const workDist = reps * singleRepDistanceKm * 1000; // in meters
+
+  // Rest calculation
+  let restTimeMin = 0;
+  let restTimeMax = 0;
+  
+  if (reps > 1) {
+    const recoveryMultiplier = (profile.restPolicy === "after_every_rep") ? reps : (reps - 1);
+    
+    const minRec = typeof profile.recoveryMinSeconds === "number" ? profile.recoveryMinSeconds : 0;
+    const maxRec = typeof profile.recoveryMaxSeconds === "number" ? profile.recoveryMaxSeconds : minRec;
+    
+    restTimeMin = recoveryMultiplier * minRec;
+    restTimeMax = recoveryMultiplier * maxRec;
   }
 
   const warmTime = warmupMin * 60;
   const coolTime = cooldownMin * 60;
-  
+
+  const totalTimeMin = workTime + restTimeMin + warmTime + coolTime;
+  const totalTimeMax = workTime + restTimeMax + warmTime + coolTime;
+
   return {
-    workDist,
+    calculationMode: mode,
+    reps,
+    singleRepDurationSeconds,
+    singleRepDistanceKm,
     workTime,
-    restTime,
-    targetRepTime,
-    totalTime: workTime + restTime + warmTime + coolTime
+    workDist, // meters
+    restTimeMin,
+    restTimeMax,
+    totalTimeMin,
+    totalTimeMax,
+    isRange: restTimeMin !== restTimeMax,
+    targetRepTime: singleRepDurationSeconds // keep for compatibility
   };
 }
 
@@ -169,10 +173,14 @@ export default function WorkoutLibraryPage() {
     return filteredTemplates.slice(0, displayLimit);
   }, [filteredTemplates, displayLimit]);
 
+  // Pacing seconds per km source of truth
+  const pSec = useMemo(() => {
+    return paceInput ? parseDurationToSeconds(paceInput) : 0;
+  }, [paceInput]);
+
   // Single Template Projection
   const calcResult = useMemo(() => {
     if (!selectedTemplate) return null;
-    const pSec = paceInput ? parseDurationToSeconds(paceInput) : 0;
     if (!pSec || pSec <= 0) return null;
 
     return calculateWorkout(
@@ -181,7 +189,7 @@ export default function WorkoutLibraryPage() {
       parseFloat(warmupInput) || 0, 
       parseFloat(cooldownInput) || 0
     );
-  }, [selectedTemplate, paceInput, warmupInput, cooldownInput]);
+  }, [selectedTemplate, pSec, warmupInput, cooldownInput]);
 
   // Specific safety rule triggers (Static only)
   const activeSafetyFlags = useMemo(() => {
@@ -229,12 +237,21 @@ export default function WorkoutLibraryPage() {
     const resA = calculateWorkout(tA, pSec, wu, cd);
     const resB = calculateWorkout(tB, pSec, wu, cd);
 
+    if (!resA || !resB) {
+      return {
+        templateA: tA,
+        templateB: tB,
+        canCompare: false
+      };
+    }
+
     return {
       templateA: tA,
       templateB: tB,
+      canCompare: true,
       resA,
       resB,
-      deltaDuration: resA.totalTime - resB.totalTime,
+      deltaDuration: resA.totalTimeMin - resB.totalTimeMin,
       deltaDistanceKm: (resA.workDist - resB.workDist) / 1000
     };
   }, [isComparing, compTemplateIdA, compTemplateIdB, paceInput, warmupInput, cooldownInput]);
@@ -242,12 +259,17 @@ export default function WorkoutLibraryPage() {
   // Copy Summary Handler
   const handleCopySummary = () => {
     if (!selectedTemplate || !calcResult) return;
+    const repTimeStr = calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--';
+    const totalTimeStr = calcResult.isRange 
+      ? `${formatSecondsToTimeString(calcResult.totalTimeMin)}–${formatSecondsToTimeString(calcResult.totalTimeMax)}`
+      : formatSecondsToTimeString(calcResult.totalTimeMin);
+      
     const summaryText = 
       `Workout: ${selectedTemplate.name}\n` +
       `Category: ${selectedTemplate.scenario} | Difficulty: ${selectedTemplate.difficulty}\n` +
-      `Target Rep Time: ${formatSecondsToTimeString(Math.round(calcResult.targetRepTime))}\n` +
+      `Single Rep Duration: ${repTimeStr}\n` +
       `Estimated Session Work Distance: ${(calcResult.workDist/1000).toFixed(2)} km\n` +
-      `Calculated Session Duration: ${formatSecondsToTimeString(calcResult.totalTime)}`;
+      `Calculated Session Duration: ${totalTimeStr}`;
     
     navigator.clipboard.writeText(summaryText);
     setCopyStatus('Summary copied!');
@@ -548,6 +570,9 @@ export default function WorkoutLibraryPage() {
                 <div className="space-y-1">
                   <Label>Expected Rep Target Pace (MM:SS/km)</Label>
                   <Input type="text" placeholder="5:00" value={paceInput} onChange={e => setPaceInput(e.target.value)} />
+                  {paceInput && parseDurationToSeconds(paceInput) === null && (
+                    <ValidationMessage message="Invalid format. Use MM:SS or H:MM:SS (e.g. 5:00)" />
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
@@ -578,20 +603,32 @@ export default function WorkoutLibraryPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
                         <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Calculated Session Time</span>
-                        <strong className="font-display font-black text-3xl text-foreground">{formatSecondsToTimeString(calcResult.totalTime)}</strong>
+                        <strong className="font-display font-black text-2xl text-foreground">
+                          {calcResult.isRange 
+                            ? `${formatSecondsToTimeString(calcResult.totalTimeMin)}–${formatSecondsToTimeString(calcResult.totalTimeMax)}`
+                            : formatSecondsToTimeString(calcResult.totalTimeMin)}
+                        </strong>
                       </div>
                       <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
                         <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Single Rep Limit</span>
-                        <strong className="font-display font-black text-2xl text-foreground">{calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}</strong>
+                        <strong className="font-display font-black text-2xl text-foreground">
+                          {calcResult.targetRepTime > 0 ? formatSecondsToTimeString(Math.round(calcResult.targetRepTime)) : '--:--'}
+                        </strong>
                       </div>
                       <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
                         <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Active Paced Distance</span>
-                        <strong className="font-display font-black text-2xl text-foreground">{calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}</strong>
+                        <strong className="font-display font-black text-2xl text-foreground">
+                          {calcResult.workDist > 0 ? `${(calcResult.workDist/1000).toFixed(2)} km` : '--'}
+                        </strong>
                       </div>
                       <div className="p-4 bg-muted border-2 border-border-heavy rounded-lg text-center shadow-sm">
                         <span className="block text-[10px] uppercase font-black tracking-wider text-muted-foreground mb-1">Paced work : rest time</span>
                         <strong className="font-mono text-sm font-bold text-zinc-700 leading-none">
-                          {formatSecondsToTimeString(Math.round(calcResult.workTime))} / {formatSecondsToTimeString(Math.round(calcResult.restTime))}
+                          {formatSecondsToTimeString(Math.round(calcResult.workTime))} / {
+                            calcResult.isRange 
+                              ? `${formatSecondsToTimeString(Math.round(calcResult.restTimeMin))}–${formatSecondsToTimeString(Math.round(calcResult.restTimeMax))}`
+                              : formatSecondsToTimeString(Math.round(calcResult.restTimeMin))
+                          }
                         </strong>
                       </div>
                     </div>
@@ -613,9 +650,75 @@ export default function WorkoutLibraryPage() {
                     )}
 
                     {/* Explanation details and traceability */}
-                    <div className="p-4 bg-zinc-50 border border-zinc-200 rounded text-[10px] font-mono text-zinc-650 leading-relaxed space-y-3">
-                      <p><strong className="text-foreground uppercase text-[8px] font-sans block">Formula Method used:</strong> Static structure layout + multiplier durations.</p>
-                      <p><strong className="text-foreground uppercase text-[8px] font-sans block">Trace inputs used:</strong> Base Pace: {paceInput}, Warmup {warmupInput}m, Cooldown {cooldownInput}m</p>
+                    <div className="p-4 bg-zinc-50 border-2 border-border-heavy rounded text-[10px] font-mono text-zinc-700 leading-relaxed space-y-3">
+                      <div>
+                        <strong className="text-foreground uppercase text-[8px] font-sans block mb-1">Calculation Trace Logs:</strong>
+                        <ul className="list-disc pl-4 space-y-1">
+                          <li>Pace input translated: {pSec} seconds per km</li>
+                          {calcResult.calculationMode === "duration_reps" && (
+                            <>
+                              <li>Rep duration defined in template: {formatSecondsToTimeString(calcResult.singleRepDurationSeconds)} ({calcResult.singleRepDurationSeconds} sec)</li>
+                              <li>Single rep distance mapped: {calcResult.singleRepDurationSeconds}s / {pSec}s/km = {calcResult.singleRepDistanceKm.toFixed(2)} km</li>
+                              <li>Total work duration: {calcResult.reps} × {formatSecondsToTimeString(calcResult.singleRepDurationSeconds)} = {formatSecondsToTimeString(calcResult.workTime)}</li>
+                              <li>Active work distance: {calcResult.reps} × {calcResult.singleRepDistanceKm.toFixed(2)} km = {(calcResult.workDist/1000).toFixed(2)} km</li>
+                            </>
+                          )}
+                          {calcResult.calculationMode === "distance_reps" && (
+                            <>
+                              <li>Rep distance defined in template: {calcResult.singleRepDistanceKm.toFixed(2)} km</li>
+                              <li>Single rep duration mapped: {calcResult.singleRepDistanceKm.toFixed(2)} km × {pSec}s/km = {formatSecondsToTimeString(calcResult.singleRepDurationSeconds)}</li>
+                              <li>Total work duration: {calcResult.reps} × {formatSecondsToTimeString(calcResult.singleRepDurationSeconds)} = {formatSecondsToTimeString(calcResult.workTime)}</li>
+                              <li>Active work distance: {calcResult.reps} × {calcResult.singleRepDistanceKm.toFixed(2)} km = {(calcResult.workDist/1000).toFixed(2)} km</li>
+                            </>
+                          )}
+                          {calcResult.calculationMode === "continuous" && (
+                            <>
+                              <li>Continuous duration defined in template: {formatSecondsToTimeString(calcResult.singleRepDurationSeconds)}</li>
+                              <li>Mapped continuous distance: {calcResult.singleRepDurationSeconds}s / {pSec}s/km = {calcResult.singleRepDistanceKm.toFixed(2)} km</li>
+                            </>
+                          )}
+                          {calcResult.calculationMode === "continuous_distance" && (
+                            <>
+                              <li>Continuous distance defined in template: {calcResult.singleRepDistanceKm.toFixed(2)} km</li>
+                              <li>Mapped continuous duration: {calcResult.singleRepDistanceKm.toFixed(2)} km × {pSec}s/km = {formatSecondsToTimeString(calcResult.singleRepDurationSeconds)}</li>
+                            </>
+                          )}
+                          {calcResult.reps > 1 && (
+                            <li>
+                              Rest duration: {calcResult.reps - 1} recoveries × {
+                                calcResult.isRange 
+                                  ? `${formatSecondsToTimeString(calcResult.restTimeMin / (calcResult.reps - 1))}–${formatSecondsToTimeString(calcResult.restTimeMax / (calcResult.reps - 1))}`
+                                  : formatSecondsToTimeString(calcResult.restTimeMin / (calcResult.reps - 1))
+                              } = {
+                                calcResult.isRange
+                                  ? `${formatSecondsToTimeString(calcResult.restTimeMin)}–${formatSecondsToTimeString(calcResult.restTimeMax)}`
+                                  : formatSecondsToTimeString(calcResult.restTimeMin)
+                              }
+                            </li>
+                          )}
+                          <li>Warmup stage: {warmupInput} min ({parseFloat(warmupInput) * 60} seconds)</li>
+                          <li>Cooldown stage: {cooldownInput} min ({parseFloat(cooldownInput) * 60} seconds)</li>
+                          <li className="font-bold text-foreground">
+                            Session Total Time: {
+                              calcResult.isRange 
+                                ? `${formatSecondsToTimeString(calcResult.totalTimeMin)}–${formatSecondsToTimeString(calcResult.totalTimeMax)}`
+                                : formatSecondsToTimeString(calcResult.totalTimeMin)
+                            }
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      {parseFloat(weeklyMileageInput) > 0 && (
+                        <div>
+                          <strong className="text-foreground uppercase text-[8px] font-sans block mb-1">Mileage Context Info:</strong>
+                          <p>
+                            Weekly mileage input: {weeklyMileageInput} km. Active run represents <span className="font-bold">
+                              {((calcResult.workDist / 1000) / parseFloat(weeklyMileageInput) * 100).toFixed(1)}%
+                            </span> of weekly volume.
+                          </p>
+                        </div>
+                      )}
+
                       <p><strong className="text-foreground uppercase text-[8px] font-sans block">Axioms &amp; Limitations:</strong> Mathematical projections. Does not represent environmental wind friction resistance, gradient changes, or biomechanical stride variations.</p>
                       <p><strong className="text-foreground uppercase text-[8px] font-sans block">Confidence label:</strong> Estimate</p>
                     </div>
@@ -634,10 +737,18 @@ export default function WorkoutLibraryPage() {
                   </div>
                 </div>
               ) : (
-                <div className="p-12 border-2 border-dashed border-border-heavy rounded-xl text-center bg-card flex flex-col items-center justify-center min-h-[300px]">
-                  <SlidersHorizontal className="w-12 h-12 text-muted-foreground stroke-1 mb-3" />
-                  <span className="font-bold text-xs uppercase tracking-widest text-muted-foreground">Waiting for valid inputs</span>
-                  <p className="text-[11px] text-zinc-500 max-w-xs mt-1 leading-normal">Provide a valid rep cadence pace (e.g. 5:00) to trace total duration sums inside the deterministic formula engine.</p>
+                <div className="p-12 border-2 border-dashed border-border-heavy rounded-xl text-center bg-card flex flex-col items-center justify-center min-h-[300px] space-y-3">
+                  <ShieldAlert className="w-12 h-12 text-destructive stroke-1" />
+                  <span className="font-bold text-sm uppercase tracking-widest text-destructive">Need structured workout inputs</span>
+                  <p className="text-[11px] text-muted-foreground max-w-sm leading-normal">
+                    Static template detected. Open in Workout Lab or enter exact reps, duration/distance, target pace, and recovery to calculate.
+                  </p>
+                  <Link 
+                    href={`/workout?template=${selectedTemplate.id}&warmup=${warmupInput}&cooldown=${cooldownInput}`}
+                    className="px-4 py-2 bg-primary text-primary-foreground border-2 border-border-heavy rounded-lg text-xs font-bold uppercase text-center shadow-[1.5px_1.5px_0px_rgba(23,23,23,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2 inline" /> Open in Workout Lab
+                  </Link>
                 </div>
               )}
             </div>
@@ -670,20 +781,27 @@ export default function WorkoutLibraryPage() {
                     <span className="text-primary uppercase">{comparisonData.templateB.name}</span>
                   </div>
 
-                  <div className="space-y-2 pt-2">
-                    <div className="p-3 bg-muted border rounded">
-                      <span>DURATION DELTA</span>
-                      <div className="text-sm font-black text-zinc-850 mt-1">
-                        {comparisonData.deltaDuration === 0 ? 'Equal Session Times' : `${formatSecondsToTimeString(Math.abs(comparisonData.deltaDuration))} ${comparisonData.deltaDuration < 0 ? 'shorter A' : 'shorter B'}`}
+                  {!comparisonData.canCompare ? (
+                    <div className="p-4 border-2 border-dashed border-red-200 text-red-600 bg-red-50 text-center rounded">
+                      <span className="font-bold block uppercase text-xs">Cannot calculate comparison</span>
+                      <p className="text-[10px] text-zinc-550 mt-1">One or both templates are qualitative/static and cannot be computed.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 pt-2">
+                      <div className="p-3 bg-muted border rounded">
+                        <span>DURATION DELTA</span>
+                        <div className="text-sm font-black text-zinc-850 mt-1">
+                          {comparisonData.deltaDuration === 0 ? 'Equal Session Times' : `${formatSecondsToTimeString(Math.abs(comparisonData.deltaDuration!))} ${comparisonData.deltaDuration! < 0 ? 'shorter A' : 'shorter B'}`}
+                        </div>
+                      </div>
+                      <div className="p-3 bg-muted border rounded">
+                        <span>DISTANCE DELTA</span>
+                        <div className="text-sm font-black text-zinc-850 mt-1">
+                          {comparisonData.deltaDistanceKm === 0 ? 'Equal Paced Volume' : `${Math.abs(comparisonData.deltaDistanceKm!).toFixed(2)} km ${comparisonData.deltaDistanceKm! < 0 ? 'smaller in A' : 'smaller in B'}`}
+                        </div>
                       </div>
                     </div>
-                    <div className="p-3 bg-muted border rounded">
-                      <span>DISTANCE DELTA</span>
-                      <div className="text-sm font-black text-zinc-850 mt-1">
-                        {comparisonData.deltaDistanceKm === 0 ? 'Equal Paced Volume' : `${Math.abs(comparisonData.deltaDistanceKm).toFixed(2)} km ${comparisonData.deltaDistanceKm < 0 ? 'smaller in A' : 'smaller in B'}`}
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </Card>
 
