@@ -699,7 +699,7 @@ export default function CalendarLabPage() {
               <div className="p-4 bg-zinc-50 border border-zinc-200 rounded text-[10px] font-mono leading-relaxed space-y-3">
                 <p><strong className="text-foreground uppercase text-[8px] font-sans block">Trace methods:</strong> Weekly schedule aggregator and Acute Hard sequencing checkers.</p>
                 <p><strong className="text-foreground uppercase text-[8px] font-sans block">Axioms &amp; Limitations:</strong> Calculations focus entirely on typed calendar durations. Individual physical regeneration rates shift heavily on sleep parameters, age, and genetics.</p>
-                <p><strong className="text-foreground uppercase text-[8px] font-sans block">Confidence label:</strong> Rule-based heuristic coaching model</p>
+                <p><strong className="text-foreground uppercase text-[8px] font-sans block">Confidence label:</strong> Rule-based heuristic structural model</p>
               </div>
 
               {/* Export Panel Block */}

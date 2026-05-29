@@ -733,7 +733,7 @@ Safety Caveats:
                               <p>• <span className="font-bold">Thermal Stress:</span> Classified as <span className="font-bold">{res.heatStressLabel}</span> with calculated heat index of <span className="font-bold">{res.heatIndex.toFixed(1)}°C</span> and dew point of <span className="font-bold">{res.dewPoint.toFixed(1)}°C</span>.</p>
                               <p>• <span className="font-bold">Hypoxic Reduction:</span> Effective altitude reduces steady-state aerobic limits by roughly <span className="font-bold">{res.altVO2.vo2ReductionPct.toFixed(1)}%</span>.</p>
                               <p>• <span className="font-bold">Aerodynamics:</span> Wind is running <span className="font-bold">{windSpeed} km/h ({windDirection})</span>. {res.windEffect}</p>
-                              <p>• <span className="font-bold">Respiration:</span> AI/AQI rating of <span className="font-bold">{aqi} ({res.aqiCategory})</span>. {res.aqiCaution}</p>
+                              <p>• <span className="font-bold">Respiration:</span> AQI rating of <span className="font-bold">{aqi} ({res.aqiCategory})</span>. {res.aqiCaution}</p>
                               <p>• <span className="font-bold">Ground Mechanics:</span> Ground is classified as <span className="font-bold capitalize">{surfaceType}</span>. {res.surfaceEffort}</p>
                             </div>
                           </div>
