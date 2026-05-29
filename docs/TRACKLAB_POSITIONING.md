@@ -1,0 +1,3 @@
+# Track.Lab Permanent Positioning
+
+Track.Lab is a formula-based running calculator suite that helps runners calculate training and racing needs transparently, practically, and deterministically through manual input. Track.Lab is not an AI coach, not an automatic coaching app, not a training database, and not a gimmick dashboard; every result comes from clear formulas, traceable methods, and data entered directly by the user. Track.Lab exists as a lightweight sport-science calculation tool with permanent principles: manual input only, formula shown, no AI, no database, no stored data, no fake metrics, and no gimmick.

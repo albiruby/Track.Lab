@@ -26,7 +26,7 @@ export default function QuickLabHomepage() {
   const [activeCategory, setActiveCategory] = useState('All');
 
   const filteredRoutes = useMemo(() => {
-    // We only display the 26 actual calculator page modules on the homepage launcher, excluding Home itself ('/')
+    // We only display all 27 modules on the homepage launcher, excluding Home itself ('/')
     return LAB_ROUTES.filter(route => route.href !== '/').filter(route => {
       const matchesSearch = 
         route.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -90,7 +90,7 @@ export default function QuickLabHomepage() {
             No Storage Policy Enforced
           </h4>
           <p className="text-[11px] text-amber-700 font-semibold">
-            All calculation metrics entered are held purely in local state memory. No cookies, no trackers, no backend storage, and no cloud synchronization. Your data never leaves this page session. Export your metrics manually before closing.
+            All calculation metrics entered are held purely in temporary in-browser state during the active session. No cookies, no trackers, no backend storage, and no cloud synchronization. Your data never leaves this page session. Export your metrics manually before closing.
           </p>
         </div>
         <div className="shrink-0">

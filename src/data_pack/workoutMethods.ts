@@ -308,7 +308,7 @@ export const workoutMethods = [
     "requiredInputs": ["templateA", "templateB"],
     "formulaDisplay": "Calculated Volume Difference & Intensity delta",
     "precision": "mathematical",
-    "limitations": ["Limited to comparing generic template designs without active athlete profile variables or previous logs."],
+    "limitations": ["Limited to comparing generic template designs without active athlete profile variables or previous training metrics."],
     "confidenceLabel": "structural comparison",
     "implementationStatus": "implemented"
   },

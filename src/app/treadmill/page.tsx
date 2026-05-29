@@ -560,7 +560,7 @@ export default function TreadmillLab() {
                   <ul className="text-xs space-y-1 text-foreground list-disc list-inside">
                     <li><span className="font-bold text-primary">Cross-Link:</span> Map these ACSM oxygen demands to aerobic estimates inside our <a href="/vo2" className="font-bold underline text-primary">VO₂ Lab Page</a>.</li>
                     <li>Utilize treadmill segment calories inside our holistic <a href="/fuel" className="font-bold underline text-primary">Fuel Lab</a> hydration charts.</li>
-                    <li>Port your manual calibration indices to the official calibration protocol checklist in local training logs.</li>
+                    <li>Port your manual calibration indices to the official calibration protocol checklist in your manual training records.</li>
                   </ul>
                 </div>
               </CardContent>

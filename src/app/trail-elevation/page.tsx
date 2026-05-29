@@ -611,7 +611,7 @@ export default function TrailElevationLab() {
                   <div className="text-xs uppercase tracking-wider font-extrabold text-muted-foreground mb-2">Cross-Module Integration References:</div>
                   <ul className="text-xs space-y-1 text-foreground list-disc list-inside">
                     <li><span className="font-bold text-primary">Cross-Link:</span> Map these grade slope scenarios to adjusted running paces in our <a href="/pace" className="font-bold underline text-primary">Pace Lab</a>.</li>
-                    <li>Port hill repeat volumes directly to structural workout logs in our <a href="/workout" className="font-bold underline text-primary">Workout Lab Page</a>.</li>
+                    <li>Port hill repeat volumes directly to structural workout records in our <a href="/workout" className="font-bold underline text-primary">Workout Lab Page</a>.</li>
                     <li>Incorporate elevation climb sums into your training stress calculations inside our <a href="/load" className="font-bold underline text-primary">Load Lab</a>.</li>
                   </ul>
                 </div>
