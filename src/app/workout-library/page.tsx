@@ -119,6 +119,8 @@ export default function WorkoutLibraryPage() {
     return workoutTemplates.find(t => t.id === selectedTemplateId);
   }, [selectedTemplateId]);
 
+  const [displayLimit, setDisplayLimit] = useState(24);
+
   // Compute uniquely occurring categories
   const uniqueIntensities = useMemo(() => {
     const list = new Set<string>();
@@ -162,6 +164,10 @@ export default function WorkoutLibraryPage() {
       return matchesSearch && matchesGoal && matchesScenario && matchesFormat && matchesIntensity;
     });
   }, [searchQuery, goalFilter, scenarioFilter, formatFilter, intensityFilter]);
+
+  const visibleTemplates = useMemo(() => {
+    return filteredTemplates.slice(0, displayLimit);
+  }, [filteredTemplates, displayLimit]);
 
   // Single Template Projection
   const calcResult = useMemo(() => {
@@ -298,7 +304,7 @@ export default function WorkoutLibraryPage() {
                   type="text" 
                   placeholder="e.g. recovery, threshold..." 
                   value={searchQuery} 
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={e => { setSearchQuery(e.target.value); setDisplayLimit(24); }}
                   className="pl-10"
                 />
                 <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-muted-foreground" />
@@ -308,7 +314,7 @@ export default function WorkoutLibraryPage() {
             {/* Target Distance Goal */}
             <div className="space-y-1">
               <Label>Goal Distance tag</Label>
-              <Select value={goalFilter} onChange={e => setGoalFilter(e.target.value)}>
+              <Select value={goalFilter} onChange={e => { setGoalFilter(e.target.value); setDisplayLimit(24); }}>
                 <option value="all">All Goal Distances</option>
                 {uniqueGoals.map(g => (
                   <option key={g} value={g}>{g.replace('_', ' ').toUpperCase()}</option>
@@ -319,7 +325,7 @@ export default function WorkoutLibraryPage() {
             {/* Scenario Type */}
             <div className="space-y-1">
               <Label>System Scenario</Label>
-              <Select value={scenarioFilter} onChange={e => setScenarioFilter(e.target.value)}>
+              <Select value={scenarioFilter} onChange={e => { setScenarioFilter(e.target.value); setDisplayLimit(24); }}>
                 <option value="all">All Scenarios</option>
                 {uniqueScenarios.map(s => (
                   <option key={s} value={s}>{s.replace('_', ' ').toUpperCase()}</option>
@@ -330,7 +336,7 @@ export default function WorkoutLibraryPage() {
             {/* Format (e.g. time vs distance) */}
             <div className="space-y-1">
               <Label>Structural format</Label>
-              <Select value={formatFilter} onChange={e => setFormatFilter(e.target.value)}>
+              <Select value={formatFilter} onChange={e => { setFormatFilter(e.target.value); setDisplayLimit(24); }}>
                 <option value="all">All Formats</option>
                 {uniqueFormats.map(f => (
                   <option key={f} value={f}>{f.replace('_', ' ').toUpperCase()}</option>
@@ -341,7 +347,7 @@ export default function WorkoutLibraryPage() {
             {/* Intensity Target (Z1, Threshold, etc.) */}
             <div className="space-y-1">
               <Label>Intensity Target</Label>
-              <Select value={intensityFilter} onChange={e => setIntensityFilter(e.target.value)}>
+              <Select value={intensityFilter} onChange={e => { setIntensityFilter(e.target.value); setDisplayLimit(24); }}>
                 <option value="all">All Intensities</option>
                 {uniqueIntensities.map(i => (
                   <option key={i} value={i}>{i.toUpperCase()}</option>
@@ -378,16 +384,16 @@ export default function WorkoutLibraryPage() {
           {/* TEMPLATES LIST COLUMN */}
           <div className="lg:col-span-8 space-y-4">
             <div className="flex justify-between items-center px-2">
-              <span className="text-[11px] font-mono font-bold text-muted-foreground uppercase tracking-widest">
-                Showing {filteredTemplates.length} of {workoutTemplates.length} Static Protocols
+              <span className="text-[11px] font-mono font-black text-muted-foreground uppercase tracking-widest">
+                Showing {filteredTemplates.length} of {workoutTemplates.length} static templates
               </span>
-              <span className="px-2.5 py-1 bg-neutral-100 border border-border text-[9px] font-bold text-zinc-550 rounded-full">
-                🔐 NO DATABASE NO AI REGISTER
+              <span className="px-2.5 py-1 bg-neutral-100 border-2 border-border text-[9px] font-bold text-zinc-650 rounded-full">
+                🔐 REGISTRY METHOD SPECIFICATION
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredTemplates.map(template => {
+              {visibleTemplates.map(template => {
                 const isDistanceReps = 'mainSet' in template && template.mainSet && 'reps' in (template.mainSet as any);
                 return (
                   <motion.div 
@@ -397,8 +403,8 @@ export default function WorkoutLibraryPage() {
                   >
                     <div className="bg-muted p-4 border-b-2 border-border-heavy flex justify-between items-start gap-2">
                       <div>
-                        <h4 className="font-display font-black text-sm uppercase text-zinc-800 leading-tight">{template.name}</h4>
-                        <span className="text-[9px] font-mono font-bold uppercase text-primary tracking-widest bg-white border px-1.5 py-0.5 rounded block mt-1.5 w-max">
+                        <h4 className="font-display font-black text-sm uppercase text-foreground leading-tight">{template.name}</h4>
+                        <span className="text-[9px] font-mono font-bold uppercase text-primary-foreground bg-primary border px-1.5 py-0.5 rounded block mt-1.5 w-max">
                           {('difficulty' in template ? template.difficulty.replace('_', ' ') : 'Easy')} LEVEL
                         </span>
                       </div>
@@ -421,7 +427,7 @@ export default function WorkoutLibraryPage() {
                         ) : (
                           <div className="text-muted-foreground text-xs italic">Structured custom protocol outlines.</div>
                         )}
-                        <p className="text-[10px] text-zinc-550 leading-normal">
+                        <p className="text-[10px] text-muted-foreground font-semibold leading-normal">
                           Goal Scenarios: {('goalDistances' in template ? (template.goalDistances as unknown as string[]).map(g => g.replace('_', ' ')).join(', ') : 'any')}
                         </p>
                       </div>
@@ -430,9 +436,9 @@ export default function WorkoutLibraryPage() {
                         <Button
                           variant="outline"
                           onClick={() => setSelectedTemplateId(template.id)}
-                          className="w-full text-xs font-extrabold h-10 border-2"
+                          className="w-full text-xs font-black h-10 border-2"
                         >
-                          OPEN CALCS
+                          Use Template
                         </Button>
                       </div>
                     </div>
@@ -445,6 +451,18 @@ export default function WorkoutLibraryPage() {
                 </div>
               )}
             </div>
+
+            {filteredTemplates.length > displayLimit && (
+              <div className="flex justify-center pt-4">
+                <Button 
+                  onClick={() => setDisplayLimit(prev => prev + 24)}
+                  variant="outline"
+                  className="px-8 border-2 font-black uppercase text-xs"
+                >
+                  Load More Templates ({filteredTemplates.length - displayLimit} remaining)
+                </Button>
+              </div>
+            )}
           </div>
 
         </div>

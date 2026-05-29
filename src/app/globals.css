@@ -21,7 +21,7 @@
   --color-secondary-foreground: #111111;
   
   --color-muted: #DDD5C7;
-  --color-muted-foreground: #2C2C2C;
+  --color-muted-foreground: #5E584E;
   
   --color-accent: #161616;
   --color-accent-foreground: #FFFFFF;
@@ -38,6 +38,44 @@
   --radius-lg: 1rem;
   --radius-md: 0.75rem;
   --radius-sm: 0.5rem;
+}
+
+@layer utilities {
+  .text-on-light {
+    color: #111111;
+  }
+  .text-on-dark {
+    color: #F3F0E8;
+  }
+  .text-muted-on-light {
+    color: #5E584E;
+  }
+  .text-muted-on-dark {
+    color: #AAA392;
+  }
+  .bg-dark-panel {
+    background-color: #161616;
+    color: #FFFFFF;
+  }
+  .bg-light-panel {
+    background-color: #F3F0E8;
+    color: #111111;
+  }
+  .bg-accent-yellow {
+    background-color: #F2C300;
+    color: #111111;
+  }
+
+  /* Typography System */
+  .tl-display {
+    @apply font-display font-bold uppercase tracking-tight;
+  }
+  .tl-page-title {
+    @apply font-display font-black uppercase text-3xl md:text-5xl leading-tight pb-1 pt-1;
+  }
+  .tl-page-subtitle {
+    @apply text-xs md:text-sm font-medium leading-relaxed text-muted-foreground;
+  }
 }
 
 @layer base {
