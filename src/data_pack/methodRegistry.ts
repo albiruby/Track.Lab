@@ -1995,7 +1995,9 @@ const phase8Methods = [
   }
 ];
 
-export const methodRegistry = [
+import { getAdaptedMethodRegistry } from "./jsonAdapters";
+
+export const methodRegistry = getAdaptedMethodRegistry([
   ...staticRegistry,
   ...workoutMethods,
   ...calendarMethods,
@@ -2003,5 +2005,5 @@ export const methodRegistry = [
   ...recoveryRuleDefinitions,
   ...raceDayMethodDefinitions,
   ...conversionOptionsList
-] as any[];
+]) as any[];
 

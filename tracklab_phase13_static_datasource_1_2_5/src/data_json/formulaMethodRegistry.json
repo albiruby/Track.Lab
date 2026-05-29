@@ -1,0 +1,2574 @@
+{
+  "schemaVersion": "tracklab_formula_method_registry_v1.0",
+  "generatedDate": "2026-05-29",
+  "positioning": "Manual-input, transparent formula/method metadata registry for Track.Lab. No AI coach, no hidden model, no fake metrics, no database dependency.",
+  "count": 110,
+  "methods": [
+    {
+      "methodId": "mtd_001",
+      "methodName": "Pace from Distance and Time",
+      "category": "Pace & Speed",
+      "route": "/pace",
+      "formulaDisplay": "pace = time / distance",
+      "requiredInputs": [
+        "distance",
+        "time"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "sec/km",
+        "min/km",
+        "sec/mi",
+        "min/mi"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires accurate distance and elapsed/moving time choice.",
+      "sourceNote": "Core arithmetic conversion used by running calculators.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Calculator",
+        "Race Split Calculator",
+        "Workout Structure Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_002",
+      "methodName": "Speed from Distance and Time",
+      "category": "Pace & Speed",
+      "route": "/pace",
+      "formulaDisplay": "speed = distance / time",
+      "requiredInputs": [
+        "distance",
+        "time"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/s",
+        "km/h",
+        "mph"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Output depends on distance/time accuracy and unit consistency.",
+      "sourceNote": "Core arithmetic conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Calculator",
+        "Speed Converter",
+        "Treadmill Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_003",
+      "methodName": "Time from Distance and Pace",
+      "category": "Pace & Speed",
+      "route": "/pace",
+      "formulaDisplay": "time = distance × pace",
+      "requiredInputs": [
+        "distance",
+        "pace"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Assumes pace remains constant across the full distance.",
+      "sourceNote": "Core arithmetic conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Calculator",
+        "Race Planner",
+        "Workout Rep Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_004",
+      "methodName": "Distance from Time and Pace",
+      "category": "Pace & Speed",
+      "route": "/pace",
+      "formulaDisplay": "distance = time / pace",
+      "requiredInputs": [
+        "time",
+        "pace"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "km",
+        "miles",
+        "m"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Assumes constant pace and no pauses unless user includes elapsed time.",
+      "sourceNote": "Core arithmetic conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Calculator",
+        "Workout Duration Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_005",
+      "methodName": "Pace Unit Conversion",
+      "category": "Pace & Speed",
+      "route": "/pace",
+      "formulaDisplay": "pace_sec_per_mile = pace_sec_per_km × 1.609344",
+      "requiredInputs": [
+        "pace"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "sec/km",
+        "sec/mi",
+        "min/km",
+        "min/mi"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Conversion is exact only if input pace is exact.",
+      "sourceNote": "Standard unit conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Calculator",
+        "Unit Converter"
+      ]
+    },
+    {
+      "methodId": "mtd_006",
+      "methodName": "Speed Unit Conversion",
+      "category": "Pace & Speed",
+      "route": "/pace",
+      "formulaDisplay": "km/h = m/s × 3.6; mph = km/h / 1.609344",
+      "requiredInputs": [
+        "speed"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/s",
+        "km/h",
+        "mph"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Conversion is exact, but source speed may be measured with error.",
+      "sourceNote": "Standard unit conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Speed Converter",
+        "Treadmill Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_007",
+      "methodName": "Average Pace from Splits",
+      "category": "Pace & Speed",
+      "route": "/pace",
+      "formulaDisplay": "averagePace = sum(splitTimes) / sum(splitDistances)",
+      "requiredInputs": [
+        "splitDistances",
+        "splitTimes"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "sec/km",
+        "sec/mi"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires all split distances and times to be complete and consistent.",
+      "sourceNote": "Weighted average arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Split Calculator",
+        "Race Planner",
+        "Workout Analyzer"
+      ]
+    },
+    {
+      "methodId": "mtd_008",
+      "methodName": "Even Split Table",
+      "category": "Pace & Speed",
+      "route": "/race",
+      "formulaDisplay": "splitTime = targetFinishTime × splitDistance / raceDistance",
+      "requiredInputs": [
+        "targetFinishTime",
+        "raceDistance",
+        "splitDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time",
+        "pace"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Assumes perfectly even pacing; does not account for terrain or fatigue.",
+      "sourceNote": "Core race split arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Planner",
+        "Pace Band",
+        "Split Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_009",
+      "methodName": "Negative Split Planner",
+      "category": "Pace & Speed",
+      "route": "/race",
+      "formulaDisplay": "secondHalfPace = targetAveragePace × adjustmentFactor; firstHalf derived from total target time",
+      "requiredInputs": [
+        "targetDistance",
+        "targetFinishTime",
+        "negativeSplitPercent"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "splitTime",
+        "pace"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Planning tool only; not a guarantee of race execution.",
+      "sourceNote": "Deterministic race pacing model.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Planner",
+        "Pace Band"
+      ]
+    },
+    {
+      "methodId": "mtd_010",
+      "methodName": "Positive Split / Fade Percent",
+      "category": "Pace Analysis",
+      "route": "/race",
+      "formulaDisplay": "fade% = (latePace - earlyPace) / earlyPace × 100",
+      "requiredInputs": [
+        "earlySegmentPace",
+        "lateSegmentPace"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Interpretation depends on comparable segment length and terrain.",
+      "sourceNote": "Simple pacing analysis metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Analyzer",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_011",
+      "methodName": "Split Deviation Percent",
+      "category": "Pace Analysis",
+      "route": "/race",
+      "formulaDisplay": "deviation% = standardDeviation(splitPaces) / averagePace × 100",
+      "requiredInputs": [
+        "splitPaces"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires consistent split lengths for clean interpretation.",
+      "sourceNote": "Statistical split consistency metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Analyzer",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_012",
+      "methodName": "Elapsed vs Moving Pace Comparison",
+      "category": "Pace Analysis",
+      "route": "/pace",
+      "formulaDisplay": "elapsedPace = elapsedTime / distance; movingPace = movingTime / distance",
+      "requiredInputs": [
+        "distance",
+        "elapsedTime",
+        "movingTime"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "sec/km",
+        "sec/mi",
+        "percentDifference"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "GPS auto-pause settings can distort moving-time comparisons.",
+      "sourceNote": "Core activity analysis arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Calculator",
+        "Activity Review"
+      ]
+    },
+    {
+      "methodId": "mtd_013",
+      "methodName": "Riegel Race Prediction",
+      "category": "Race Prediction",
+      "route": "/race",
+      "formulaDisplay": "T2 = T1 × (D2 / D1)^exponent",
+      "requiredInputs": [
+        "knownDistance",
+        "knownTime",
+        "targetDistance",
+        "exponent"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time",
+        "pace"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Accuracy decreases when target distance is very different from known race distance or when athlete endurance profile differs from exponent.",
+      "sourceNote": "Common endurance race prediction model; exponent should be user-visible and editable.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Predictor",
+        "Pace Calculator",
+        "Formula Library"
+      ]
+    },
+    {
+      "methodId": "mtd_014",
+      "methodName": "Age-Grading Style Relative Performance Placeholder",
+      "category": "Race Analysis",
+      "route": "/race",
+      "formulaDisplay": "relativePerformance = userResult / referenceResult × 100 or inverse depending table design",
+      "requiredInputs": [
+        "userResult",
+        "referenceTableValue"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Requires Source Table",
+      "limitation": "Requires a valid external reference table; Track.Lab should not fabricate tables.",
+      "sourceNote": "Metadata placeholder only; do not implement without verified table data.",
+      "implementationStatus": "plannedNeedsVerifiedTable",
+      "relatedModules": [
+        "Race Analyzer"
+      ]
+    },
+    {
+      "methodId": "mtd_015",
+      "methodName": "Target Race Pace from Goal Time",
+      "category": "Race Planning",
+      "route": "/race",
+      "formulaDisplay": "targetPace = goalTime / raceDistance",
+      "requiredInputs": [
+        "goalTime",
+        "raceDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "pace",
+        "splitTimes"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Goal may be unrealistic; this only calculates the required pace.",
+      "sourceNote": "Core race planning arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Planner",
+        "Pace Band"
+      ]
+    },
+    {
+      "methodId": "mtd_016",
+      "methodName": "Race Time from Target Pace",
+      "category": "Race Planning",
+      "route": "/race",
+      "formulaDisplay": "finishTime = targetPace × raceDistance",
+      "requiredInputs": [
+        "targetPace",
+        "raceDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Assumes constant target pace.",
+      "sourceNote": "Core race planning arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Planner",
+        "Pace Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_017",
+      "methodName": "Equivalent Race Pace from Manual PB",
+      "category": "Race Prediction",
+      "route": "/race",
+      "formulaDisplay": "targetTime = knownTime × (targetDistance / knownDistance)^exponent",
+      "requiredInputs": [
+        "knownRaceDistance",
+        "knownRaceTime",
+        "targetRaceDistance",
+        "exponent"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time",
+        "pace"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Equivalent performance is model-based and not a guarantee.",
+      "sourceNote": "Riegel-style prediction using manual PB input only.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Predictor",
+        "Training Pace Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_018",
+      "methodName": "Race Split by Kilometer",
+      "category": "Race Planning",
+      "route": "/race",
+      "formulaDisplay": "split_k = targetPacePerKm × k",
+      "requiredInputs": [
+        "targetPacePerKm",
+        "raceDistanceKm"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "cumulativeTime",
+        "splitTime"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Flat/even split only; terrain and pacing strategy not included.",
+      "sourceNote": "Core split table calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Band",
+        "Race Planner"
+      ]
+    },
+    {
+      "methodId": "mtd_019",
+      "methodName": "Race Split by Mile",
+      "category": "Race Planning",
+      "route": "/race",
+      "formulaDisplay": "split_mile = targetPacePerMile × mileNumber",
+      "requiredInputs": [
+        "targetPacePerMile",
+        "raceDistanceMiles"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "cumulativeTime",
+        "splitTime"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Flat/even split only; race course variation not included.",
+      "sourceNote": "Core split table calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Pace Band",
+        "Race Planner"
+      ]
+    },
+    {
+      "methodId": "mtd_020",
+      "methodName": "Race Cutoff Pace",
+      "category": "Race Planning",
+      "route": "/race",
+      "formulaDisplay": "requiredPace = cutoffTime / raceDistance",
+      "requiredInputs": [
+        "cutoffTime",
+        "raceDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "pace",
+        "speed"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Does not include aid station time unless user manually includes it.",
+      "sourceNote": "Core race logistics calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Race Planner",
+        "Ultra Planner"
+      ]
+    },
+    {
+      "methodId": "mtd_021",
+      "methodName": "Percent HRmax Zone",
+      "category": "Heart Rate Zones",
+      "route": "/zones",
+      "formulaDisplay": "zoneBpm = HRmax × zonePercent",
+      "requiredInputs": [
+        "HRmax",
+        "zonePercentRange"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpmRange"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "HRmax must be measured or manually entered; age-predicted HRmax can be inaccurate.",
+      "sourceNote": "Common HR zone calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Heart Rate Zone Calculator",
+        "Training Zone Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_022",
+      "methodName": "Karvonen Heart Rate Reserve",
+      "category": "Heart Rate Zones",
+      "route": "/zones",
+      "formulaDisplay": "targetHR = restingHR + intensity% × (HRmax - restingHR)",
+      "requiredInputs": [
+        "restingHR",
+        "HRmax",
+        "intensityPercentRange"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpmRange"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Requires reliable resting HR and HRmax; does not guarantee physiological zone boundaries.",
+      "sourceNote": "Common HRR method.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Heart Rate Zone Calculator",
+        "Recovery Check"
+      ]
+    },
+    {
+      "methodId": "mtd_023",
+      "methodName": "LTHR-Based Zone",
+      "category": "Heart Rate Zones",
+      "route": "/zones",
+      "formulaDisplay": "zoneBpm = LTHR × zonePercentRange",
+      "requiredInputs": [
+        "LTHR",
+        "zonePercentRange"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpmRange"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "LTHR must come from a valid field/lab test; heat and fatigue affect HR.",
+      "sourceNote": "Threshold HR zone method using user-entered LTHR.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Heart Rate Zone Calculator",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_024",
+      "methodName": "HR Reserve",
+      "category": "Heart Rate",
+      "route": "/zones",
+      "formulaDisplay": "HRR = HRmax - restingHR",
+      "requiredInputs": [
+        "HRmax",
+        "restingHR"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpm"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Only meaningful if HRmax and resting HR are reliable.",
+      "sourceNote": "Core HR arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Heart Rate Zone Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_025",
+      "methodName": "Percent HRmax from Current HR",
+      "category": "Heart Rate",
+      "route": "/recovery",
+      "formulaDisplay": "percentHRmax = currentHR / HRmax × 100",
+      "requiredInputs": [
+        "currentHR",
+        "HRmax"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires accurate HRmax and current HR measurement.",
+      "sourceNote": "Core HR arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Heart Rate Lab",
+        "Recovery Check"
+      ]
+    },
+    {
+      "methodId": "mtd_026",
+      "methodName": "Percent LTHR from Current HR",
+      "category": "Heart Rate",
+      "route": "/zones",
+      "formulaDisplay": "percentLTHR = currentHR / LTHR × 100",
+      "requiredInputs": [
+        "currentHR",
+        "LTHR"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "LTHR field estimate may be inaccurate if test was poorly paced.",
+      "sourceNote": "Core threshold HR arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Heart Rate Lab",
+        "Training Zone Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_027",
+      "methodName": "Resting HR Delta",
+      "category": "Recovery",
+      "route": "/recovery",
+      "formulaDisplay": "deltaRHR = currentRestingHR - baselineRestingHR",
+      "requiredInputs": [
+        "currentRestingHR",
+        "baselineRestingHR"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpm"
+      ],
+      "confidenceLabel": "Trend Metric",
+      "limitation": "Not a diagnosis; affected by sleep, stress, illness, hydration, and measurement method.",
+      "sourceNote": "Simple trend metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Recovery Check",
+        "Heart Rate Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_028",
+      "methodName": "HR Recovery 1-Minute",
+      "category": "Recovery",
+      "route": "/field-tests",
+      "formulaDisplay": "HRR_1min = peakHR - HR_after_1min",
+      "requiredInputs": [
+        "peakHR",
+        "HR_after_1min"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpm"
+      ],
+      "confidenceLabel": "Field Metric",
+      "limitation": "Not medical diagnosis; compare only under similar effort and recovery mode.",
+      "sourceNote": "Field recovery metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Recovery Check"
+      ]
+    },
+    {
+      "methodId": "mtd_029",
+      "methodName": "HR Recovery 2-Minute",
+      "category": "Recovery",
+      "route": "/field-tests",
+      "formulaDisplay": "HRR_2min = peakHR - HR_after_2min",
+      "requiredInputs": [
+        "peakHR",
+        "HR_after_2min"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpm"
+      ],
+      "confidenceLabel": "Field Metric",
+      "limitation": "Affected by recovery posture, heat, effort, and sensor accuracy.",
+      "sourceNote": "Field recovery metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Recovery Check"
+      ]
+    },
+    {
+      "methodId": "mtd_030",
+      "methodName": "HR Drift Percent",
+      "category": "Aerobic Drift",
+      "route": "/field-tests",
+      "formulaDisplay": "HRDrift% = (secondHalfHR - firstHalfHR) / firstHalfHR × 100",
+      "requiredInputs": [
+        "firstHalfHR",
+        "secondHalfHR"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Field Metric",
+      "limitation": "Weak if pace, terrain, heat, hydration, or sensor quality changes.",
+      "sourceNote": "Simple drift metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Easy Run Drift Test"
+      ]
+    },
+    {
+      "methodId": "mtd_031",
+      "methodName": "Cooper 12-Minute VO2max Estimate",
+      "category": "Field Test",
+      "route": "/field-tests",
+      "formulaDisplay": "VO2max = (distance_m - 504.9) / 44.73",
+      "requiredInputs": [
+        "distance_12min_m"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "ml/kg/min"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Field estimate only; affected by pacing, weather, surface, motivation, and measurement accuracy.",
+      "sourceNote": "Cooper 12-minute field test equation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "VO2 Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_032",
+      "methodName": "12-Minute Test Average Speed",
+      "category": "Field Test",
+      "route": "/field-tests",
+      "formulaDisplay": "speed = distance_12min_m / 720",
+      "requiredInputs": [
+        "distance_12min_m"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/s",
+        "km/h",
+        "pace"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Exact from entered distance, but distance may have measurement error.",
+      "sourceNote": "Core arithmetic for Cooper protocol.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Pace Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_033",
+      "methodName": "20-Minute Threshold Pace Estimate",
+      "category": "Field Test",
+      "route": "/field-tests",
+      "formulaDisplay": "thresholdPace = 1200 / (distance_20min_m / 1000)",
+      "requiredInputs": [
+        "distance_20min_m"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "sec/km",
+        "min/km"
+      ],
+      "confidenceLabel": "Field Estimate",
+      "limitation": "Estimates threshold from field performance; not direct lactate measurement.",
+      "sourceNote": "Common field threshold pace estimation from 20-min hard effort.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Training Pace Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_034",
+      "methodName": "30-Minute LTHR Estimate",
+      "category": "Field Test",
+      "route": "/field-tests",
+      "formulaDisplay": "estimatedLTHR = averageHR_last20min",
+      "requiredInputs": [
+        "averageHR_last20min"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "bpm"
+      ],
+      "confidenceLabel": "Field Estimate",
+      "limitation": "Requires reliable HR data and controlled 30-minute effort.",
+      "sourceNote": "Common field LTHR test convention.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Heart Rate Zone Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_035",
+      "methodName": "Time Trial Pace",
+      "category": "Field Test",
+      "route": "/field-tests",
+      "formulaDisplay": "testPace = finishTime / testDistance",
+      "requiredInputs": [
+        "finishTime",
+        "testDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "pace",
+        "speed"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Exact from input; result quality depends on route accuracy and effort validity.",
+      "sourceNote": "Core field test calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Pace Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_036",
+      "methodName": "Field Test Pacing Stability",
+      "category": "Field Test Quality",
+      "route": "/field-tests",
+      "formulaDisplay": "stability% = abs(firstHalfPace - secondHalfPace) / averagePace × 100",
+      "requiredInputs": [
+        "firstHalfPace",
+        "secondHalfPace",
+        "averagePace"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Quality Check",
+      "limitation": "Only meaningful on comparable halves of the same route/test.",
+      "sourceNote": "Field test quality-control metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Race Analyzer"
+      ]
+    },
+    {
+      "methodId": "mtd_037",
+      "methodName": "Estimated MET from VO2",
+      "category": "Metabolic Estimate",
+      "route": "/field-tests",
+      "formulaDisplay": "MET = VO2_ml_kg_min / 3.5",
+      "requiredInputs": [
+        "VO2_ml_kg_min"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "MET"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "MET is an estimate and not a direct lab measurement when VO2 is estimated.",
+      "sourceNote": "Standard metabolic conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "VO2 Lab",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_038",
+      "methodName": "2-Point Critical Speed",
+      "category": "Critical Speed",
+      "route": "/critical-speed",
+      "formulaDisplay": "CS = (D2 - D1) / (T2 - T1)",
+      "requiredInputs": [
+        "D1",
+        "T1",
+        "D2",
+        "T2"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/s",
+        "km/h",
+        "sec/km"
+      ],
+      "confidenceLabel": "Model Estimate",
+      "limitation": "Unstable if trials are not maximal, too close in duration, or measured poorly.",
+      "sourceNote": "Linear distance-time critical speed model.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_039",
+      "methodName": "2-Point D Prime",
+      "category": "Critical Speed",
+      "route": "/critical-speed",
+      "formulaDisplay": "D′ = D1 - CS × T1",
+      "requiredInputs": [
+        "D1",
+        "T1",
+        "criticalSpeed"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m"
+      ],
+      "confidenceLabel": "Model Estimate",
+      "limitation": "D′ is model-derived and sensitive to trial quality.",
+      "sourceNote": "Critical speed distance-time model.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_040",
+      "methodName": "3-Point Critical Speed Regression",
+      "category": "Critical Speed",
+      "route": "/critical-speed",
+      "formulaDisplay": "distance = CS × time + D′; CS = regression slope",
+      "requiredInputs": [
+        "trialDistances",
+        "trialTimes"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/s",
+        "km/h",
+        "sec/km"
+      ],
+      "confidenceLabel": "Model Estimate",
+      "limitation": "Requires at least three valid maximal trials; outliers must be visible.",
+      "sourceNote": "Linear regression distance-time model.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_041",
+      "methodName": "Critical Pace from Critical Speed",
+      "category": "Critical Speed",
+      "route": "/critical-speed",
+      "formulaDisplay": "criticalPace_sec_per_km = 1000 / CS_m_s",
+      "requiredInputs": [
+        "criticalSpeed_m_s"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "sec/km",
+        "min/km"
+      ],
+      "confidenceLabel": "Model Estimate",
+      "limitation": "Only as valid as the CS estimate.",
+      "sourceNote": "Core speed-to-pace conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Pace Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_042",
+      "methodName": "D Prime Time-to-Exhaustion Above CS",
+      "category": "Critical Speed",
+      "route": "/critical-speed",
+      "formulaDisplay": "TTE = D′ / (targetSpeed - CS)",
+      "requiredInputs": [
+        "DPrime",
+        "targetSpeed",
+        "criticalSpeed"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "seconds"
+      ],
+      "confidenceLabel": "Model Estimate",
+      "limitation": "Only valid when targetSpeed > CS; real-world fatigue is more complex.",
+      "sourceNote": "Critical speed model application.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Workout Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_043",
+      "methodName": "Speed from CS and D′ for Target Duration",
+      "category": "Critical Speed",
+      "route": "/critical-speed",
+      "formulaDisplay": "targetSpeed = CS + D′ / targetDuration",
+      "requiredInputs": [
+        "criticalSpeed",
+        "DPrime",
+        "targetDuration"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/s",
+        "pace"
+      ],
+      "confidenceLabel": "Model Estimate",
+      "limitation": "Model estimate; not a workout prescription.",
+      "sourceNote": "Critical speed model application.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Race Predictor"
+      ]
+    },
+    {
+      "methodId": "mtd_044",
+      "methodName": "CS Model Residual",
+      "category": "Critical Speed Quality",
+      "route": "/critical-speed",
+      "formulaDisplay": "residual = observedDistance - predictedDistance",
+      "requiredInputs": [
+        "observedDistance",
+        "predictedDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m"
+      ],
+      "confidenceLabel": "Quality Check",
+      "limitation": "Used for model fit inspection; not a performance score.",
+      "sourceNote": "Regression quality-control metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_045",
+      "methodName": "CS Regression R-Squared",
+      "category": "Critical Speed Quality",
+      "route": "/critical-speed",
+      "formulaDisplay": "R² = 1 - SSE / SST",
+      "requiredInputs": [
+        "observedDistances",
+        "predictedDistances"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "unitless"
+      ],
+      "confidenceLabel": "Quality Check",
+      "limitation": "High R² does not guarantee physiological validity if trials are poor.",
+      "sourceNote": "Regression fit statistic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_046",
+      "methodName": "Race-Derived Pace Zone Factor",
+      "category": "Training Zones",
+      "route": "/zones",
+      "formulaDisplay": "zonePace = anchorRacePace × factorRange",
+      "requiredInputs": [
+        "anchorRacePace",
+        "factorRange"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "paceRange"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Factor ranges must be transparent and editable; different systems use different ranges.",
+      "sourceNote": "Generic deterministic zone derivation from manual race input.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Training Pace Lab",
+        "Formula Library"
+      ]
+    },
+    {
+      "methodId": "mtd_047",
+      "methodName": "Threshold Pace Zone Factor",
+      "category": "Training Zones",
+      "route": "/zones",
+      "formulaDisplay": "zonePace = thresholdPace × factorRange",
+      "requiredInputs": [
+        "thresholdPace",
+        "factorRange"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "paceRange"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Field threshold pace may be inaccurate; factor model must be disclosed.",
+      "sourceNote": "Generic threshold-based pace zone derivation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Training Pace Lab",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_048",
+      "methodName": "Critical Speed Zone Factor",
+      "category": "Training Zones",
+      "route": "/zones",
+      "formulaDisplay": "zoneSpeed = criticalSpeed × factorRange",
+      "requiredInputs": [
+        "criticalSpeed",
+        "factorRange"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "speedRange",
+        "paceRange"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "CS-derived zones depend on model quality and factor choices.",
+      "sourceNote": "Generic critical-speed zone derivation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Training Pace Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_049",
+      "methodName": "80/20 Time Distribution",
+      "category": "Training Distribution",
+      "route": "/load",
+      "formulaDisplay": "lowIntensityTime = totalTrainingTime × 0.80; highIntensityTime = totalTrainingTime × 0.20",
+      "requiredInputs": [
+        "totalTrainingTime",
+        "distributionPercent"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "minutes",
+        "hours",
+        "percent"
+      ],
+      "confidenceLabel": "Planning Estimate",
+      "limitation": "Distribution target is a planning summary, not an automatic prescription.",
+      "sourceNote": "Training-intensity distribution metadata; percentages must remain user-visible.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab",
+        "Training Distribution"
+      ]
+    },
+    {
+      "methodId": "mtd_050",
+      "methodName": "Polarized Distribution Summary",
+      "category": "Training Distribution",
+      "route": "/load",
+      "formulaDisplay": "zoneShare% = zoneTime / totalTime × 100",
+      "requiredInputs": [
+        "zoneTime",
+        "totalTime"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Interpretation depends on zone model and accurate activity labeling.",
+      "sourceNote": "Time-in-zone arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab",
+        "Training Distribution"
+      ]
+    },
+    {
+      "methodId": "mtd_051",
+      "methodName": "Rep Time from Distance and Pace",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "repTime = repDistance × repPace",
+      "requiredInputs": [
+        "repDistance",
+        "repPace"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Assumes constant rep pace.",
+      "sourceNote": "Core interval calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Workout Library"
+      ]
+    },
+    {
+      "methodId": "mtd_052",
+      "methodName": "Total Work Distance",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "totalWorkDistance = reps × repDistance",
+      "requiredInputs": [
+        "reps",
+        "repDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m",
+        "km"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "For mixed workouts, sum each segment separately.",
+      "sourceNote": "Core interval calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Workout Library"
+      ]
+    },
+    {
+      "methodId": "mtd_053",
+      "methodName": "Total Work Time",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "totalWorkTime = reps × repTime",
+      "requiredInputs": [
+        "reps",
+        "repTime"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "For mixed workouts, use sum of each segment.",
+      "sourceNote": "Core interval calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Workout Library"
+      ]
+    },
+    {
+      "methodId": "mtd_054",
+      "methodName": "Total Rest Time",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "totalRestTime = recoveries × recoveryDuration",
+      "requiredInputs": [
+        "recoveries",
+        "recoveryDuration"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Last recovery may be excluded depending workout design; UI must specify rule.",
+      "sourceNote": "Core interval calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Workout Library"
+      ]
+    },
+    {
+      "methodId": "mtd_055",
+      "methodName": "Session Duration Estimate",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "sessionDuration = warmup + mainSet + recovery + cooldown",
+      "requiredInputs": [
+        "warmupDuration",
+        "mainSetDuration",
+        "recoveryDuration",
+        "cooldownDuration"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Only as accurate as entered segment durations.",
+      "sourceNote": "Core workout calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Workout Library"
+      ]
+    },
+    {
+      "methodId": "mtd_056",
+      "methodName": "Work-to-Rest Ratio",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "workRestRatio = workDuration / restDuration",
+      "requiredInputs": [
+        "workDuration",
+        "restDuration"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "ratio"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Does not capture intensity or recovery quality.",
+      "sourceNote": "Core interval structure metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_057",
+      "methodName": "Total Quality Distance",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "qualityDistance = sum(distance of segments tagged moderate/high intensity)",
+      "requiredInputs": [
+        "segments",
+        "intensityTags"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m",
+        "km"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Depends on correct segment tagging.",
+      "sourceNote": "Workout analysis metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_058",
+      "methodName": "Total Quality Time",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "qualityTime = sum(duration of segments tagged moderate/high intensity)",
+      "requiredInputs": [
+        "segments",
+        "intensityTags"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Depends on correct segment tagging.",
+      "sourceNote": "Workout analysis metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_059",
+      "methodName": "Ladder Split Calculator",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "segmentTime_i = segmentDistance_i × targetPace_i",
+      "requiredInputs": [
+        "segmentDistances",
+        "targetPaces"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time",
+        "pace"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires target pace per segment or shared pace rule.",
+      "sourceNote": "Core mixed-interval calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Workout Library"
+      ]
+    },
+    {
+      "methodId": "mtd_060",
+      "methodName": "Pyramid Split Calculator",
+      "category": "Workout Structure",
+      "route": "/workouts",
+      "formulaDisplay": "segmentTime_i = segmentDistance_i × targetPace_i; total = Σ segmentTime_i",
+      "requiredInputs": [
+        "segmentDistances",
+        "targetPaces"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "time",
+        "pace",
+        "totalWorkTime"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires clear segment list and target pace rule.",
+      "sourceNote": "Core mixed-interval calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Workout Structure Calculator",
+        "Workout Library"
+      ]
+    },
+    {
+      "methodId": "mtd_061",
+      "methodName": "Session RPE Load",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "load = duration_minutes × sessionRPE",
+      "requiredInputs": [
+        "durationMinutes",
+        "sessionRPE"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "AU"
+      ],
+      "confidenceLabel": "Field Metric",
+      "limitation": "Subjective; affected by mood, heat, sleep, and interpretation of RPE scale.",
+      "sourceNote": "Common session-RPE training load method.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab",
+        "Recovery Check"
+      ]
+    },
+    {
+      "methodId": "mtd_062",
+      "methodName": "Weekly Load Sum",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "weeklyLoad = Σ dailyLoad",
+      "requiredInputs": [
+        "dailyLoads"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "AU",
+        "minutes",
+        "km"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Only summarizes entered load; not injury prediction.",
+      "sourceNote": "Core aggregation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab",
+        "Training Summary"
+      ]
+    },
+    {
+      "methodId": "mtd_063",
+      "methodName": "Training Monotony",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "monotony = mean(dailyLoad) / standardDeviation(dailyLoad)",
+      "requiredInputs": [
+        "dailyLoads"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "unitless"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Can be unstable when standard deviation is very small; not a diagnosis.",
+      "sourceNote": "Simple load-distribution metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_064",
+      "methodName": "Training Strain",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "strain = weeklyLoad × monotony",
+      "requiredInputs": [
+        "weeklyLoad",
+        "monotony"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "AU"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Interpretation is limited; should not be used as automatic injury prediction.",
+      "sourceNote": "Training load summary metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_065",
+      "methodName": "Acute Chronic Workload Ratio",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "ACWR = acuteLoad / chronicLoad",
+      "requiredInputs": [
+        "acuteLoad",
+        "chronicLoad"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "ratio"
+      ],
+      "confidenceLabel": "Cautionary Metric",
+      "limitation": "Controversial as injury predictor; use only as descriptive load ratio with warnings.",
+      "sourceNote": "Descriptive workload ratio, not a safety guarantee.",
+      "implementationStatus": "optionalWithWarning",
+      "relatedModules": [
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_066",
+      "methodName": "Rolling Average Load",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "rollingAverage = mean(load over selected window)",
+      "requiredInputs": [
+        "loads",
+        "windowLength"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "AU",
+        "km",
+        "minutes"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Window choice changes interpretation.",
+      "sourceNote": "Core time-series aggregation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab",
+        "Trend Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_067",
+      "methodName": "Load Delta Percent",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "delta% = (currentLoad - previousLoad) / previousLoad × 100",
+      "requiredInputs": [
+        "currentLoad",
+        "previousLoad"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Cannot determine whether change is safe by itself.",
+      "sourceNote": "Simple comparative metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab",
+        "Trend Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_068",
+      "methodName": "Time in Zone Sum",
+      "category": "Training Load",
+      "route": "/load",
+      "formulaDisplay": "zoneTime_i = Σ duration in zone_i",
+      "requiredInputs": [
+        "zoneDurations"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "minutes",
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Depends on selected zone model and accurate activity data/manual input.",
+      "sourceNote": "Core zone aggregation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Load Lab",
+        "Zone Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_069",
+      "methodName": "Carbohydrate per Hour",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "carb_g_per_hour = totalCarb_g / duration_hours",
+      "requiredInputs": [
+        "totalCarb_g",
+        "duration_hours"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "g/h"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Calculates observed intake only; not individualized medical nutrition advice.",
+      "sourceNote": "Core fueling arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Long Run Fueling Test"
+      ]
+    },
+    {
+      "methodId": "mtd_070",
+      "methodName": "Total Carbohydrate Target",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "totalCarb_g = carb_g_per_hour × duration_hours",
+      "requiredInputs": [
+        "carb_g_per_hour",
+        "duration_hours"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "g"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Target must be user-selected; Track.Lab should not auto-prescribe aggressive intake.",
+      "sourceNote": "Core fueling planning arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Race Planner"
+      ]
+    },
+    {
+      "methodId": "mtd_071",
+      "methodName": "Fluid per Hour",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "fluid_L_per_hour = totalFluid_L / duration_hours",
+      "requiredInputs": [
+        "totalFluid_L",
+        "duration_hours"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "L/h",
+        "mL/h"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Observed intake only; fluid needs are condition-specific.",
+      "sourceNote": "Core hydration arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Long Run Fueling Test"
+      ]
+    },
+    {
+      "methodId": "mtd_072",
+      "methodName": "Total Fluid Target",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "totalFluid_L = fluid_L_per_hour × duration_hours",
+      "requiredInputs": [
+        "fluid_L_per_hour",
+        "duration_hours"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "L",
+        "mL"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Target must be user-selected; avoid overdrinking warnings required.",
+      "sourceNote": "Core hydration planning arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Race Planner"
+      ]
+    },
+    {
+      "methodId": "mtd_073",
+      "methodName": "Sodium per Hour",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "sodium_mg_per_hour = totalSodium_mg / duration_hours",
+      "requiredInputs": [
+        "totalSodium_mg",
+        "duration_hours"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "mg/h"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Observed intake only; sodium needs vary by sweat rate, diet, heat, and medical factors.",
+      "sourceNote": "Core sodium intake arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Long Run Fueling Test"
+      ]
+    },
+    {
+      "methodId": "mtd_074",
+      "methodName": "Sodium Concentration",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "sodium_mg_per_L = totalSodium_mg / totalFluid_L",
+      "requiredInputs": [
+        "totalSodium_mg",
+        "totalFluid_L"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "mg/L"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires total fluid > 0; product labels may be approximate.",
+      "sourceNote": "Core concentration calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_075",
+      "methodName": "Sweat Loss Estimate",
+      "category": "Fuel & Hydration",
+      "route": "/field-tests",
+      "formulaDisplay": "sweatLoss_L = preWeight_kg - postWeight_kg + fluidIntake_L - urineOutput_L",
+      "requiredInputs": [
+        "preWeight_kg",
+        "postWeight_kg",
+        "fluidIntake_L"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "L"
+      ],
+      "confidenceLabel": "Field Estimate",
+      "limitation": "Assumes 1 kg body mass change ≈ 1 L fluid; affected by clothing, scale, gut content, and unrecorded output.",
+      "sourceNote": "Field sweat-rate method.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Fuel & Hydration Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_076",
+      "methodName": "Sweat Rate Estimate",
+      "category": "Fuel & Hydration",
+      "route": "/field-tests",
+      "formulaDisplay": "sweatRate_L_h = sweatLoss_L / duration_hours",
+      "requiredInputs": [
+        "sweatLoss_L",
+        "duration_hours"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "L/h"
+      ],
+      "confidenceLabel": "Field Estimate",
+      "limitation": "Condition-specific; do not generalize across heat, humidity, intensity, or clothing.",
+      "sourceNote": "Field sweat-rate method.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Fuel & Hydration Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_077",
+      "methodName": "Body Mass Loss Percent",
+      "category": "Fuel & Hydration",
+      "route": "/field-tests",
+      "formulaDisplay": "bodyMassLoss% = (preWeight_kg - postWeight_kg) / preWeight_kg × 100",
+      "requiredInputs": [
+        "preWeight_kg",
+        "postWeight_kg"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Field Metric",
+      "limitation": "Affected by scale precision and clothing water retention.",
+      "sourceNote": "Core field hydration metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Fuel & Hydration Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_078",
+      "methodName": "Fueling Timeline Segment",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "carbPerSegment = totalCarb_g / numberOfSegments",
+      "requiredInputs": [
+        "totalCarb_g",
+        "numberOfSegments"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "g/segment"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Timeline structure only; tolerance must be practiced manually.",
+      "sourceNote": "Core fueling schedule arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Race Planner"
+      ]
+    },
+    {
+      "methodId": "mtd_079",
+      "methodName": "Bottle Mix Concentration",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "concentration_g_per_L = carb_g / fluid_L",
+      "requiredInputs": [
+        "carb_g",
+        "fluid_L"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "g/L",
+        "percent w/v"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Does not guarantee gut tolerance; product solubility varies.",
+      "sourceNote": "Core drink-mix arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "DIY Mix Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_080",
+      "methodName": "Carbohydrate Percent Weight/Volume",
+      "category": "Fuel & Hydration",
+      "route": "/fuel-hydration",
+      "formulaDisplay": "percent_wv = carb_g / fluid_mL × 100",
+      "requiredInputs": [
+        "carb_g",
+        "fluid_mL"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Simple concentration only; not medical nutrition guidance.",
+      "sourceNote": "Core concentration calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "DIY Mix Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_081",
+      "methodName": "Treadmill Pace from Speed",
+      "category": "Treadmill",
+      "route": "/treadmill",
+      "formulaDisplay": "pace_sec_per_km = 3600 / speed_kmh",
+      "requiredInputs": [
+        "speed_kmh"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "sec/km",
+        "min/km"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Treadmill displayed speed may be miscalibrated.",
+      "sourceNote": "Core treadmill conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Treadmill Calculator",
+        "Pace Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_082",
+      "methodName": "Treadmill Speed from Pace",
+      "category": "Treadmill",
+      "route": "/treadmill",
+      "formulaDisplay": "speed_kmh = 3600 / pace_sec_per_km",
+      "requiredInputs": [
+        "pace_sec_per_km"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "km/h"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Treadmill displayed speed may not equal belt speed exactly.",
+      "sourceNote": "Core treadmill conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Treadmill Calculator",
+        "Pace Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_083",
+      "methodName": "ACSM Running VO2 Equation",
+      "category": "Treadmill / Metabolic",
+      "route": "/treadmill",
+      "formulaDisplay": "VO2 = 0.2 × speed_m_min + 0.9 × speed_m_min × grade + 3.5",
+      "requiredInputs": [
+        "speed_m_min",
+        "grade_decimal"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "ml/kg/min",
+        "MET"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Estimate for steady-state running; not a lab measurement and may not fit every runner.",
+      "sourceNote": "ACSM metabolic equation commonly used for treadmill running estimates.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Treadmill Calculator",
+        "VO2 Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_084",
+      "methodName": "ACSM Walking VO2 Equation",
+      "category": "Treadmill / Metabolic",
+      "route": "/treadmill",
+      "formulaDisplay": "VO2 = 0.1 × speed_m_min + 1.8 × speed_m_min × grade + 3.5",
+      "requiredInputs": [
+        "speed_m_min",
+        "grade_decimal"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "ml/kg/min",
+        "MET"
+      ],
+      "confidenceLabel": "Estimate",
+      "limitation": "Estimate for walking; less appropriate for running speeds.",
+      "sourceNote": "ACSM metabolic equation commonly used for treadmill walking estimates.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Treadmill Calculator",
+        "VO2 Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_085",
+      "methodName": "Treadmill Calibration Error Percent",
+      "category": "Treadmill",
+      "route": "/field-tests",
+      "formulaDisplay": "error% = (displaySpeed - measuredSpeed) / measuredSpeed × 100",
+      "requiredInputs": [
+        "displaySpeed",
+        "measuredSpeed"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Field Estimate",
+      "limitation": "Consumer calibration test only; not certified equipment calibration.",
+      "sourceNote": "Field equipment check.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Field Test Protocols",
+        "Treadmill Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_086",
+      "methodName": "Grade Percent",
+      "category": "Elevation",
+      "route": "/elevation",
+      "formulaDisplay": "grade% = elevationGain / horizontalDistance × 100",
+      "requiredInputs": [
+        "elevationGain",
+        "horizontalDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "GPS/barometer elevation errors can be large; grade varies by segment.",
+      "sourceNote": "Core elevation calculation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Elevation Calculator",
+        "Trail Run Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_087",
+      "methodName": "Elevation Gain per Kilometer",
+      "category": "Elevation",
+      "route": "/elevation",
+      "formulaDisplay": "gainPerKm = elevationGain_m / distance_km",
+      "requiredInputs": [
+        "elevationGain_m",
+        "distance_km"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/km"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Does not reflect technical terrain or descent load.",
+      "sourceNote": "Core elevation summary.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Elevation Calculator",
+        "Trail Run Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_088",
+      "methodName": "Heat Index Metadata Placeholder",
+      "category": "Environment",
+      "route": "/environment",
+      "formulaDisplay": "heatIndex = function(temperature, humidity)",
+      "requiredInputs": [
+        "temperature",
+        "humidity"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "temperatureEquivalent"
+      ],
+      "confidenceLabel": "Requires Formula Selection",
+      "limitation": "Requires validated formula selection and units; avoid hidden assumptions.",
+      "sourceNote": "Metadata placeholder; implement only with explicit formula and source note.",
+      "implementationStatus": "plannedNeedsFormulaSelection",
+      "relatedModules": [
+        "Environment Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_089",
+      "methodName": "Dew Point Metadata Placeholder",
+      "category": "Environment",
+      "route": "/environment",
+      "formulaDisplay": "dewPoint = function(temperature, relativeHumidity)",
+      "requiredInputs": [
+        "temperature",
+        "relativeHumidity"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "temperature"
+      ],
+      "confidenceLabel": "Requires Formula Selection",
+      "limitation": "Multiple approximations exist; formula must be disclosed.",
+      "sourceNote": "Metadata placeholder; implement only with explicit formula and source note.",
+      "implementationStatus": "plannedNeedsFormulaSelection",
+      "relatedModules": [
+        "Environment Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_090",
+      "methodName": "Wind Pace Impact Placeholder",
+      "category": "Environment",
+      "route": "/environment",
+      "formulaDisplay": "paceAdjustment = function(windSpeed, windDirection, runnerSpeed)",
+      "requiredInputs": [
+        "windSpeed",
+        "windDirection",
+        "runnerSpeed"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "paceAdjustment"
+      ],
+      "confidenceLabel": "Low / Placeholder",
+      "limitation": "Complex aerodynamic model; do not implement as precise unless model is explicitly selected and validated.",
+      "sourceNote": "Metadata placeholder only.",
+      "implementationStatus": "researchOnly",
+      "relatedModules": [
+        "Environment Lab",
+        "Race Planner"
+      ]
+    },
+    {
+      "methodId": "mtd_091",
+      "methodName": "Cadence Steps per Minute",
+      "category": "Biomechanics",
+      "route": "/biomechanics",
+      "formulaDisplay": "cadence_spm = steps / (duration_sec / 60)",
+      "requiredInputs": [
+        "steps",
+        "duration_sec"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "steps/min"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires accurate step count and stable segment duration.",
+      "sourceNote": "Core biomechanics arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Biomechanics Lab",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_092",
+      "methodName": "Step Length from Distance and Steps",
+      "category": "Biomechanics",
+      "route": "/biomechanics",
+      "formulaDisplay": "stepLength_m = distance_m / steps",
+      "requiredInputs": [
+        "distance_m",
+        "steps"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/step"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Clarify step length vs stride-cycle length in UI.",
+      "sourceNote": "Core biomechanics arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Biomechanics Lab",
+        "Field Test Protocols"
+      ]
+    },
+    {
+      "methodId": "mtd_093",
+      "methodName": "Stride-Cycle Length",
+      "category": "Biomechanics",
+      "route": "/biomechanics",
+      "formulaDisplay": "strideCycleLength_m = 2 × stepLength_m",
+      "requiredInputs": [
+        "stepLength_m"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/stride-cycle"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Terminology varies; UI must label this clearly.",
+      "sourceNote": "Core biomechanics conversion.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Biomechanics Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_094",
+      "methodName": "Stride Length from Speed and Cadence",
+      "category": "Biomechanics",
+      "route": "/biomechanics",
+      "formulaDisplay": "stepLength_m = speed_m_s × 60 / cadence_spm",
+      "requiredInputs": [
+        "speed_m_s",
+        "cadence_spm"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/step"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Assumes stable speed and cadence over the measured segment.",
+      "sourceNote": "Core speed-cadence-stride relationship.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Biomechanics Lab",
+        "Pace Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_095",
+      "methodName": "Total Steps Estimate",
+      "category": "Biomechanics",
+      "route": "/biomechanics",
+      "formulaDisplay": "steps = cadence_spm × duration_minutes",
+      "requiredInputs": [
+        "cadence_spm",
+        "duration_minutes"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "steps"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Only valid if cadence is stable for the duration.",
+      "sourceNote": "Simple step estimate.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Biomechanics Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_096",
+      "methodName": "Ground Contact Ratio Placeholder",
+      "category": "Biomechanics",
+      "route": "/biomechanics",
+      "formulaDisplay": "ratio = groundContactTime / strideCycleTime",
+      "requiredInputs": [
+        "groundContactTime",
+        "strideCycleTime"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Requires Sensor/Input",
+      "limitation": "Requires wearable sensor data; Track.Lab manual mode should avoid fake values.",
+      "sourceNote": "Metadata placeholder only for manual/wearable input.",
+      "implementationStatus": "optionalManualOnly",
+      "relatedModules": [
+        "Biomechanics Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_097",
+      "methodName": "Vertical Ratio Placeholder",
+      "category": "Biomechanics",
+      "route": "/biomechanics",
+      "formulaDisplay": "verticalRatio = verticalOscillation / strideLength × 100",
+      "requiredInputs": [
+        "verticalOscillation",
+        "strideLength"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Requires Sensor/Input",
+      "limitation": "Requires reliable wearable data; not a standalone form diagnosis.",
+      "sourceNote": "Metadata placeholder only for manual/wearable input.",
+      "implementationStatus": "optionalManualOnly",
+      "relatedModules": [
+        "Biomechanics Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_098",
+      "methodName": "Sleep Duration Delta",
+      "category": "Recovery",
+      "route": "/recovery",
+      "formulaDisplay": "sleepDelta = currentSleepHours - baselineSleepHours",
+      "requiredInputs": [
+        "currentSleepHours",
+        "baselineSleepHours"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "hours"
+      ],
+      "confidenceLabel": "Trend Metric",
+      "limitation": "Descriptive only; does not score readiness automatically.",
+      "sourceNote": "Manual self-monitoring metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Recovery Check"
+      ]
+    },
+    {
+      "methodId": "mtd_099",
+      "methodName": "Body Weight Delta Percent",
+      "category": "Recovery / Body Metrics",
+      "route": "/recovery",
+      "formulaDisplay": "weightDelta% = (currentWeight - baselineWeight) / baselineWeight × 100",
+      "requiredInputs": [
+        "currentWeight",
+        "baselineWeight"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Trend Metric",
+      "limitation": "Weight fluctuates with hydration, food, and measurement conditions.",
+      "sourceNote": "Simple trend metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Recovery Check",
+        "Fuel & Hydration Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_100",
+      "methodName": "Subjective Wellness Sum",
+      "category": "Recovery",
+      "route": "/recovery",
+      "formulaDisplay": "wellnessScore = Σ selectedManualRatings",
+      "requiredInputs": [
+        "manualRatings"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "score"
+      ],
+      "confidenceLabel": "Manual Score",
+      "limitation": "Subjective and user-defined; should not become AI readiness advice.",
+      "sourceNote": "Manual wellness aggregation.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Recovery Check"
+      ]
+    },
+    {
+      "methodId": "mtd_101",
+      "methodName": "Shoe Mileage Accumulation",
+      "category": "Gear",
+      "route": "/gear",
+      "formulaDisplay": "shoeDistance = Σ runDistanceAssignedToShoe",
+      "requiredInputs": [
+        "runDistances"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "km",
+        "miles"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires user to assign runs manually; no automatic guarantee of shoe condition.",
+      "sourceNote": "Core gear tracking arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Gear Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_102",
+      "methodName": "Cost per Kilometer",
+      "category": "Gear",
+      "route": "/gear",
+      "formulaDisplay": "costPerKm = shoeCost / shoeDistanceKm",
+      "requiredInputs": [
+        "shoeCost",
+        "shoeDistanceKm"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "currency/km"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Economic metric only; not durability prediction.",
+      "sourceNote": "Core gear arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Gear Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_103",
+      "methodName": "Shoe Retirement Threshold Progress",
+      "category": "Gear",
+      "route": "/gear",
+      "formulaDisplay": "progress% = shoeDistance / userRetirementThreshold × 100",
+      "requiredInputs": [
+        "shoeDistance",
+        "userRetirementThreshold"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "User-Defined",
+      "limitation": "Threshold must be user-defined; wear depends on runner, surface, shoe, and mechanics.",
+      "sourceNote": "Manual gear tracking metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Gear Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_104",
+      "methodName": "Simple Running Energy Cost",
+      "category": "Metabolic Estimate",
+      "route": "/energy",
+      "formulaDisplay": "kcal ≈ bodyWeight_kg × distance_km",
+      "requiredInputs": [
+        "bodyWeight_kg",
+        "distance_km"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "kcal"
+      ],
+      "confidenceLabel": "Rough Estimate",
+      "limitation": "Very rough estimate; ignores pace, grade, economy, wind, and individual variation.",
+      "sourceNote": "Common rough running energy heuristic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Energy Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_105",
+      "methodName": "Power-to-Weight Ratio",
+      "category": "Power",
+      "route": "/power",
+      "formulaDisplay": "powerToWeight = power_watts / bodyWeight_kg",
+      "requiredInputs": [
+        "power_watts",
+        "bodyWeight_kg"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "W/kg"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Requires real power input from device or manual entry; do not generate fake power.",
+      "sourceNote": "Core power arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Power Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_106",
+      "methodName": "Running Power Pace Efficiency",
+      "category": "Power",
+      "route": "/power",
+      "formulaDisplay": "efficiency = speed_m_s / power_watts or power_watts / speed_m_s",
+      "requiredInputs": [
+        "speed_m_s",
+        "power_watts"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "m/s/W",
+        "W per m/s"
+      ],
+      "confidenceLabel": "Device-Dependent",
+      "limitation": "Device power is model-dependent and not directly comparable across brands.",
+      "sourceNote": "Descriptive power efficiency metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Power Calculator"
+      ]
+    },
+    {
+      "methodId": "mtd_107",
+      "methodName": "Weekly Distance Sum",
+      "category": "Planning",
+      "route": "/planner",
+      "formulaDisplay": "weeklyDistance = Σ runDistances",
+      "requiredInputs": [
+        "runDistances"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "km",
+        "miles"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Only sums entered/planned runs; not a coaching recommendation.",
+      "sourceNote": "Core planning arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Planner",
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_108",
+      "methodName": "Weekly Duration Sum",
+      "category": "Planning",
+      "route": "/planner",
+      "formulaDisplay": "weeklyDuration = Σ runDurations",
+      "requiredInputs": [
+        "runDurations"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "minutes",
+        "hours"
+      ],
+      "confidenceLabel": "Formula",
+      "limitation": "Only sums entered/planned runs.",
+      "sourceNote": "Core planning arithmetic.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Planner",
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_109",
+      "methodName": "Long Run Share of Weekly Distance",
+      "category": "Planning",
+      "route": "/planner",
+      "formulaDisplay": "longRunShare% = longRunDistance / weeklyDistance × 100",
+      "requiredInputs": [
+        "longRunDistance",
+        "weeklyDistance"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "percent"
+      ],
+      "confidenceLabel": "Descriptive Metric",
+      "limitation": "Descriptive only; does not decide whether the plan is safe.",
+      "sourceNote": "Planning summary metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Planner",
+        "Load Lab"
+      ]
+    },
+    {
+      "methodId": "mtd_110",
+      "methodName": "Hard Session Count",
+      "category": "Planning",
+      "route": "/planner",
+      "formulaDisplay": "hardSessionCount = count(sessions tagged moderate/high intensity)",
+      "requiredInputs": [
+        "sessionIntensityTags"
+      ],
+      "optionalInputs": [],
+      "outputUnits": [
+        "count"
+      ],
+      "confidenceLabel": "Descriptive Metric",
+      "limitation": "Tagging must be manual/deterministic; no AI interpretation.",
+      "sourceNote": "Planning summary metric.",
+      "implementationStatus": "readyForImplementation",
+      "relatedModules": [
+        "Planner",
+        "Workout Library"
+      ]
+    }
+  ]
+}

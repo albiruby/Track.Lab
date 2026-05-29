@@ -15,12 +15,17 @@ import {
   calculateTreadmillCalibration,
   calculateCadenceTest
 } from '@/lib/calculators_pack/metabolicSystem';
-import { methodRegistry } from '@/data';
+import { methodRegistry, fieldTestProtocols } from '@/data';
+import { Search, SlidersHorizontal, BookOpen, ShieldAlert, Award, ClipboardList, CheckCircle, ExternalLink, ArrowLeftRight, Copy } from 'lucide-react';
 import { CalculatorResult } from '@/types';
 import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 
 export default function TestLabPage() {
-  const [mode, setMode] = useState<'quick' | 'advanced'>('quick');
+  const [mode, setMode] = useState<'quick' | 'advanced' | 'protocols'>('quick');
+  const [protocolSearch, setProtocolSearch] = useState('');
+  const [protocolTypeFilter, setProtocolTypeFilter] = useState('all');
+  const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
+  const [protocolCopyStatus, setProtocolCopyStatus] = useState<string | null>(null);
 
   // Universal export helper
   const triggerPrint = () => {
@@ -608,7 +613,7 @@ export default function TestLabPage() {
         </div>
 
         {/* --- MODE SWITCHER --- */}
-        <div className="flex border-2 border-border-heavy rounded-xl p-1 bg-white max-w-sm shadow-[2px_2px_0px_rgba(23,23,23,1)] overflow-hidden">
+        <div className="flex border-2 border-border-heavy rounded-xl p-1 bg-white max-w-md shadow-[2px_2px_0px_rgba(23,23,23,1)] overflow-hidden">
           <button
             onClick={() => setMode('quick')}
             className={`flex-1 text-center py-2 px-4 rounded-lg text-xs font-black uppercase tracking-wider transition-colors ${mode === 'quick' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'}`}
@@ -620,6 +625,12 @@ export default function TestLabPage() {
             className={`flex-1 text-center py-2 px-4 rounded-lg text-xs font-black uppercase tracking-wider transition-colors ${mode === 'advanced' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'}`}
           >
             Advanced Audits
+          </button>
+          <button
+            onClick={() => setMode('protocols')}
+            className={`flex-1 text-center py-2 px-4 rounded-lg text-xs font-black uppercase tracking-wider transition-colors ${mode === 'protocols' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'}`}
+          >
+            Protocol Manuals ({fieldTestProtocols.length})
           </button>
         </div>
 
@@ -1130,6 +1141,245 @@ export default function TestLabPage() {
               )}
             </div>
 
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/*                     PROTOCOLS MODE                        */}
+        {/* ========================================================= */}
+        {mode === 'protocols' && (
+          <div className="space-y-6">
+            {!selectedProtocolId ? (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* SEARCH PANEL */}
+                <div className="lg:col-span-4 p-6 border-2 border-border-heavy bg-card rounded-xl shadow-[2px_2px_0px_rgba(23,23,23,1)] space-y-4">
+                  <div className="flex justify-between items-center pb-2 border-b">
+                    <span className="font-display font-black text-xs uppercase tracking-widest text-zinc-700 flex items-center gap-1.5">
+                      <SlidersHorizontal className="w-4 h-4 text-primary" /> PROTOCOL SEARCH
+                    </span>
+                    <button onClick={() => { setProtocolSearch(''); setProtocolTypeFilter('all'); }} className="text-[10px] font-black uppercase text-muted-foreground hover:text-foreground">
+                      Reset
+                    </button>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label>Keyword Query</Label>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        placeholder="e.g. cooper, threshold..."
+                        value={protocolSearch}
+                        onChange={e => setProtocolSearch(e.target.value)}
+                        className="pl-10 text-xs"
+                      />
+                      <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-muted-foreground" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label>Protocol Category</Label>
+                    <Select value={protocolTypeFilter} onChange={e => setProtocolTypeFilter(e.target.value)} className="text-xs">
+                      <option value="all">All Test Types</option>
+                      <option value="metabolic">Metabolic / VO2</option>
+                      <option value="threshold">Threshold Limits</option>
+                      <option value="cardiac">Cardiac / Heart Rate</option>
+                      <option value="physiological">Physiological Capacity</option>
+                      <option value="calibration">Treadmill & Gear</option>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* PROTOCOL LIST */}
+                <div className="lg:col-span-8 space-y-4">
+                  <div className="flex justify-between items-center px-2">
+                    <span className="text-[11px] font-mono font-bold text-muted-foreground uppercase tracking-widest">
+                      Showing {
+                        fieldTestProtocols.filter(p => {
+                          const matchesSearch = p.name.toLowerCase().includes(protocolSearch.toLowerCase()) ||
+                            p.purpose.toLowerCase().includes(protocolSearch.toLowerCase()) ||
+                            p.testType.toLowerCase().includes(protocolSearch.toLowerCase());
+                          const matchesType = protocolTypeFilter === 'all' || p.testType.toLowerCase().includes(protocolTypeFilter.toLowerCase()) || p.purpose.toLowerCase().includes(protocolTypeFilter.toLowerCase());
+                          return matchesSearch && matchesType;
+                        }).length
+                      } of {fieldTestProtocols.length} Manual Reference Guides
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {fieldTestProtocols.filter(p => {
+                      const matchesSearch = p.name.toLowerCase().includes(protocolSearch.toLowerCase()) ||
+                        p.purpose.toLowerCase().includes(protocolSearch.toLowerCase()) ||
+                        p.testType.toLowerCase().includes(protocolSearch.toLowerCase());
+                      const matchesType = protocolTypeFilter === 'all' || p.testType.toLowerCase().includes(protocolTypeFilter.toLowerCase()) || p.purpose.toLowerCase().includes(protocolTypeFilter.toLowerCase());
+                      return matchesSearch && matchesType;
+                    }).map(protocol => (
+                      <div key={protocol.id} className="border-2 border-border-heavy bg-white rounded-xl shadow-[2.5px_2.5px_0px_rgba(23,23,23,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[5px_5px_0px_rgba(23,23,23,1)] transition-all flex flex-col justify-between overflow-hidden">
+                        <div className="bg-muted p-4 border-b-2 border-border-heavy flex justify-between items-start">
+                          <div>
+                            <h4 className="font-display font-black text-sm uppercase text-zinc-800 leading-tight">{protocol.name}</h4>
+                            <span className="text-[9px] font-mono font-bold uppercase text-primary tracking-widest bg-white border px-1.5 py-0.5 rounded block mt-1.5 w-max">
+                              {protocol.testType.toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
+                          <p className="text-xs text-zinc-550 leading-relaxed line-clamp-3">
+                            {protocol.purpose}
+                          </p>
+                          <div className="pt-2 border-t border-neutral-100 flex gap-2">
+                            <Button
+                              variant="outline"
+                              onClick={() => setSelectedProtocolId(protocol.id)}
+                              className="w-full text-xs font-extrabold h-9"
+                            >
+                              OPEN PROTOCOL GUIDE
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            ) : (() => {
+              const protocol = fieldTestProtocols.find(p => p.id === selectedProtocolId);
+              if (!protocol) return null;
+              
+              const handleCopyInstructions = () => {
+                const text = 
+                  `PROTOCOL: ${protocol.name}\n` +
+                  `PURPOSE: ${protocol.purpose}\n\n` +
+                  `STEPS:\n` + protocol.protocolSteps.map((s, idx) => `${idx + 1}. ${s}`).join('\n') + `\n\n` +
+                  `SAFETY WARNINGS:\n` + protocol.safetyNotes.join('\n');
+                
+                navigator.clipboard.writeText(text);
+                setProtocolCopyStatus('Copied to Clipboard!');
+                setTimeout(() => setProtocolCopyStatus(null), 2000);
+              };
+
+              return (
+                <div className="space-y-6">
+                  <Button variant="outline" onClick={() => setSelectedProtocolId(null)} className="text-xs">
+                    ← Back to Protocols Gallery
+                  </Button>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    {/* DETAILS CARD */}
+                    <div className="lg:col-span-7 border-2 border-border-heavy bg-white rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] overflow-hidden space-y-6 p-6">
+                      
+                      <div>
+                        <span className="px-2 py-0.5 bg-neutral-900 text-white rounded text-[8px] font-bold uppercase tracking-widest block w-max">
+                          {protocol.testType.toUpperCase()} MANUAL
+                        </span>
+                        <h3 className="font-display font-black text-2xl text-zinc-800 uppercase mt-2">{protocol.name}</h3>
+                        <p className="text-xs text-zinc-550 italic leading-relaxed mt-1.5">{protocol.purpose}</p>
+                      </div>
+
+                      {/* Best used and relative limitations */}
+                      <div className="grid grid-cols-2 gap-4 text-xs font-sans">
+                        <div className="p-3 bg-emerald-50 text-emerald-950 border border-emerald-100 rounded-lg">
+                          <strong className="block text-[8px] font-bold uppercase tracking-wider text-emerald-800 mb-1">Recommended Audience:</strong>
+                          {protocol.bestUsedFor}
+                        </div>
+                        <div className="p-3 bg-red-50 text-red-950 border border-red-150 rounded-lg">
+                          <strong className="block text-[8px] font-bold uppercase tracking-wider text-red-800 mb-1">Inherent Pitfalls / Avoid:</strong>
+                          {protocol.notIdealFor}
+                        </div>
+                      </div>
+
+                      {/* Checklist parameters */}
+                      <div className="space-y-2">
+                        <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest block">Required Inputs Checklist:</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {protocol.requiredInputs.map(inp => (
+                            <span key={inp.key} className="px-2 py-1 bg-zinc-100 border text-zinc-700 rounded text-[10px] font-mono uppercase font-bold flex items-center gap-1">
+                              <ClipboardList className="w-3.5 h-3.5 text-primary" /> {inp.label} {inp.unit ? `(${inp.unit})` : ''}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Chronological Protocol Steps */}
+                      <div className="space-y-4 pt-2">
+                        <span className="font-display font-black text-xs uppercase tracking-widest text-zinc-700 flex items-center gap-1.5 border-b pb-1">
+                          <ClipboardList className="w-4 h-4 text-primary" /> TEST STEPS CHRONOLOGICAL ORDER
+                        </span>
+                        <div className="space-y-3">
+                          {protocol.protocolSteps.map((step, idx) => (
+                            <div key={idx} className="flex gap-3 text-xs leading-relaxed items-start">
+                              <span className="px-2 py-0.5 bg-primary text-primary-foreground font-mono font-black rounded text-[10px] shrink-0">
+                                {idx + 1}
+                              </span>
+                              <p className="text-zinc-805 font-medium">{step}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* ACTIONS & EXCULPATIONS */}
+                    <div className="lg:col-span-5 space-y-6">
+                      
+                      {/* Safety & Compliance Card */}
+                      <div className="p-5 border-2 border-dashed border-red-400 bg-red-50/50 text-red-950 rounded-xl space-y-3">
+                        <div className="flex items-center gap-1.5 text-red-800">
+                          <ShieldAlert className="w-5 h-5 shrink-0" />
+                          <strong className="text-xs uppercase tracking-wider font-extrabold font-display">SAFETY AND STRESS LABELS</strong>
+                        </div>
+                        <div className="space-y-2 text-xs leading-relaxed">
+                          {protocol.safetyNotes.map((note, idx) => (
+                            <div key={idx} className="flex gap-2 items-start">
+                              <span className="text-red-500 font-bold shrink-0">•</span>
+                              <p className="text-zinc-850 font-medium">{note}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Scientific Transparency and Limitations */}
+                      <div className="p-5 border-2 border-border-heavy bg-white rounded-xl shadow-[4px_4px_0px_rgba(23,23,23,1)] space-y-4">
+                        <span className="block text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-500">Traceability & Limitations Matrix:</span>
+                        <div className="space-y-4 font-mono text-[10px] leading-relaxed text-zinc-650">
+                          <div>
+                            <strong className="text-foreground block font-sans text-[8px] uppercase mb-0.5">Confidence Level:</strong>
+                            <span className="font-sans font-bold text-zinc-800 bg-neutral-100 px-1.5 py-0.5 rounded">{protocol.confidenceLabel}</span>
+                          </div>
+                          <div>
+                            <strong className="text-foreground block font-sans text-[8px] uppercase mb-0.5">Physical Limitations / Inaccuracies:</strong>
+                            {protocol.limitation}
+                          </div>
+                          <div>
+                            <strong className="text-foreground block font-sans text-[8px] uppercase mb-0.5">Interactions / Associated Calculators:</strong>
+                            <span className="flex flex-wrap gap-1 mt-1">
+                              {protocol.relatedModules.map(mod => {
+                                const matchedMethod = methodRegistry.find(m => m.id === mod || (m.category === mod));
+                                return (
+                                  <span key={mod} className="bg-zinc-100 border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded leading-none text-[8px] font-bold">
+                                    ⚙️ {matchedMethod?.name || mod.toUpperCase()}
+                                  </span>
+                                );
+                              })}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="pt-2">
+                          <Button onClick={handleCopyInstructions} className="w-full text-xs font-black uppercase">
+                            <Copy className="w-4 h-4 mr-2" /> {protocolCopyStatus || 'COPY PROTOCOL GUIDE'}
+                          </Button>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "tracklab_field_test_protocols_v1.0",
+  "generatedDate": "2026-05-29",
+  "count": 15,
+  "targetRange": "12-20",
+  "requiredFieldCount": 15,
+  "requiredFields": [
+    "id",
+    "name",
+    "purpose",
+    "testType",
+    "requiredInputs",
+    "optionalInputs",
+    "protocolSteps",
+    "warmupSuggestion",
+    "testExecution",
+    "outputCalculations",
+    "formulaHooks",
+    "safetyNotes",
+    "confidenceLabel",
+    "limitation",
+    "relatedModules"
+  ],
+  "allRequiredFieldsComplete": true,
+  "missingByProtocol": {
+    "ftp_001": [],
+    "ftp_002": [],
+    "ftp_003": [],
+    "ftp_004": [],
+    "ftp_005": [],
+    "ftp_006": [],
+    "ftp_007": [],
+    "ftp_008": [],
+    "ftp_009": [],
+    "ftp_010": [],
+    "ftp_011": [],
+    "ftp_012": [],
+    "ftp_013": [],
+    "ftp_014": [],
+    "ftp_015": []
+  },
+  "uniqueIds": true,
+  "uniqueNames": true,
+  "positioningCheck": {
+    "manualInputOnly": true,
+    "formulaBased": true,
+    "noAI": true,
+    "noDatabaseDependency": true,
+    "noFakeMetrics": true,
+    "noMedicalDiagnosis": true
+  }
+}

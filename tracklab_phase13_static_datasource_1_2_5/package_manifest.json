@@ -1,0 +1,32 @@
+{
+  "packageName": "tracklab_phase13_static_datasource_1_2_5",
+  "generatedAt": "2026-05-29T08:14:32.203929Z",
+  "purpose": "Static datasource expansion for Track.Lab items 1, 2, and 5 only: Workout Library, Field Test Protocols, Formula/Method Registry.",
+  "tracklabRules": [
+    "manual input only",
+    "formula shown",
+    "no AI",
+    "no database",
+    "no stored user data",
+    "no fake metrics",
+    "manual export only"
+  ],
+  "contents": {
+    "workoutTemplates": {
+      "path": "src/data_json/workoutTemplates.json",
+      "count": 1315,
+      "schemaVersion": "tracklab_workout_library_v2.0"
+    },
+    "fieldTestProtocols": {
+      "path": "src/data_json/fieldTestProtocols.json",
+      "count": 15,
+      "schemaVersion": "tracklab_field_test_protocols_v1.0"
+    },
+    "formulaMethodRegistry": {
+      "path": "src/data_json/formulaMethodRegistry.json",
+      "count": 110,
+      "schemaVersion": "tracklab_formula_method_registry_v1.0"
+    }
+  },
+  "manualPlacement": "Copy the src/data_json folder into the Track.Lab project root, then run the implementation prompt in Google AI Studio."
+}

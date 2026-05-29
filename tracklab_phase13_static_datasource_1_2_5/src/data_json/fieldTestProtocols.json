@@ -1,0 +1,1896 @@
+{
+  "schemaVersion": "tracklab_field_test_protocols_v1.0",
+  "generatedDate": "2026-05-29",
+  "positioning": "Manual-input, formula-based field test protocol library for Track.Lab. No AI coach, no automated prescription, no database dependency, no fake metrics, no medical diagnosis.",
+  "count": 15,
+  "protocols": [
+    {
+      "id": "ftp_001",
+      "name": "Cooper 12-Minute Test",
+      "purpose": "Estimate aerobic fitness from the maximum distance covered in exactly 12 minutes, then optionally convert the result into estimated VO2max and pace benchmarks.",
+      "testType": "maximal_time_trial_vo2_estimate",
+      "bestUsedFor": [
+        "Intermediate runners who can run continuously for at least 20-30 minutes.",
+        "Users needing a simple field-based aerobic benchmark without lab equipment.",
+        "Track/flat-loop testing where distance can be measured reliably."
+      ],
+      "notIdealFor": [
+        "New runners without a running base.",
+        "Users with recent illness, injury, chest symptoms, heat stress, or no safe measured route.",
+        "Users expecting lab-grade VO2max accuracy."
+      ],
+      "requiredInputs": [
+        {
+          "key": "distance_12min_m",
+          "label": "Distance covered in 12 minutes",
+          "unit": "m",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "test_duration_sec",
+          "label": "Fixed test duration",
+          "unit": "s",
+          "default": 720
+        },
+        {
+          "key": "body_weight_kg",
+          "label": "Body weight for optional energy estimate",
+          "unit": "kg",
+          "validation": "optional for kcal only"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "average_hr",
+          "label": "Average HR during test",
+          "unit": "bpm"
+        },
+        {
+          "key": "max_hr_seen",
+          "label": "Peak HR during test",
+          "unit": "bpm"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        },
+        {
+          "key": "surface",
+          "label": "Surface",
+          "unit": "text"
+        },
+        {
+          "key": "rpe_1_10",
+          "label": "RPE",
+          "unit": "1-10"
+        }
+      ],
+      "protocolSteps": [
+        "Choose a flat 400 m track or reliably measured flat loop.",
+        "Avoid testing in extreme heat, poor air quality, strong wind, or heavy fatigue.",
+        "Start the timer for exactly 12:00.",
+        "Run the greatest sustainable distance possible without sprinting recklessly in the opening minutes.",
+        "Record total distance at 12:00 exactly.",
+        "Record optional HR, RPE, weather, and surface to compare future retests fairly."
+      ],
+      "warmupSuggestion": "10-20 min easy jog + mobility drills + 3-4 relaxed 15-20 sec strides + 3-5 min easy reset before start.",
+      "testExecution": {
+        "executionMode": "fixed_time_max_distance",
+        "primaryInstruction": "Run as far as possible in 12 minutes.",
+        "pacingInstruction": "Start controlled for the first 2-3 minutes, settle hard, then increase effort late if sustainable.",
+        "validityChecks": [
+          "duration must equal 720 seconds",
+          "distance must be measured, not guessed",
+          "route should be flat and repeatable",
+          "do not mix treadmill and outdoor results without a note"
+        ],
+        "retestSuggestion": "Retest every 6-8 weeks under similar conditions if user chooses."
+      },
+      "outputCalculations": [
+        {
+          "output": "estimated_vo2max_ml_kg_min",
+          "formula": "(distance_12min_m - 504.9) / 44.73",
+          "label": "field estimate"
+        },
+        {
+          "output": "average_speed_m_s",
+          "formula": "distance_12min_m / 720",
+          "label": "exact from input"
+        },
+        {
+          "output": "average_pace_sec_per_km",
+          "formula": "720 / (distance_12min_m / 1000)",
+          "label": "exact from input"
+        },
+        {
+          "output": "distance_km",
+          "formula": "distance_12min_m / 1000",
+          "label": "exact conversion"
+        },
+        {
+          "output": "optional_MET",
+          "formula": "estimated_vo2max_ml_kg_min / 3.5",
+          "label": "estimate"
+        }
+      ],
+      "formulaHooks": [
+        "cooper_12min_vo2max",
+        "pace_from_time_distance",
+        "speed_converter",
+        "met_from_vo2",
+        "field_test_history"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "A 12-minute field estimate is not lab-measured VO2max. It is affected by pacing, motivation, weather, surface, GPS/track accuracy, and running economy.",
+      "relatedModules": [
+        "VO2 & Metabolic Lab",
+        "Pace Lab",
+        "Training Pace Lab",
+        "Race Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_002",
+      "name": "1-Mile Time Trial",
+      "purpose": "Establish a short-distance benchmark for current speed, training pace calibration, and race-prediction formulas.",
+      "testType": "maximal_distance_time_trial",
+      "bestUsedFor": [
+        "Runners who need a compact benchmark for mile/1500 m/5K pace modeling.",
+        "Users who have access to a track or accurately measured 1-mile route.",
+        "Beginners only if they already run continuously and can pace safely."
+      ],
+      "notIdealFor": [
+        "Users with no running base.",
+        "Users using the result as a medical fitness test.",
+        "Testing in traffic, high heat, or poor surface conditions."
+      ],
+      "requiredInputs": [
+        {
+          "key": "finish_time_sec",
+          "label": "1-mile finish time",
+          "unit": "s",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "distance_m",
+          "label": "Test distance",
+          "unit": "m",
+          "default": 1609.344
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "lap_splits_sec",
+          "label": "Optional 400 m splits",
+          "unit": "array_seconds"
+        },
+        {
+          "key": "average_hr",
+          "label": "Average HR",
+          "unit": "bpm"
+        },
+        {
+          "key": "max_hr_seen",
+          "label": "Peak HR",
+          "unit": "bpm"
+        },
+        {
+          "key": "rpe_1_10",
+          "label": "RPE",
+          "unit": "1-10"
+        },
+        {
+          "key": "surface",
+          "label": "Surface",
+          "unit": "text"
+        }
+      ],
+      "protocolSteps": [
+        "Use a track if possible: 1609.344 m or accepted local mile route.",
+        "Warm up thoroughly because the test is short and intense.",
+        "Run hard but controlled; avoid going all-out in the first 400 m.",
+        "Record finish time and optional lap splits.",
+        "Use the result only as a manual input for formulas; do not auto-prescribe training."
+      ],
+      "warmupSuggestion": "15-25 min easy jog + dynamic drills + 4 x 15-20 sec strides + 3-5 min easy reset.",
+      "testExecution": {
+        "executionMode": "fixed_distance_best_time",
+        "primaryInstruction": "Run 1 mile as fast as safely possible with even or slight negative pacing.",
+        "pacingInstruction": "First 400 m controlled, middle 800 m hard sustainable, final 400 m progressive.",
+        "validityChecks": [
+          "distance must be 1609.344 m or clearly marked as approximate",
+          "record splits if available",
+          "avoid downhill or wind-assisted route for benchmark validity"
+        ],
+        "retestSuggestion": "Retest every 4-8 weeks or at the end of a training block."
+      },
+      "outputCalculations": [
+        {
+          "output": "pace_sec_per_km",
+          "formula": "finish_time_sec / 1.609344",
+          "label": "exact from input"
+        },
+        {
+          "output": "pace_sec_per_mile",
+          "formula": "finish_time_sec",
+          "label": "exact for 1 mile"
+        },
+        {
+          "output": "average_speed_m_s",
+          "formula": "1609.344 / finish_time_sec",
+          "label": "exact from input"
+        },
+        {
+          "output": "race_prediction_optional",
+          "formula": "T2 = T1 × (D2 / D1)^exponent",
+          "label": "model estimate"
+        },
+        {
+          "output": "lap_split_table",
+          "formula": "finish_time_sec × split_distance_m / 1609.344",
+          "label": "even split table"
+        }
+      ],
+      "formulaHooks": [
+        "pace_from_time_distance",
+        "speed_converter",
+        "riegel_prediction",
+        "track_lap_splits",
+        "race_derived_pace_zones"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "Short time trials are sensitive to pacing, anaerobic ability, warmup quality, and track accuracy. They are not enough alone to model longer-distance endurance.",
+      "relatedModules": [
+        "Pace Lab",
+        "Race Lab",
+        "Training Pace Lab",
+        "Track Split Calculator",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_003",
+      "name": "3K Time Trial",
+      "purpose": "Create a high-quality endurance-speed benchmark for 3K-5K fitness, race pace calibration, and optional critical speed input.",
+      "testType": "maximal_distance_time_trial",
+      "bestUsedFor": [
+        "Intermediate runners preparing for 3K, 5K, track, or road racing.",
+        "Users needing a benchmark less long than 5K but more aerobic than a mile.",
+        "Critical Speed Lab users needing one maximal trial."
+      ],
+      "notIdealFor": [
+        "New runners who cannot run hard for 12-18 minutes.",
+        "Users testing too soon after a race or hard session.",
+        "Routes with substantial hills or GPS inaccuracy."
+      ],
+      "requiredInputs": [
+        {
+          "key": "finish_time_sec",
+          "label": "3K finish time",
+          "unit": "s",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "distance_m",
+          "label": "Test distance",
+          "unit": "m",
+          "default": 3000
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "km_splits_sec",
+          "label": "1K splits",
+          "unit": "array_seconds"
+        },
+        {
+          "key": "average_hr",
+          "label": "Average HR",
+          "unit": "bpm"
+        },
+        {
+          "key": "max_hr_seen",
+          "label": "Peak HR",
+          "unit": "bpm"
+        },
+        {
+          "key": "rpe_1_10",
+          "label": "RPE",
+          "unit": "1-10"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        }
+      ],
+      "protocolSteps": [
+        "Use a track, certified route, or very reliable measured loop.",
+        "Warm up with strides so race effort does not shock the system.",
+        "Run the first kilometer controlled, hold hard rhythm, then press in the final kilometer.",
+        "Record total time and kilometer/lap splits.",
+        "Flag the result if pacing collapse, route error, or weather distortion occurred."
+      ],
+      "warmupSuggestion": "15-25 min easy + drills + 4 x 20 sec strides + 3-5 min easy before start.",
+      "testExecution": {
+        "executionMode": "fixed_distance_best_time",
+        "primaryInstruction": "Run 3000 m as a controlled maximal effort.",
+        "pacingInstruction": "Aim for even pacing; avoid a first-kilometer surge that causes severe fade.",
+        "validityChecks": [
+          "finish time must be manually entered",
+          "distance must be measured",
+          "surface and conditions should be recorded for retest comparison"
+        ],
+        "retestSuggestion": "Retest after 6-8 weeks or use as part of a multi-trial CS protocol."
+      },
+      "outputCalculations": [
+        {
+          "output": "pace_sec_per_km",
+          "formula": "finish_time_sec / 3",
+          "label": "exact"
+        },
+        {
+          "output": "average_speed_m_s",
+          "formula": "3000 / finish_time_sec",
+          "label": "exact"
+        },
+        {
+          "output": "split_deviation_percent",
+          "formula": "standard deviation of split paces / average pace × 100",
+          "label": "pacing quality estimate"
+        },
+        {
+          "output": "race_prediction_optional",
+          "formula": "T2 = T1 × (D2 / D1)^exponent",
+          "label": "model estimate"
+        },
+        {
+          "output": "critical_speed_trial_point",
+          "formula": "distance_m and finish_time_sec stored as CS trial pair",
+          "label": "input for CS model"
+        }
+      ],
+      "formulaHooks": [
+        "pace_from_time_distance",
+        "speed_converter",
+        "split_deviation",
+        "riegel_prediction",
+        "critical_speed_trial_input"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "3K performance can overrepresent speed-oriented runners and underrepresent longer endurance. Use with other tests for broader modeling.",
+      "relatedModules": [
+        "Pace Lab",
+        "Race Lab",
+        "Critical Speed Lab",
+        "Training Pace Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_004",
+      "name": "5K Time Trial",
+      "purpose": "Establish a practical endurance benchmark for 5K pace, race prediction, training pace ranges, and progress tracking.",
+      "testType": "maximal_distance_time_trial",
+      "bestUsedFor": [
+        "Runners training for 5K/10K or needing a common benchmark distance.",
+        "Users who want a field result that maps well to race and training calculators.",
+        "Critical Speed users who need a longer maximal trial."
+      ],
+      "notIdealFor": [
+        "New runners not yet ready for sustained hard running.",
+        "Users with injury pain or poor recovery.",
+        "Testing on a route with traffic stops, major hills, or GPS instability."
+      ],
+      "requiredInputs": [
+        {
+          "key": "finish_time_sec",
+          "label": "5K finish time",
+          "unit": "s",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "distance_m",
+          "label": "Test distance",
+          "unit": "m",
+          "default": 5000
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "km_splits_sec",
+          "label": "1K splits",
+          "unit": "array_seconds"
+        },
+        {
+          "key": "average_hr",
+          "label": "Average HR",
+          "unit": "bpm"
+        },
+        {
+          "key": "max_hr_seen",
+          "label": "Peak HR",
+          "unit": "bpm"
+        },
+        {
+          "key": "rpe_1_10",
+          "label": "RPE",
+          "unit": "1-10"
+        },
+        {
+          "key": "course_elevation_gain_m",
+          "label": "Elevation gain",
+          "unit": "m"
+        }
+      ],
+      "protocolSteps": [
+        "Use a measured 5K route, track equivalent, or race result.",
+        "Warm up enough to start near target rhythm.",
+        "Run the first kilometer controlled, kilometers 2-4 hard and steady, final kilometer strong.",
+        "Record finish time and splits.",
+        "Mark the test invalid or low-confidence if stopped, walked unintentionally, or route was inaccurate."
+      ],
+      "warmupSuggestion": "15-25 min easy + mobility + 4 x 15-20 sec strides + short reset.",
+      "testExecution": {
+        "executionMode": "fixed_distance_best_time",
+        "primaryInstruction": "Run 5K as a controlled maximal or race-equivalent effort.",
+        "pacingInstruction": "Prefer even or slight negative split; avoid sprinting the first kilometer.",
+        "validityChecks": [
+          "manual finish time required",
+          "distance must be 5.00 km or route must be labelled approximate",
+          "GPS moving-time vs elapsed-time choice must be explicit"
+        ],
+        "retestSuggestion": "Retest every 6-10 weeks or use actual 5K race result."
+      },
+      "outputCalculations": [
+        {
+          "output": "pace_sec_per_km",
+          "formula": "finish_time_sec / 5",
+          "label": "exact"
+        },
+        {
+          "output": "average_speed_m_s",
+          "formula": "5000 / finish_time_sec",
+          "label": "exact"
+        },
+        {
+          "output": "race_prediction_optional",
+          "formula": "T2 = T1 × (D2 / D1)^exponent",
+          "label": "model estimate"
+        },
+        {
+          "output": "training_pace_anchor",
+          "formula": "derive zones using selected transparent factor model from manual result",
+          "label": "model estimate"
+        },
+        {
+          "output": "split_fade_percent",
+          "formula": "(late_segment_pace - early_segment_pace) / early_segment_pace × 100",
+          "label": "pacing analysis"
+        }
+      ],
+      "formulaHooks": [
+        "pace_from_time_distance",
+        "speed_converter",
+        "riegel_prediction",
+        "race_derived_pace_zones",
+        "pace_fade_percent"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "A solo 5K time trial may differ from race performance due to motivation, course, weather, pacing, and measurement error.",
+      "relatedModules": [
+        "Pace Lab",
+        "Race Lab",
+        "Training Pace Lab",
+        "Zone Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_005",
+      "name": "20-Minute Threshold Test",
+      "purpose": "Estimate threshold pace from a hard, even 20-minute effort and use it as a manual anchor for threshold-based pace zones.",
+      "testType": "threshold_field_test",
+      "bestUsedFor": [
+        "Intermediate and advanced runners who can pace hard but controlled for 20 minutes.",
+        "Users needing threshold pace for tempo, cruise interval, and zone calculators.",
+        "Runners who prefer pace-based testing over HR-only testing."
+      ],
+      "notIdealFor": [
+        "New runners without steady pacing skill.",
+        "Users who turn threshold testing into an all-out sprint-and-fade effort.",
+        "Extreme heat/humidity or hilly routes."
+      ],
+      "requiredInputs": [
+        {
+          "key": "distance_20min_m",
+          "label": "Distance covered in 20 minutes",
+          "unit": "m",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "test_duration_sec",
+          "label": "Fixed test duration",
+          "unit": "s",
+          "default": 1200
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "average_hr_last_15min",
+          "label": "Average HR over final 15 minutes",
+          "unit": "bpm"
+        },
+        {
+          "key": "average_hr_20min",
+          "label": "Average HR over full test",
+          "unit": "bpm"
+        },
+        {
+          "key": "rpe_1_10",
+          "label": "RPE",
+          "unit": "1-10"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        },
+        {
+          "key": "surface",
+          "label": "Surface",
+          "unit": "text"
+        }
+      ],
+      "protocolSteps": [
+        "Use a flat route, track, or treadmill with stable calibration.",
+        "After warmup, start a 20-minute continuous hard effort.",
+        "Effort should be very hard but controlled, not a sprint from the start.",
+        "Record distance covered and optional HR data.",
+        "Use threshold estimate only if pacing remained stable without major fade."
+      ],
+      "warmupSuggestion": "15-25 min easy + drills + 4 strides + 3-5 min easy reset.",
+      "testExecution": {
+        "executionMode": "fixed_time_threshold_effort",
+        "primaryInstruction": "Run 20 minutes hard and even; calculate average pace from distance covered.",
+        "pacingInstruction": "Controlled discomfort; effort should feel sustainable for the test duration without a major fade.",
+        "validityChecks": [
+          "duration fixed at 1200 seconds",
+          "distance must be measured",
+          "large positive split lowers confidence",
+          "HR can lag; pace is the primary output"
+        ],
+        "retestSuggestion": "Retest every 6-8 weeks or after a threshold-focused block."
+      },
+      "outputCalculations": [
+        {
+          "output": "threshold_pace_sec_per_km_estimate",
+          "formula": "1200 / (distance_20min_m / 1000)",
+          "label": "field estimate"
+        },
+        {
+          "output": "threshold_speed_m_s_estimate",
+          "formula": "distance_20min_m / 1200",
+          "label": "field estimate"
+        },
+        {
+          "output": "optional_lthr_proxy",
+          "formula": "average_hr_last_15min, if captured",
+          "label": "field estimate"
+        },
+        {
+          "output": "threshold_zone_pace_ranges",
+          "formula": "threshold_pace × selected factor range",
+          "label": "model estimate"
+        },
+        {
+          "output": "pacing_stability",
+          "formula": "first_half_pace vs second_half_pace comparison",
+          "label": "quality check"
+        }
+      ],
+      "formulaHooks": [
+        "threshold_pace_from_20min",
+        "threshold_pace_zones",
+        "pace_from_time_distance",
+        "pace_drift",
+        "training_zone_calculator"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "A 20-minute test estimates threshold pace but does not directly measure lactate threshold or MLSS. Result depends heavily on pacing and conditions.",
+      "relatedModules": [
+        "Training Pace Lab",
+        "Zone Lab",
+        "Pace Lab",
+        "Heart Rate Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_006",
+      "name": "30-Minute LTHR Test",
+      "purpose": "Estimate lactate-threshold heart rate from the average HR in the final 20 minutes of a 30-minute solo hard effort.",
+      "testType": "threshold_hr_field_test",
+      "bestUsedFor": [
+        "Runners using HR-based training zones.",
+        "Intermediate/advanced users with reliable chest strap or accurate optical HR.",
+        "Users who can perform a controlled 30-minute hard effort."
+      ],
+      "notIdealFor": [
+        "Users without reliable HR data.",
+        "New runners, heat-stressed runners, or anyone with cardiovascular symptoms.",
+        "Users expecting laboratory lactate threshold measurement."
+      ],
+      "requiredInputs": [
+        {
+          "key": "average_hr_last_20min",
+          "label": "Average HR over final 20 minutes",
+          "unit": "bpm",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "test_duration_sec",
+          "label": "Fixed test duration",
+          "unit": "s",
+          "default": 1800
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "distance_30min_m",
+          "label": "Distance covered in 30 minutes",
+          "unit": "m"
+        },
+        {
+          "key": "average_hr_30min",
+          "label": "Average HR over full test",
+          "unit": "bpm"
+        },
+        {
+          "key": "max_hr_seen",
+          "label": "Peak HR",
+          "unit": "bpm"
+        },
+        {
+          "key": "rpe_1_10",
+          "label": "RPE",
+          "unit": "1-10"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        }
+      ],
+      "protocolSteps": [
+        "Use a chest strap if available and ensure HR recording is active.",
+        "Warm up thoroughly.",
+        "Run 30 minutes as a hard solo effort with steady pacing.",
+        "Do not press lap for output until the test starts; then use the final 20 min HR average as LTHR estimate.",
+        "Record optional distance and pace for additional threshold pace comparison."
+      ],
+      "warmupSuggestion": "15-25 min easy + drills + 4 strides + short reset.",
+      "testExecution": {
+        "executionMode": "fixed_time_lthr_effort",
+        "primaryInstruction": "Run 30 minutes hard and steady; use average HR of the final 20 minutes as estimated LTHR.",
+        "pacingInstruction": "First 10 minutes controlled-hard, final 20 minutes strong and even.",
+        "validityChecks": [
+          "HR sensor must be reliable",
+          "avoid HR spikes/dropouts",
+          "conditions should be moderate",
+          "do not use if the effort was not steady"
+        ],
+        "retestSuggestion": "Retest after 6-10 weeks, ideally under similar temperature and fatigue conditions."
+      },
+      "outputCalculations": [
+        {
+          "output": "estimated_lthr_bpm",
+          "formula": "average_hr_last_20min",
+          "label": "field estimate"
+        },
+        {
+          "output": "lthr_zone_table",
+          "formula": "zone bpm = estimated_lthr_bpm × selected percentage range",
+          "label": "model estimate"
+        },
+        {
+          "output": "optional_threshold_pace",
+          "formula": "1800 / (distance_30min_m / 1000), if distance supplied",
+          "label": "field estimate"
+        },
+        {
+          "output": "hr_drift_within_test",
+          "formula": "compare HR and pace/speed first vs second segment",
+          "label": "quality check"
+        }
+      ],
+      "formulaHooks": [
+        "lthr_zone_model",
+        "threshold_pace_zones",
+        "hr_zone_calculator",
+        "pace_from_time_distance",
+        "hr_drift"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing.",
+        "Heart-rate testing is not cardiovascular screening.",
+        "Age-estimated HRmax should not be treated as an individual maximum."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "LTHR field estimate depends on HR sensor quality, heat, fatigue, caffeine, hydration, and pacing. It is not a blood lactate test.",
+      "relatedModules": [
+        "Heart Rate Lab",
+        "Zone Lab",
+        "Training Pace Lab",
+        "Recovery Check Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_007",
+      "name": "2-Point Critical Speed Test",
+      "purpose": "Estimate Critical Speed and D′ from two maximal trials of different durations or distances.",
+      "testType": "critical_speed_field_test",
+      "bestUsedFor": [
+        "Advanced users who understand maximal testing and need CS/D′ calculations.",
+        "Runners with reliable measured distances and recovery between trials.",
+        "Users building transparent CS-based pace zones without AI prediction."
+      ],
+      "notIdealFor": [
+        "Beginners, injured users, or users unable to perform two valid maximal efforts.",
+        "Trials that are too similar in duration or not maximal.",
+        "Testing both trials on the same day without adequate recovery unless intentionally designed and clearly flagged."
+      ],
+      "requiredInputs": [
+        {
+          "key": "trial1_distance_m",
+          "label": "Trial 1 distance",
+          "unit": "m",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "trial1_time_sec",
+          "label": "Trial 1 time",
+          "unit": "s",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "trial2_distance_m",
+          "label": "Trial 2 distance",
+          "unit": "m",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "trial2_time_sec",
+          "label": "Trial 2 time",
+          "unit": "s",
+          "validation": "must be > 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "trial_dates",
+          "label": "Trial dates",
+          "unit": "date_array"
+        },
+        {
+          "key": "surface",
+          "label": "Surface",
+          "unit": "text"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        },
+        {
+          "key": "rpe_each_trial",
+          "label": "RPE per trial",
+          "unit": "array_1_10"
+        }
+      ],
+      "protocolSteps": [
+        "Select two maximal trials that are meaningfully different in duration, such as a short trial and a longer trial.",
+        "Use the same or comparable surface and environmental conditions where possible.",
+        "Run each trial maximally and record exact distance and time.",
+        "Enter both distance-time pairs into Track.Lab.",
+        "Review CS, critical pace, and D′ with limitation warnings."
+      ],
+      "warmupSuggestion": "For each trial: 15-25 min easy + drills + 3-4 strides + reset. Full recovery between separate trials is preferred.",
+      "testExecution": {
+        "executionMode": "two_trial_distance_time_model",
+        "primaryInstruction": "Use two valid maximal distance-time performances to calculate CS and D′.",
+        "pacingInstruction": "Each trial should be best sustainable effort for that distance, not a workout repetition.",
+        "validityChecks": [
+          "both trials must be maximal",
+          "times must differ enough to avoid unstable slope",
+          "distance measurement must be accurate",
+          "large environmental differences lower confidence"
+        ],
+        "retestSuggestion": "Update CS only when both trials are refreshed or when a new valid race result replaces one trial."
+      },
+      "outputCalculations": [
+        {
+          "output": "critical_speed_m_s",
+          "formula": "(D2 - D1) / (T2 - T1)",
+          "label": "model-derived"
+        },
+        {
+          "output": "critical_pace_sec_per_km",
+          "formula": "1000 / critical_speed_m_s",
+          "label": "model-derived"
+        },
+        {
+          "output": "D_prime_m",
+          "formula": "D1 - critical_speed_m_s × T1",
+          "label": "model-derived"
+        },
+        {
+          "output": "time_to_exhaustion_above_cs_optional",
+          "formula": "D′ / (target_speed - CS), valid only when target_speed > CS",
+          "label": "model estimate"
+        },
+        {
+          "output": "cs_zone_table",
+          "formula": "speed = CS × selected factor range",
+          "label": "model estimate"
+        }
+      ],
+      "formulaHooks": [
+        "two_point_cs",
+        "critical_pace_converter",
+        "d_prime",
+        "tte_above_cs",
+        "critical_speed_zones"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing.",
+        "CS/D′ is a performance model, not a physiological diagnosis.",
+        "Do not calculate TTE above CS when target speed is equal to or below CS."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "Two-point CS can be unstable if trials are not maximal, too close in duration, or affected by different conditions. No single CS testing method is universally optimal.",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Training Pace Lab",
+        "Race Lab",
+        "Pace Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_008",
+      "name": "3-Point Critical Speed Test",
+      "purpose": "Estimate Critical Speed and D′ using three maximal trials and a linear distance-time regression for better robustness than a simple 2-point model.",
+      "testType": "critical_speed_field_test",
+      "bestUsedFor": [
+        "Advanced runners or analysts who can collect three valid maximal trials.",
+        "Users wanting a more robust CS estimate with residual/outlier visibility.",
+        "Track.Lab advanced mode users."
+      ],
+      "notIdealFor": [
+        "Beginners or users who cannot recover between maximal trials.",
+        "Users with inconsistent surfaces, weather, or inaccurate timing.",
+        "Users wanting a simple beginner-friendly benchmark."
+      ],
+      "requiredInputs": [
+        {
+          "key": "trial_distances_m",
+          "label": "Three trial distances",
+          "unit": "array_m",
+          "validation": "length must be 3"
+        },
+        {
+          "key": "trial_times_sec",
+          "label": "Three trial times",
+          "unit": "array_s",
+          "validation": "length must be 3"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "trial_dates",
+          "label": "Trial dates",
+          "unit": "date_array"
+        },
+        {
+          "key": "surface_each_trial",
+          "label": "Surface per trial",
+          "unit": "array_text"
+        },
+        {
+          "key": "weather_each_trial",
+          "label": "Weather notes",
+          "unit": "array_text"
+        },
+        {
+          "key": "rpe_each_trial",
+          "label": "RPE per trial",
+          "unit": "array_1_10"
+        }
+      ],
+      "protocolSteps": [
+        "Choose three maximal trials with sufficiently different durations.",
+        "Collect each trial on a measured route or track under comparable conditions.",
+        "Record exact distance and elapsed time.",
+        "Enter all three distance-time pairs.",
+        "Track.Lab fits distance = CS × time + D′ and reports CS, D′, and residual quality."
+      ],
+      "warmupSuggestion": "For each trial: 15-25 min easy + dynamic drills + 3-4 strides + full reset. Separate days or full recovery are preferred.",
+      "testExecution": {
+        "executionMode": "three_trial_regression_model",
+        "primaryInstruction": "Use three valid maximal trials to fit a distance-time regression model.",
+        "pacingInstruction": "Each trial should be maximal for the selected distance, with no intentional workout pacing.",
+        "validityChecks": [
+          "three valid distance-time pairs required",
+          "trials should span different durations",
+          "flag outlier residuals",
+          "do not hide poor model fit"
+        ],
+        "retestSuggestion": "Retest when fitness changes substantially or when one trial is clearly outdated."
+      },
+      "outputCalculations": [
+        {
+          "output": "critical_speed_m_s",
+          "formula": "slope of linear regression: distance_m = CS × time_sec + D′",
+          "label": "model-derived"
+        },
+        {
+          "output": "D_prime_m",
+          "formula": "intercept of linear regression",
+          "label": "model-derived"
+        },
+        {
+          "output": "critical_pace_sec_per_km",
+          "formula": "1000 / CS",
+          "label": "model-derived"
+        },
+        {
+          "output": "fit_residuals",
+          "formula": "observed_distance - predicted_distance for each trial",
+          "label": "quality check"
+        },
+        {
+          "output": "r_squared_optional",
+          "formula": "1 - SSE/SST",
+          "label": "fit quality estimate"
+        }
+      ],
+      "formulaHooks": [
+        "three_point_cs",
+        "linear_regression_distance_time",
+        "critical_pace_converter",
+        "d_prime",
+        "residual_check",
+        "critical_speed_zones"
+      ],
+      "safetyNotes": [
+        "Do not perform maximal or near-maximal tests when sick, injured, unusually fatigued, dizzy, or experiencing chest pain.",
+        "Use a safe, measured route or track; avoid traffic, extreme heat, storms, smoke, slippery surfaces, and poor visibility.",
+        "Warm up before hard tests and stop immediately if symptoms feel abnormal.",
+        "Track.Lab must label all results as field estimates, not medical diagnosis or lab testing.",
+        "Use model-fit warnings; do not present CS as exact physiology.",
+        "High residuals mean the protocol should be reviewed, not hidden."
+      ],
+      "confidenceLabel": "moderate-high",
+      "limitation": "Three-point CS is more robust than two-point but still depends on maximal effort quality, trial spacing, route accuracy, and model assumptions.",
+      "relatedModules": [
+        "Critical Speed Lab",
+        "Training Pace Lab",
+        "Race Lab",
+        "Pace Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_009",
+      "name": "HR Recovery Test",
+      "purpose": "Quantify how many beats per minute HR drops after a standardized hard effort, using 1-minute and optional 2-minute recovery values as non-medical recovery metrics.",
+      "testType": "heart_rate_recovery_field_test",
+      "bestUsedFor": [
+        "Users who want a simple repeatable recovery-response metric.",
+        "Runners with reliable HR data and a repeatable test setup.",
+        "Recovery Check Lab users tracking trends over time."
+      ],
+      "notIdealFor": [
+        "Users seeking medical screening or diagnosis.",
+        "Users with chest pain, faintness, palpitations, or other concerning symptoms.",
+        "Users without reliable HR measurement."
+      ],
+      "requiredInputs": [
+        {
+          "key": "peak_hr_bpm",
+          "label": "Peak HR immediately at test end",
+          "unit": "bpm",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "hr_after_1min_bpm",
+          "label": "HR after 1 minute recovery",
+          "unit": "bpm",
+          "validation": "must be > 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "hr_after_2min_bpm",
+          "label": "HR after 2 minutes recovery",
+          "unit": "bpm"
+        },
+        {
+          "key": "recovery_mode",
+          "label": "Recovery mode",
+          "unit": "standing/walking/jogging"
+        },
+        {
+          "key": "test_effort_type",
+          "label": "Effort used before recovery",
+          "unit": "text"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        },
+        {
+          "key": "rpe_1_10",
+          "label": "RPE before stop",
+          "unit": "1-10"
+        }
+      ],
+      "protocolSteps": [
+        "Use the same pre-test effort each time, such as a controlled hard 3-5 min segment or after a time trial.",
+        "At the end of the effort, record peak HR.",
+        "Recover using a standardized mode: standing, walking, or easy jogging.",
+        "Record HR exactly after 1 minute and optionally after 2 minutes.",
+        "Compare only against the user's own previous tests with the same recovery mode."
+      ],
+      "warmupSuggestion": "10-20 min easy + optional short progressive segment before the standardized hard effort.",
+      "testExecution": {
+        "executionMode": "post_effort_hr_drop",
+        "primaryInstruction": "Measure HR drop from peak to 1 minute and optionally 2 minutes post-effort.",
+        "pacingInstruction": "Use consistent pre-test intensity and consistent recovery mode.",
+        "validityChecks": [
+          "HR sensor should be reliable",
+          "recovery posture/mode must be recorded",
+          "do not compare standing HRR to jogging HRR directly",
+          "not a readiness score or medical diagnostic result"
+        ],
+        "retestSuggestion": "Use as a trend metric after similar workouts or standardized test sessions."
+      },
+      "outputCalculations": [
+        {
+          "output": "hrr_1min_bpm",
+          "formula": "peak_hr_bpm - hr_after_1min_bpm",
+          "label": "exact from input"
+        },
+        {
+          "output": "hrr_2min_bpm",
+          "formula": "peak_hr_bpm - hr_after_2min_bpm",
+          "label": "exact if input supplied"
+        },
+        {
+          "output": "hrr_percent_1min",
+          "formula": "hrr_1min_bpm / peak_hr_bpm × 100",
+          "label": "simple percentage"
+        },
+        {
+          "output": "trend_delta_vs_baseline",
+          "formula": "current_HRR - baseline_HRR",
+          "label": "self-comparison only"
+        }
+      ],
+      "formulaHooks": [
+        "hr_recovery_delta",
+        "recovery_check",
+        "hr_trend",
+        "manual_baseline_comparison"
+      ],
+      "safetyNotes": [
+        "This is not medical testing, not cardiovascular diagnosis, and not a readiness score.",
+        "Stop and seek appropriate care if chest symptoms, faintness, abnormal shortness of breath, or concerning symptoms occur.",
+        "HRR comparison must use the same recovery mode and similar conditions."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "HR recovery is affected by intensity, heat, hydration, caffeine, stress, sleep, sensor error, posture, and recovery mode. Use only for personal trend tracking.",
+      "relatedModules": [
+        "Recovery Check Lab",
+        "Heart Rate Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_010",
+      "name": "Sweat Rate Test",
+      "purpose": "Estimate individual sweat rate from body mass change, fluid intake, urine output, and duration, then support hydration planning.",
+      "testType": "hydration_field_test",
+      "bestUsedFor": [
+        "Long-run, half-marathon, marathon, trail, and hot-weather users.",
+        "Users wanting personalized fluid planning rather than generic fluid targets.",
+        "Fuel & Hydration Lab users."
+      ],
+      "notIdealFor": [
+        "Users expecting clinical hydration analysis.",
+        "Runs where clothing is soaked and retained water distorts body mass.",
+        "Users without an accurate scale."
+      ],
+      "requiredInputs": [
+        {
+          "key": "pre_weight_kg",
+          "label": "Body mass before run",
+          "unit": "kg",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "post_weight_kg",
+          "label": "Body mass after run",
+          "unit": "kg",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "fluid_intake_l",
+          "label": "Fluid consumed during run",
+          "unit": "L",
+          "validation": "must be >= 0"
+        },
+        {
+          "key": "duration_hours",
+          "label": "Run duration",
+          "unit": "h",
+          "validation": "must be > 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "urine_output_l",
+          "label": "Urine output during test",
+          "unit": "L"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        },
+        {
+          "key": "humidity_percent",
+          "label": "Humidity",
+          "unit": "%"
+        },
+        {
+          "key": "clothing_notes",
+          "label": "Clothing notes",
+          "unit": "text"
+        },
+        {
+          "key": "sodium_intake_mg",
+          "label": "Sodium intake during run",
+          "unit": "mg"
+        }
+      ],
+      "protocolSteps": [
+        "Weigh before the run with minimal clothing and dry skin.",
+        "Record all fluid consumed during the run.",
+        "Record urine output if it occurs during the test.",
+        "Run at the target condition/intensity you want to plan for.",
+        "After the run, towel dry and weigh again as soon as practical.",
+        "Enter data and label environmental condition."
+      ],
+      "warmupSuggestion": "No hard warmup required; use the planned workout warmup if paired with another run.",
+      "testExecution": {
+        "executionMode": "pre_post_body_mass_fluid_balance",
+        "primaryInstruction": "Estimate fluid loss from body mass change adjusted for fluid intake and urine output.",
+        "pacingInstruction": "Use a representative pace/intensity for the condition you want to plan.",
+        "validityChecks": [
+          "scale should be consistent",
+          "pre/post clothing should be similar and dry/toweled",
+          "duration must be in hours",
+          "record temperature/humidity for comparison"
+        ],
+        "retestSuggestion": "Repeat in cool, moderate, and hot conditions if user wants condition-specific estimates."
+      },
+      "outputCalculations": [
+        {
+          "output": "body_mass_loss_kg",
+          "formula": "pre_weight_kg - post_weight_kg",
+          "label": "exact from input"
+        },
+        {
+          "output": "sweat_loss_l",
+          "formula": "body_mass_loss_kg + fluid_intake_l - urine_output_l",
+          "label": "field estimate; assumes 1 kg ≈ 1 L"
+        },
+        {
+          "output": "sweat_rate_l_per_hour",
+          "formula": "sweat_loss_l / duration_hours",
+          "label": "field estimate"
+        },
+        {
+          "output": "body_mass_loss_percent",
+          "formula": "body_mass_loss_kg / pre_weight_kg × 100",
+          "label": "field estimate"
+        },
+        {
+          "output": "fluid_plan_reference",
+          "formula": "sweat_rate_l_per_hour × duration_hours × user_selected_replacement_fraction",
+          "label": "planning estimate"
+        }
+      ],
+      "formulaHooks": [
+        "sweat_rate",
+        "fluid_total",
+        "body_mass_loss_percent",
+        "hydration_plan",
+        "sodium_total"
+      ],
+      "safetyNotes": [
+        "Do not overdrink to chase 100% replacement without considering comfort and hyponatremia risk.",
+        "Sweat rate is condition-specific and changes with heat, humidity, intensity, acclimation, and clothing.",
+        "Not a medical hydration test."
+      ],
+      "confidenceLabel": "moderate-high",
+      "limitation": "Field sweat rate is affected by scale precision, clothing water retention, unrecorded fluid/urine, gut contents, and environmental changes.",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Environment Lab",
+        "Long Run Planner",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_011",
+      "name": "Treadmill Calibration Test",
+      "purpose": "Compare treadmill-reported speed/pace against external measurement or known belt behavior, then label treadmill sessions with calibration confidence.",
+      "testType": "equipment_calibration_test",
+      "bestUsedFor": [
+        "Users frequently training on treadmill.",
+        "Users comparing treadmill pace to outdoor pace.",
+        "Treadmill Lab users calculating speed, incline, ACSM VO2, or grade cost."
+      ],
+      "notIdealFor": [
+        "Users without permission/safety to mark or measure treadmill belt.",
+        "High-speed testing without safety clip or clear space.",
+        "Users treating calibration as exact lab certification."
+      ],
+      "requiredInputs": [
+        {
+          "key": "display_speed_kmh",
+          "label": "Treadmill displayed speed",
+          "unit": "km/h",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "test_duration_sec",
+          "label": "Test duration",
+          "unit": "s",
+          "validation": "must be > 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "measured_belt_distance_m",
+          "label": "Measured belt distance during test",
+          "unit": "m"
+        },
+        {
+          "key": "footpod_distance_m",
+          "label": "Footpod/watch measured distance",
+          "unit": "m"
+        },
+        {
+          "key": "incline_percent",
+          "label": "Incline setting",
+          "unit": "%"
+        },
+        {
+          "key": "treadmill_model",
+          "label": "Treadmill model",
+          "unit": "text"
+        }
+      ],
+      "protocolSteps": [
+        "Use treadmill safety clip and stable footwear.",
+        "Warm up at easy speed.",
+        "Run or walk at a fixed displayed speed for a fixed duration.",
+        "Capture external distance if available via calibrated footpod or safe belt measurement method.",
+        "Calculate displayed vs measured speed difference.",
+        "Store calibration note by treadmill model/speed range."
+      ],
+      "warmupSuggestion": "5-10 min easy treadmill walk/jog before measurement.",
+      "testExecution": {
+        "executionMode": "display_vs_measured_speed_comparison",
+        "primaryInstruction": "Compare treadmill displayed speed to measured or external speed estimate.",
+        "pacingInstruction": "Hold speed constant; do not change incline or speed mid-test.",
+        "validityChecks": [
+          "speed must be constant",
+          "external measurement method must be recorded",
+          "different speeds may have different errors",
+          "do not perform unsafe belt marking"
+        ],
+        "retestSuggestion": "Retest after treadmill maintenance or when changing treadmill."
+      },
+      "outputCalculations": [
+        {
+          "output": "display_speed_m_s",
+          "formula": "display_speed_kmh / 3.6",
+          "label": "exact conversion"
+        },
+        {
+          "output": "measured_speed_m_s",
+          "formula": "measured_belt_distance_m / test_duration_sec",
+          "label": "field estimate"
+        },
+        {
+          "output": "speed_error_percent",
+          "formula": "(display_speed_m_s - measured_speed_m_s) / measured_speed_m_s × 100",
+          "label": "calibration estimate"
+        },
+        {
+          "output": "pace_display_sec_per_km",
+          "formula": "3600 / display_speed_kmh",
+          "label": "exact conversion"
+        },
+        {
+          "output": "acsm_running_vo2_optional",
+          "formula": "VO2 = 0.2×speed_m_min + 0.9×speed_m_min×grade + 3.5",
+          "label": "metabolic estimate"
+        }
+      ],
+      "formulaHooks": [
+        "treadmill_speed_converter",
+        "calibration_error_percent",
+        "acsm_running_vo2",
+        "pace_speed_converter"
+      ],
+      "safetyNotes": [
+        "Use safety clip and avoid unsafe belt measurement at high speed.",
+        "Calibration result is equipment-specific and speed-specific.",
+        "Do not overcorrect workout intensity solely from one imperfect test."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "Consumer treadmills, footpods, and watches all have error. Calibration should be displayed as a confidence note, not a certified correction.",
+      "relatedModules": [
+        "Treadmill Lab",
+        "Pace Lab",
+        "VO2 & Metabolic Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_012",
+      "name": "Cadence Test",
+      "purpose": "Calculate steps per minute from counted steps or device step count over a controlled segment.",
+      "testType": "biomechanics_field_test",
+      "bestUsedFor": [
+        "Users analyzing running mechanics with simple manual data.",
+        "Runners comparing cadence across easy, tempo, and race pace.",
+        "Biomechanics Lab users needing cadence input for stride length."
+      ],
+      "notIdealFor": [
+        "Users expecting injury diagnosis or form coaching.",
+        "Segments with hills, turns, traffic stops, or major pace changes.",
+        "Using inaccurate step data without validation."
+      ],
+      "requiredInputs": [
+        {
+          "key": "steps_count",
+          "label": "Total steps counted",
+          "unit": "steps",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "duration_sec",
+          "label": "Counting duration",
+          "unit": "s",
+          "validation": "must be > 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "pace_sec_per_km",
+          "label": "Pace during segment",
+          "unit": "s/km"
+        },
+        {
+          "key": "speed_m_s",
+          "label": "Speed during segment",
+          "unit": "m/s"
+        },
+        {
+          "key": "surface",
+          "label": "Surface",
+          "unit": "text"
+        },
+        {
+          "key": "effort_label",
+          "label": "Effort label",
+          "unit": "easy/steady/hard"
+        }
+      ],
+      "protocolSteps": [
+        "Choose a flat straight segment.",
+        "Reach the pace you want to measure.",
+        "Count every foot contact for 30-60 seconds or use device step count for the selected segment.",
+        "Record duration and step count.",
+        "Repeat at different paces if comparing cadence by intensity."
+      ],
+      "warmupSuggestion": "5-10 min easy running before measurement if not already warmed up.",
+      "testExecution": {
+        "executionMode": "manual_or_device_step_count",
+        "primaryInstruction": "Count total steps over a known duration.",
+        "pacingInstruction": "Keep pace and effort stable during the measured segment.",
+        "validityChecks": [
+          "duration should be long enough to reduce counting error",
+          "cadence means steps per minute, not strides per minute",
+          "repeat segments are better than one sample"
+        ],
+        "retestSuggestion": "Measure occasionally across easy, steady, and faster paces; no need for frequent maximal testing."
+      },
+      "outputCalculations": [
+        {
+          "output": "cadence_spm",
+          "formula": "steps_count / (duration_sec / 60)",
+          "label": "exact from input"
+        },
+        {
+          "output": "total_steps_for_run_optional",
+          "formula": "cadence_spm × duration_minutes",
+          "label": "estimate if cadence is constant"
+        },
+        {
+          "output": "stride_length_optional",
+          "formula": "speed_m_s × 60 / cadence_spm",
+          "label": "estimate; uses steps/min cadence"
+        }
+      ],
+      "formulaHooks": [
+        "cadence_spm",
+        "total_steps",
+        "stride_length",
+        "speed_cadence_stride_relation"
+      ],
+      "safetyNotes": [
+        "Do not use cadence alone as injury prediction.",
+        "Avoid forcing a target cadence aggressively; Track.Lab should only calculate and display.",
+        "Surface, pace, fatigue, and body size affect cadence."
+      ],
+      "confidenceLabel": "high",
+      "limitation": "Cadence is simple arithmetic but depends on accurate step count and stable pace. It should not be used as a standalone form diagnosis.",
+      "relatedModules": [
+        "Biomechanics Lab",
+        "Pace Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_013",
+      "name": "Stride Length Test",
+      "purpose": "Estimate average step length or stride length from speed and cadence, or from measured distance and steps.",
+      "testType": "biomechanics_field_test",
+      "bestUsedFor": [
+        "Users analyzing speed-cadence-stride relationships.",
+        "Runners comparing mechanics across easy, steady, and fast paces.",
+        "Biomechanics Lab users needing transparent formula output."
+      ],
+      "notIdealFor": [
+        "Users seeking gait diagnosis.",
+        "Uneven terrain or segments with acceleration/deceleration.",
+        "Using stride length without clarifying step vs full gait cycle definition."
+      ],
+      "requiredInputs": [
+        {
+          "key": "distance_m",
+          "label": "Measured segment distance",
+          "unit": "m",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "steps_count",
+          "label": "Total steps over segment",
+          "unit": "steps",
+          "validation": "must be > 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "duration_sec",
+          "label": "Segment duration",
+          "unit": "s"
+        },
+        {
+          "key": "cadence_spm",
+          "label": "Cadence",
+          "unit": "steps/min"
+        },
+        {
+          "key": "surface",
+          "label": "Surface",
+          "unit": "text"
+        },
+        {
+          "key": "effort_label",
+          "label": "Effort label",
+          "unit": "easy/steady/hard"
+        }
+      ],
+      "protocolSteps": [
+        "Choose a flat measured segment.",
+        "Run at stable pace through the segment.",
+        "Count total steps or capture device step count.",
+        "Record distance and optional time.",
+        "Calculate average step length and, if desired, full stride cycle length."
+      ],
+      "warmupSuggestion": "5-10 min easy running before measurement.",
+      "testExecution": {
+        "executionMode": "distance_steps_relation",
+        "primaryInstruction": "Measure distance and count steps over a stable segment.",
+        "pacingInstruction": "Avoid accelerating, braking, or weaving during the segment.",
+        "validityChecks": [
+          "distance must be measured accurately",
+          "steps must count every foot contact",
+          "clearly label step length vs stride-cycle length"
+        ],
+        "retestSuggestion": "Compare under similar surface and pace conditions."
+      },
+      "outputCalculations": [
+        {
+          "output": "step_length_m",
+          "formula": "distance_m / steps_count",
+          "label": "exact from input"
+        },
+        {
+          "output": "stride_cycle_length_m_optional",
+          "formula": "2 × step_length_m",
+          "label": "definition-dependent estimate"
+        },
+        {
+          "output": "cadence_spm_optional",
+          "formula": "steps_count / (duration_sec / 60)",
+          "label": "if duration supplied"
+        },
+        {
+          "output": "speed_m_s_optional",
+          "formula": "distance_m / duration_sec",
+          "label": "if duration supplied"
+        }
+      ],
+      "formulaHooks": [
+        "stride_length",
+        "cadence_spm",
+        "speed_converter",
+        "speed_cadence_stride_relation"
+      ],
+      "safetyNotes": [
+        "Do not diagnose overstriding or injury risk from this number alone.",
+        "Clarify step length vs stride length terminology in UI.",
+        "Repeat measurements are more useful than one isolated value."
+      ],
+      "confidenceLabel": "high",
+      "limitation": "The math is exact from input, but the interpretation is limited by measurement accuracy, pace, terrain, and definition choice.",
+      "relatedModules": [
+        "Biomechanics Lab",
+        "Pace Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_014",
+      "name": "Easy Run Drift Test",
+      "purpose": "Estimate aerobic decoupling by comparing efficiency in the first and second halves of a steady easy run.",
+      "testType": "aerobic_drift_field_test",
+      "bestUsedFor": [
+        "Runners monitoring aerobic durability from steady low-intensity runs.",
+        "Users with HR data and a repeatable easy route.",
+        "Load/Recovery users who want non-diagnostic drift tracking."
+      ],
+      "notIdealFor": [
+        "Hot/humid days, hilly routes, trail terrain, or stop-start runs.",
+        "Users without reliable HR or pace/speed data.",
+        "Using drift as an injury or illness diagnosis."
+      ],
+      "requiredInputs": [
+        {
+          "key": "first_half_speed_m_s",
+          "label": "First half average speed",
+          "unit": "m/s",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "first_half_hr_bpm",
+          "label": "First half average HR",
+          "unit": "bpm",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "second_half_speed_m_s",
+          "label": "Second half average speed",
+          "unit": "m/s",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "second_half_hr_bpm",
+          "label": "Second half average HR",
+          "unit": "bpm",
+          "validation": "must be > 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "duration_min",
+          "label": "Run duration",
+          "unit": "min"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        },
+        {
+          "key": "humidity_percent",
+          "label": "Humidity",
+          "unit": "%"
+        },
+        {
+          "key": "route_elevation_gain_m",
+          "label": "Elevation gain",
+          "unit": "m"
+        },
+        {
+          "key": "fuel_fluid_notes",
+          "label": "Fuel/fluid notes",
+          "unit": "text"
+        }
+      ],
+      "protocolSteps": [
+        "Choose a flat, repeatable easy route of sufficient duration.",
+        "Run at stable easy effort without intentional progression.",
+        "Split the run into first half and second half.",
+        "Record average speed and average HR for both halves.",
+        "Calculate efficiency factor and decoupling percentage.",
+        "Add environment notes to avoid overinterpreting heat-related drift."
+      ],
+      "warmupSuggestion": "Normal easy-run warmup: first 5-10 min very easy; do not include stop-start warmup if it distorts segment averages.",
+      "testExecution": {
+        "executionMode": "first_second_half_efficiency_comparison",
+        "primaryInstruction": "Compare speed-to-HR efficiency from first half to second half of a steady easy run.",
+        "pacingInstruction": "Keep route, effort, and terrain as steady as possible.",
+        "validityChecks": [
+          "avoid major hills/stops",
+          "HR sensor must be reliable",
+          "heat and dehydration can distort drift",
+          "do not use as medical diagnosis"
+        ],
+        "retestSuggestion": "Track trends across similar easy runs rather than reacting to one run."
+      },
+      "outputCalculations": [
+        {
+          "output": "efficiency_factor_first",
+          "formula": "first_half_speed_m_s / first_half_hr_bpm",
+          "label": "field metric"
+        },
+        {
+          "output": "efficiency_factor_second",
+          "formula": "second_half_speed_m_s / second_half_hr_bpm",
+          "label": "field metric"
+        },
+        {
+          "output": "decoupling_percent",
+          "formula": "(efficiency_factor_first - efficiency_factor_second) / efficiency_factor_first × 100",
+          "label": "field estimate"
+        },
+        {
+          "output": "pace_drift_percent_optional",
+          "formula": "(second_half_pace - first_half_pace) / first_half_pace × 100",
+          "label": "if using pace"
+        }
+      ],
+      "formulaHooks": [
+        "aerobic_decoupling",
+        "pace_drift",
+        "hr_drift",
+        "efficiency_factor",
+        "environment_notes"
+      ],
+      "safetyNotes": [
+        "Decoupling is not a diagnosis and not a readiness score.",
+        "Heat, dehydration, hills, wind, cardiac drift, and sensor error can change the result.",
+        "If symptoms are abnormal, stop and seek appropriate care."
+      ],
+      "confidenceLabel": "moderate",
+      "limitation": "Useful as a repeatable trend metric only. Interpretation is weak when route, weather, terrain, or HR sensor quality changes.",
+      "relatedModules": [
+        "Heart Rate Lab",
+        "Load Lab",
+        "Recovery Check Lab",
+        "Environment Lab",
+        "Export Tools"
+      ]
+    },
+    {
+      "id": "ftp_015",
+      "name": "Long Run Fueling Test",
+      "purpose": "Test carbohydrate, fluid, and sodium intake strategy during a representative long run using manual inputs and outcome notes.",
+      "testType": "fueling_hydration_field_test",
+      "bestUsedFor": [
+        "Half-marathon, marathon, ultra, trail, and long-run users.",
+        "Users practicing race fueling before event day.",
+        "Fuel & Hydration Lab users comparing gut tolerance and performance notes."
+      ],
+      "notIdealFor": [
+        "Short runs where fueling is unnecessary.",
+        "Users with medical nutrition restrictions unless guided by a qualified professional.",
+        "Testing new aggressive fueling on race day."
+      ],
+      "requiredInputs": [
+        {
+          "key": "duration_hours",
+          "label": "Long run duration",
+          "unit": "h",
+          "validation": "must be > 0"
+        },
+        {
+          "key": "carb_g_total",
+          "label": "Total carbohydrate consumed",
+          "unit": "g",
+          "validation": "must be >= 0"
+        },
+        {
+          "key": "fluid_l_total",
+          "label": "Total fluid consumed",
+          "unit": "L",
+          "validation": "must be >= 0"
+        }
+      ],
+      "optionalInputs": [
+        {
+          "key": "sodium_mg_total",
+          "label": "Total sodium consumed",
+          "unit": "mg"
+        },
+        {
+          "key": "body_weight_pre_kg",
+          "label": "Pre-run body mass",
+          "unit": "kg"
+        },
+        {
+          "key": "body_weight_post_kg",
+          "label": "Post-run body mass",
+          "unit": "kg"
+        },
+        {
+          "key": "urine_output_l",
+          "label": "Urine output",
+          "unit": "L"
+        },
+        {
+          "key": "gi_comfort_1_10",
+          "label": "GI comfort rating",
+          "unit": "1-10"
+        },
+        {
+          "key": "energy_rating_1_10",
+          "label": "Energy rating",
+          "unit": "1-10"
+        },
+        {
+          "key": "temperature_c",
+          "label": "Temperature",
+          "unit": "°C"
+        }
+      ],
+      "protocolSteps": [
+        "Choose a long run that resembles the target event or training condition.",
+        "Plan carb, fluid, and sodium sources before starting.",
+        "Record intake timing and totals during the run.",
+        "Record GI comfort, energy, perceived effort, and any issues.",
+        "Optionally combine with sweat-rate test using body mass change.",
+        "Review carb/hour, fluid/hour, sodium/hour, and notes; do not auto-recommend changes."
+      ],
+      "warmupSuggestion": "Use the long-run warmup already planned; first 10-15 min easy is sufficient.",
+      "testExecution": {
+        "executionMode": "manual_fuel_hydration_trial",
+        "primaryInstruction": "Practice a selected fueling/hydration plan and calculate actual intake rates.",
+        "pacingInstruction": "Run at representative long-run or race-specific effort; do not make the workout harder just to test fuel.",
+        "validityChecks": [
+          "totals must be manually entered",
+          "label product/source if user wants repeatability",
+          "do not generate medical nutrition advice",
+          "new high-carb strategies should be practiced progressively"
+        ],
+        "retestSuggestion": "Repeat across different durations and weather conditions before race day."
+      },
+      "outputCalculations": [
+        {
+          "output": "carb_g_per_hour",
+          "formula": "carb_g_total / duration_hours",
+          "label": "exact from input"
+        },
+        {
+          "output": "fluid_l_per_hour",
+          "formula": "fluid_l_total / duration_hours",
+          "label": "exact from input"
+        },
+        {
+          "output": "sodium_mg_per_hour",
+          "formula": "sodium_mg_total / duration_hours",
+          "label": "exact if sodium supplied"
+        },
+        {
+          "output": "sodium_mg_per_l",
+          "formula": "sodium_mg_total / fluid_l_total",
+          "label": "exact if both supplied"
+        },
+        {
+          "output": "sweat_rate_optional",
+          "formula": "(pre_weight_kg - post_weight_kg + fluid_l_total - urine_output_l) / duration_hours",
+          "label": "field estimate"
+        },
+        {
+          "output": "fueling_timeline_optional",
+          "formula": "total intake divided by user-selected segment interval",
+          "label": "planning structure"
+        }
+      ],
+      "formulaHooks": [
+        "carb_total",
+        "carb_per_hour",
+        "fluid_total",
+        "sodium_total",
+        "sweat_rate",
+        "fueling_timeline"
+      ],
+      "safetyNotes": [
+        "This is not nutrition therapy or medical advice.",
+        "GI tolerance varies; do not force intake that causes distress.",
+        "Avoid overdrinking. Record conditions because heat changes fluid needs.",
+        "Race-day plan should be practiced before race day."
+      ],
+      "confidenceLabel": "moderate-high",
+      "limitation": "Fueling results are highly individual and condition-specific. Track.Lab should calculate observed intake and notes, not prescribe nutrition automatically.",
+      "relatedModules": [
+        "Fuel & Hydration Lab",
+        "Long Run Planner",
+        "Environment Lab",
+        "Race Lab",
+        "Export Tools"
+      ]
+    }
+  ]
+}

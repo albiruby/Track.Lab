@@ -1,0 +1,426 @@
+{
+  "schemaVersion": "tracklab_formula_method_registry_validation_v1.0",
+  "generatedDate": "2026-05-29",
+  "count": 110,
+  "allRequiredFieldsComplete": false,
+  "missingByMethod": {
+    "mtd_001": [
+      "optionalInputs"
+    ],
+    "mtd_002": [
+      "optionalInputs"
+    ],
+    "mtd_003": [
+      "optionalInputs"
+    ],
+    "mtd_004": [
+      "optionalInputs"
+    ],
+    "mtd_005": [
+      "optionalInputs"
+    ],
+    "mtd_006": [
+      "optionalInputs"
+    ],
+    "mtd_007": [
+      "optionalInputs"
+    ],
+    "mtd_008": [
+      "optionalInputs"
+    ],
+    "mtd_009": [
+      "optionalInputs"
+    ],
+    "mtd_010": [
+      "optionalInputs"
+    ],
+    "mtd_011": [
+      "optionalInputs"
+    ],
+    "mtd_012": [
+      "optionalInputs"
+    ],
+    "mtd_013": [
+      "optionalInputs"
+    ],
+    "mtd_014": [
+      "optionalInputs"
+    ],
+    "mtd_015": [
+      "optionalInputs"
+    ],
+    "mtd_016": [
+      "optionalInputs"
+    ],
+    "mtd_017": [
+      "optionalInputs"
+    ],
+    "mtd_018": [
+      "optionalInputs"
+    ],
+    "mtd_019": [
+      "optionalInputs"
+    ],
+    "mtd_020": [
+      "optionalInputs"
+    ],
+    "mtd_021": [
+      "optionalInputs"
+    ],
+    "mtd_022": [
+      "optionalInputs"
+    ],
+    "mtd_023": [
+      "optionalInputs"
+    ],
+    "mtd_024": [
+      "optionalInputs"
+    ],
+    "mtd_025": [
+      "optionalInputs"
+    ],
+    "mtd_026": [
+      "optionalInputs"
+    ],
+    "mtd_027": [
+      "optionalInputs"
+    ],
+    "mtd_028": [
+      "optionalInputs"
+    ],
+    "mtd_029": [
+      "optionalInputs"
+    ],
+    "mtd_030": [
+      "optionalInputs"
+    ],
+    "mtd_031": [
+      "optionalInputs"
+    ],
+    "mtd_032": [
+      "optionalInputs"
+    ],
+    "mtd_033": [
+      "optionalInputs"
+    ],
+    "mtd_034": [
+      "optionalInputs"
+    ],
+    "mtd_035": [
+      "optionalInputs"
+    ],
+    "mtd_036": [
+      "optionalInputs"
+    ],
+    "mtd_037": [
+      "optionalInputs"
+    ],
+    "mtd_038": [
+      "optionalInputs"
+    ],
+    "mtd_039": [
+      "optionalInputs"
+    ],
+    "mtd_040": [
+      "optionalInputs"
+    ],
+    "mtd_041": [
+      "optionalInputs"
+    ],
+    "mtd_042": [
+      "optionalInputs"
+    ],
+    "mtd_043": [
+      "optionalInputs"
+    ],
+    "mtd_044": [
+      "optionalInputs"
+    ],
+    "mtd_045": [
+      "optionalInputs"
+    ],
+    "mtd_046": [
+      "optionalInputs"
+    ],
+    "mtd_047": [
+      "optionalInputs"
+    ],
+    "mtd_048": [
+      "optionalInputs"
+    ],
+    "mtd_049": [
+      "optionalInputs"
+    ],
+    "mtd_050": [
+      "optionalInputs"
+    ],
+    "mtd_051": [
+      "optionalInputs"
+    ],
+    "mtd_052": [
+      "optionalInputs"
+    ],
+    "mtd_053": [
+      "optionalInputs"
+    ],
+    "mtd_054": [
+      "optionalInputs"
+    ],
+    "mtd_055": [
+      "optionalInputs"
+    ],
+    "mtd_056": [
+      "optionalInputs"
+    ],
+    "mtd_057": [
+      "optionalInputs"
+    ],
+    "mtd_058": [
+      "optionalInputs"
+    ],
+    "mtd_059": [
+      "optionalInputs"
+    ],
+    "mtd_060": [
+      "optionalInputs"
+    ],
+    "mtd_061": [
+      "optionalInputs"
+    ],
+    "mtd_062": [
+      "optionalInputs"
+    ],
+    "mtd_063": [
+      "optionalInputs"
+    ],
+    "mtd_064": [
+      "optionalInputs"
+    ],
+    "mtd_065": [
+      "optionalInputs"
+    ],
+    "mtd_066": [
+      "optionalInputs"
+    ],
+    "mtd_067": [
+      "optionalInputs"
+    ],
+    "mtd_068": [
+      "optionalInputs"
+    ],
+    "mtd_069": [
+      "optionalInputs"
+    ],
+    "mtd_070": [
+      "optionalInputs"
+    ],
+    "mtd_071": [
+      "optionalInputs"
+    ],
+    "mtd_072": [
+      "optionalInputs"
+    ],
+    "mtd_073": [
+      "optionalInputs"
+    ],
+    "mtd_074": [
+      "optionalInputs"
+    ],
+    "mtd_075": [
+      "optionalInputs"
+    ],
+    "mtd_076": [
+      "optionalInputs"
+    ],
+    "mtd_077": [
+      "optionalInputs"
+    ],
+    "mtd_078": [
+      "optionalInputs"
+    ],
+    "mtd_079": [
+      "optionalInputs"
+    ],
+    "mtd_080": [
+      "optionalInputs"
+    ],
+    "mtd_081": [
+      "optionalInputs"
+    ],
+    "mtd_082": [
+      "optionalInputs"
+    ],
+    "mtd_083": [
+      "optionalInputs"
+    ],
+    "mtd_084": [
+      "optionalInputs"
+    ],
+    "mtd_085": [
+      "optionalInputs"
+    ],
+    "mtd_086": [
+      "optionalInputs"
+    ],
+    "mtd_087": [
+      "optionalInputs"
+    ],
+    "mtd_088": [
+      "optionalInputs"
+    ],
+    "mtd_089": [
+      "optionalInputs"
+    ],
+    "mtd_090": [
+      "optionalInputs"
+    ],
+    "mtd_091": [
+      "optionalInputs"
+    ],
+    "mtd_092": [
+      "optionalInputs"
+    ],
+    "mtd_093": [
+      "optionalInputs"
+    ],
+    "mtd_094": [
+      "optionalInputs"
+    ],
+    "mtd_095": [
+      "optionalInputs"
+    ],
+    "mtd_096": [
+      "optionalInputs"
+    ],
+    "mtd_097": [
+      "optionalInputs"
+    ],
+    "mtd_098": [
+      "optionalInputs"
+    ],
+    "mtd_099": [
+      "optionalInputs"
+    ],
+    "mtd_100": [
+      "optionalInputs"
+    ],
+    "mtd_101": [
+      "optionalInputs"
+    ],
+    "mtd_102": [
+      "optionalInputs"
+    ],
+    "mtd_103": [
+      "optionalInputs"
+    ],
+    "mtd_104": [
+      "optionalInputs"
+    ],
+    "mtd_105": [
+      "optionalInputs"
+    ],
+    "mtd_106": [
+      "optionalInputs"
+    ],
+    "mtd_107": [
+      "optionalInputs"
+    ],
+    "mtd_108": [
+      "optionalInputs"
+    ],
+    "mtd_109": [
+      "optionalInputs"
+    ],
+    "mtd_110": [
+      "optionalInputs"
+    ]
+  },
+  "uniqueMethodIds": true,
+  "uniqueMethodNames": true,
+  "routeCounts": {
+    "/biomechanics": 7,
+    "/critical-speed": 8,
+    "/elevation": 2,
+    "/energy": 1,
+    "/environment": 3,
+    "/field-tests": 14,
+    "/fuel-hydration": 9,
+    "/gear": 3,
+    "/load": 10,
+    "/pace": 8,
+    "/planner": 4,
+    "/power": 2,
+    "/race": 12,
+    "/recovery": 5,
+    "/treadmill": 4,
+    "/workouts": 10,
+    "/zones": 8
+  },
+  "categoryCounts": {
+    "Aerobic Drift": 1,
+    "Biomechanics": 7,
+    "Critical Speed": 6,
+    "Critical Speed Quality": 2,
+    "Elevation": 2,
+    "Environment": 3,
+    "Field Test": 5,
+    "Field Test Quality": 1,
+    "Fuel & Hydration": 12,
+    "Gear": 3,
+    "Heart Rate": 3,
+    "Heart Rate Zones": 3,
+    "Metabolic Estimate": 2,
+    "Pace & Speed": 9,
+    "Pace Analysis": 3,
+    "Planning": 4,
+    "Power": 2,
+    "Race Analysis": 1,
+    "Race Planning": 5,
+    "Race Prediction": 2,
+    "Recovery": 5,
+    "Recovery / Body Metrics": 1,
+    "Training Distribution": 2,
+    "Training Load": 8,
+    "Training Zones": 3,
+    "Treadmill": 3,
+    "Treadmill / Metabolic": 2,
+    "Workout Structure": 10
+  },
+  "statusCounts": {
+    "optionalManualOnly": 2,
+    "optionalWithWarning": 1,
+    "plannedNeedsFormulaSelection": 2,
+    "plannedNeedsVerifiedTable": 1,
+    "readyForImplementation": 103,
+    "researchOnly": 1
+  },
+  "confidenceCounts": {
+    "Cautionary Metric": 1,
+    "Descriptive Metric": 2,
+    "Device-Dependent": 1,
+    "Estimate": 14,
+    "Field Estimate": 5,
+    "Field Metric": 5,
+    "Formula": 60,
+    "Low / Placeholder": 1,
+    "Manual Score": 1,
+    "Model Estimate": 6,
+    "Planning Estimate": 1,
+    "Quality Check": 3,
+    "Requires Formula Selection": 2,
+    "Requires Sensor/Input": 2,
+    "Requires Source Table": 1,
+    "Rough Estimate": 1,
+    "Trend Metric": 3,
+    "User-Defined": 1
+  },
+  "positioningCheck": {
+    "manualInputOnly": true,
+    "formulaBased": true,
+    "noAI": true,
+    "noHiddenModel": true,
+    "noFakeMetrics": true,
+    "noDatabaseDependency": true,
+    "medicalDisclaimerNeededForFitnessHRRecoveryHydration": true
+  }
+}

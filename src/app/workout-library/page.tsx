@@ -149,14 +149,15 @@ export default function WorkoutLibraryPage() {
   // Filter & Search Execution
   const filteredTemplates = useMemo(() => {
     return workoutTemplates.filter(t => {
-      const matchesSearch = searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        (t.id && t.id.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        ('formulaNotes' in t && t.formulaNotes?.some(n => n.toLowerCase().includes(searchQuery.toLowerCase())));
+      const temp = t as any;
+      const matchesSearch = searchQuery === '' || temp.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (temp.id && temp.id.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (temp.formulaNotes && temp.formulaNotes.some((n: string) => n.toLowerCase().includes(searchQuery.toLowerCase())));
 
-      const matchesGoal = goalFilter === 'all' || ('goalDistances' in t && (t.goalDistances as unknown as string[]).includes(goalFilter));
-      const matchesScenario = scenarioFilter === 'all' || ('scenario' in t && t.scenario === scenarioFilter);
-      const matchesFormat = formatFilter === 'all' || ('format' in t && t.format === formatFilter);
-      const matchesIntensity = intensityFilter === 'all' || ('mainSet' in t && (t.mainSet as any)?.intensity === intensityFilter);
+      const matchesGoal = goalFilter === 'all' || (temp.goalDistances && (temp.goalDistances as string[]).includes(goalFilter));
+      const matchesScenario = scenarioFilter === 'all' || (temp.scenario === scenarioFilter);
+      const matchesFormat = formatFilter === 'all' || (temp.format === formatFilter);
+      const matchesIntensity = intensityFilter === 'all' || (temp.mainSet?.intensity === intensityFilter);
 
       return matchesSearch && matchesGoal && matchesScenario && matchesFormat && matchesIntensity;
     });
@@ -469,23 +470,59 @@ export default function WorkoutLibraryPage() {
                 </span>
                 <h3 className="font-display font-black text-xl text-zinc-800 uppercase mt-2">{selectedTemplate.name}</h3>
                 <p className="text-xs font-bold text-muted-foreground capitalize mt-0.5">
-                  Scenario: {('scenario' in selectedTemplate ? selectedTemplate.scenario.replace('_', ' ') : '')} • Type: {('format' in selectedTemplate ? selectedTemplate.format : '')}
+                  Scenario: {('category' in selectedTemplate ? (selectedTemplate as any).category : '')} • Type: {('workoutType' in selectedTemplate ? (selectedTemplate as any).workoutType : '')} • Level: {('level' in selectedTemplate ? (selectedTemplate as any).level : '')}
                 </p>
               </div>
+
+              {/* Purpose & Audience details */}
+              {('purpose' in selectedTemplate) && (selectedTemplate as any).purpose && (
+                <div className="text-xs text-zinc-650 bg-neutral-50 p-3 rounded-lg border border-border">
+                  <strong className="block text-[9px] font-sans text-zinc-500 uppercase tracking-widest mb-1 font-bold">Workout Purpose:</strong>
+                  {(selectedTemplate as any).purpose}
+                </div>
+              )}
+
+              {/* Guidelines & Advice details */}
+              {((selectedTemplate as any).bestUsedFor || (selectedTemplate as any).notIdealFor) && (
+                <div className="grid grid-cols-2 gap-3 text-[10px] leading-normal font-sans">
+                  {(selectedTemplate as any).bestUsedFor && (
+                    <div className="bg-emerald-50/50 p-2.5 rounded border border-emerald-100 text-emerald-950">
+                      <strong className="block text-[8px] uppercase tracking-wider text-emerald-800 font-bold">Best Used For:</strong>
+                      {(selectedTemplate as any).bestUsedFor}
+                    </div>
+                  )}
+                  {(selectedTemplate as any).notIdealFor && (
+                    <div className="bg-red-50/50 p-2.5 rounded border border-red-150 text-red-950">
+                      <strong className="block text-[8px] uppercase tracking-wider text-red-800 font-bold">Not Ideal For:</strong>
+                      {(selectedTemplate as any).notIdealFor}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Formulation Outline Box */}
               <div className="p-3 bg-neutral-50 border-2 border-border-heavy rounded text-[10px] font-mono font-bold leading-relaxed space-y-1">
                 <span className="block uppercase text-[8px] text-muted-foreground font-sans">Sequence trace bounds:</span>
-                <div>Warmup Stage: Include optional warm up limits</div>
-                {('mainSet' in selectedTemplate) && selectedTemplate.mainSet && (
-                  <div className="text-primary uppercase">
-                    Main set: {('reps' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.reps}x ` : ''} 
-                    {('distanceMeters' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.distanceMeters}m ` : ''}
-                    {('durationMinutes' in selectedTemplate.mainSet) ? `${selectedTemplate.mainSet.durationMinutes} min ` : ''}
-                    @ {('intensity' in selectedTemplate.mainSet) ? (selectedTemplate.mainSet as any).intensity : 'effort'}
+                <div>Warmup Stage: {(selectedTemplate as any).warmup || 'Include optional warm up limits'}</div>
+                {('rawMainSetString' in selectedTemplate) && (selectedTemplate as any).rawMainSetString && (
+                  <div className="text-primary font-black uppercase bg-white px-2 py-1.5 border rounded border-border my-1.5 leading-snug">
+                    Main set: {(selectedTemplate as any).rawMainSetString}
                   </div>
                 )}
-                <div>Cooldown Stage: Include optional recovery limits</div>
+                <div>Recovery Stroll: {(selectedTemplate as any).recovery || 'None'}</div>
+                <div>Cooldown Stage: {(selectedTemplate as any).cooldown || 'Include optional recovery limits'}</div>
+              </div>
+
+              {/* Miscellaneous details */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {((selectedTemplate as any).surface || []).map((s: string) => (
+                  <span key={s} className="px-2 py-0.5 bg-neutral-100 text-zinc-600 rounded text-[9px] font-bold border border-neutral-200">
+                    🏞️ {s.toUpperCase()}
+                  </span>
+                ))}
+                <span className="px-2 py-0.5 bg-neutral-150 text-zinc-600 rounded text-[9px] font-bold border border-neutral-200 uppercase">
+                  🎯 CONFIDENCE: {(selectedTemplate as any).confidenceLabel}
+                </span>
               </div>
 
               {/* Parameters Form */}
