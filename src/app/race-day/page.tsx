@@ -351,7 +351,7 @@ export default function RaceDayLabPage() {
 
             <div className="border-2 border-border-heavy bg-white p-4 rounded-xl shadow-[1px_1px_0px_rgba(23,23,23,1)]">
               <span className="text-muted-foreground text-[10px] tracking-widest block uppercase font-bold mb-3">
-                5. Post-Race Structural Recovery Steps
+                5. Static Post-Race Checklist Notes
               </span>
               <ul className="text-xs space-y-3 list-none">
                 {postRaceChecklist.map((item, index) => (

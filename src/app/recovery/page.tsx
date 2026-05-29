@@ -200,7 +200,7 @@ export default function RecoveryCheckLabPage() {
           {/* Status Badge */}
           <div className={`p-4 border-2 rounded-xl text-center shadow-[1px_1px_0px_rgba(23,23,23,1)] ${bgFrame} ${borderFrame}`}>
             <span className="text-muted-foreground text-[10px] tracking-widest block uppercase font-bold mb-1">
-              Manual Mechanical Readiness Category
+              Manual Recovery Check Status
             </span>
             <span className={`font-display text-2xl font-black ${themeColor} tracking-tight`}>
               {category === "Green" ? "🟢 GREEN - RESTED" : category === "Yellow" ? "🟡 YELLOW - MODERATE REST" : "🔴 RED - CAUTION REQUIRED"}
@@ -308,7 +308,7 @@ export default function RecoveryCheckLabPage() {
         </div>
       ),
       methodSelected: 'Unified Manual Recovery Checking',
-      confidenceLabel: 'Exact Mechanical Calculation',
+      confidenceLabel: 'Manual',
       formulaUsed: 'Delta = Today - Baseline | sRPE Load = Duration * RPE | Logical Conditions mapping',
       inputUsed: {
         sleepStart,
@@ -330,7 +330,7 @@ export default function RecoveryCheckLabPage() {
   };
 
   return (
-    <CalculatorPageShell title="Recovery Check Lab" subtitle="Combine mechanical metrics, cardiorespiratory deltas, and self-checks.">
+    <CalculatorPageShell title="Recovery Check Lab" subtitle="Combine rest metrics, cardiovascular deltas, and self-checks in a manual recovery check panel.">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <ManualInputPanel
           mode={mode}
@@ -435,9 +435,9 @@ export default function RecoveryCheckLabPage() {
             </div>
           </div>
 
-          {/* Section 6: Symptoms Check (Mandatory Red Flags Screening) */}
+          {/* Section 6: Manual Symptom Flag Checklist */}
           <div className="space-y-2">
-            <h4 className="font-bold text-xs uppercase tracking-widest text-rose-500">6. Physical Symptoms Check</h4>
+            <h4 className="font-bold text-xs uppercase tracking-widest text-rose-500">6. Manual Symptom Flag Checklist</h4>
             <div className="space-y-2 pt-1">
               <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-foreground font-medium">
                 <input type="checkbox" checked={illness} onChange={e => setIllness(e.target.checked)} className="rounded border-zinc-300 dark:border-zinc-700 bg-background accent-rose-600 w-4 h-4" />

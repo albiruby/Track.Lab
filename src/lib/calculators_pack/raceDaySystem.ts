@@ -218,8 +218,8 @@ export function generateRaceDayTimeline(inputs: {
     events.push({
       time: formatMinutesToTime(startMins - inputs.caffeineOffsetMins),
       timeOffsetMins: inputs.caffeineOffsetMins,
-      title: "Pre-Race Caffeine / Stimulant (Optional)",
-      detail: "Strategic manual dosage ingestion offset (~45-60 min before start for peak blood concentrations)."
+      title: "Pre-Race Optional Caffeine Timing Checkpoint",
+      detail: "Optional caffeine timing checkpoint (~45-60 min before start)."
     });
   }
 
